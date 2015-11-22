@@ -20,4 +20,3 @@ Here you must explain how you dealt with texture lookup and scaling of the verte
 Any question asked by students during the exam will *only* be answered here not directly.
 
 ### Exam Details###
-
