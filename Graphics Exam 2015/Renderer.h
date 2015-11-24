@@ -55,7 +55,7 @@ private:
     gsl::owner<SDL_Window*> _window{};
     gsl::owner<SDL_GLContext> _context{};
     float _ambientFactor{0.1f};
-    glm::vec3 _lightDirection{ -2.0f, 2.0f, -2.0f };
+    glm::vec3 _lightDirection{ -0.9363f,0.3420,-2.0 };
 
     glm::mat4 _projectionMatrix{};
     std::unordered_map<std::string, gsl::owner<ShaderProgram*>> _shaderPrograms{};

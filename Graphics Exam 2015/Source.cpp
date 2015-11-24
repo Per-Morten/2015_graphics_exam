@@ -54,7 +54,7 @@ std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
 
     for (std::size_t i = 0; i < positions.size(); ++i)
     {
-        for (std::size_t j = 0; j < positions.size(); ++j)
+        for (std::size_t j = 0; j < positions[i].size(); ++j)
         {
             inputFile >> positions[i][j];
             positions[i][j] += 1;
@@ -67,6 +67,11 @@ std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
 std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>> createCubes(Renderer& renderer, std::vector<std::vector<int>> heights)
 {
     std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>> objects;
+
+    const glm::vec2 dirtOffset{ 0.0f, 0.0f };
+    const glm::vec2 grassOffset{ 0.25f, 0.0f };
+    const glm::vec2 snowOffset{ 0.50f, 0.0f };
+    const glm::vec2 waterOffset{ 0.75f, 0.0f };
 
     objects.resize(heights.size());
 
@@ -81,19 +86,19 @@ std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>> createCubes(Rend
                 glm::vec2 textureOffset;
                 if (k < 2)
                 {
-                    textureOffset = glm::vec2(3.0f/4.0f, 0.0f);
+                    textureOffset = waterOffset;
                 }
                 else if (k < 3)
                 {
-                    textureOffset = glm::vec2(0.0f, 0.0f);
+                    textureOffset = dirtOffset;
                 }
                 else if (k < 18)
                 {
-                    textureOffset = glm::vec2(1.0f/4.0f, 0.0f);
+                    textureOffset = grassOffset;
                 }
                 else if (k < 21)
                 {
-                    textureOffset = glm::vec2(2.0f/4.0f, 0.0f);
+                    textureOffset = snowOffset;
                 }
                 SceneObject* object = new SceneObject(renderer,
                                                       "DirectionalFullTexture",
