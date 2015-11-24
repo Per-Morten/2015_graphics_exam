@@ -1,6 +1,6 @@
 #pragma once
 #include <SDL.h>
-#include "gameEvent.h"
+#include "GameEvent.h"
 #include <map>
 #include <queue>
 
@@ -16,9 +16,9 @@ public:
 	std::map<ActionEnum, int> eventRepeat; // this holds the count down to the next trigger of the event 
 	std::map<ActionEnum, int> eventRepeatRate; // This holds the repeat rate per event
 
-	bool processEvents(SDL_Event& eventHandler, std::queue<gameEvent>& events);
-	bool handleKeys(SDL_Event &eventHandler, std::queue<gameEvent>& events);
-	void handleMouse(SDL_Event &eventHandler, std::queue<gameEvent>& events);
+	bool processEvents(SDL_Event& eventHandler, std::queue<GameEvent>& events);
+	bool handleKeys(SDL_Event &eventHandler, std::queue<GameEvent>& events);
+	void handleMouse(SDL_Event &eventHandler, std::queue<GameEvent>& events);
 
 };
 

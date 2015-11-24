@@ -4,21 +4,21 @@
 
 enum class ActionEnum:int {
 	NOACTION = 0,
-	LEFT,
+	LEFT, // movment
 	RIGHT,
 	FORWARD,
 	BACK,
-	RAISE,
+	RAISE, // raising terrain
 	LOWER,
 	RESET,
-	LATER,
+	LATER, // changing time
 	EARLIER,
-	CREATE,
+	CREATE, // creating and removing blocks
 	DESTROY,
 };
 
 /* This struct deals with an agent creating events.  This has an agent number and the action*/
-struct gameEvent
+struct GameEvent
 {
 	int agent;
 	ActionEnum action;

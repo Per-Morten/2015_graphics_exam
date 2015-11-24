@@ -7,7 +7,7 @@ Project-> Properties -> Configuration properties -> General -> Target name  = ex
 Project-> Properties -> Configuration properties -> Debugging -> Commande Arguments = terrain.pnm
 
 I suggest you read and understand how the input handler works.  It uses and event queue system.  
-The keyboard events create game events which are pushed onto the gameEvent queue.  These are the
+The keyboard events create game events which are pushed onto the GameEvent queue.  These are the
 events which the program should actually repond to rather than the actual keyboard presses.
 
 You should have environment variables set up for home of SDL GLEW and GLM so the calls below work
@@ -28,6 +28,7 @@ $(SDL_HOME)\include;$(GLEW_HOME)\include;$(GLM_HOME);$(IncludePath)
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+//C++ 11 stuff to use
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -36,7 +37,7 @@ $(SDL_HOME)\include;$(GLEW_HOME)\include;$(GLM_HOME);$(IncludePath)
 #include <sstream>
 
 #include "InputHandler.h"
-#include "gameEvent.h"
+#include "GameEvent.h"
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 800;
@@ -131,7 +132,7 @@ int main(int argc, char * argv[])
 {
 	bool running = true;
 	SDL_Event eventHandler;
-	std::queue<gameEvent> eventQueue;
+	std::queue<GameEvent> eventQueue;
 	InputHandler inputs;
 	
 	if (argc > 1){
@@ -149,11 +150,19 @@ int main(int argc, char * argv[])
 			running = inputs.processEvents(eventHandler, eventQueue); // returns a quit and updates the eventQueue with events
 			while (!eventQueue.empty())
 			{
-				if (eventQueue.front().action == ActionEnum::RAISE)  // use the Action Enum to decide what to do.
-					std::cout << ' ' << "raise" << endl;
-				if (eventQueue.front().action == ActionEnum::LOWER)
-					std::cout << ' ' << "lower" << endl;
+				GameEvent nextEvent = eventQueue.front();
 				eventQueue.pop();
+
+				if (nextEvent.action == ActionEnum::RAISE) { // use the Action Enum to decide what to do.
+					std::cout << ' ' << "raise" << endl;
+				}
+				if (nextEvent.action == ActionEnum::LOWER){
+					std::cout << ' ' << "lower" << endl;
+				}
+				if (nextEvent.action == ActionEnum::RESET){
+					std::cout << ' ' << "reset" << endl;
+				}
+
 			}
 			SDL_Delay(30); // you need to control frame rate so the input events do not go crazy fast.
 		}
