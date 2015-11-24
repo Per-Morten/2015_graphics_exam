@@ -4,6 +4,8 @@
 
 You will replace this text with the documentation of your progress and your solution
 
+## Questions to Answer ##
+
 ### Resources used ###
 Websites and other resources used.  With large sites provide more details of which page, for example which stack overflow question.
 
@@ -13,6 +15,8 @@ What part of the code caused the most problems.
 ### Explanation of texture lookup and height scaling ###
 Here you must explain how you dealt with texture lookup and scaling of the vertex height.
 
+### Describe the problem in this task which Mip-mapping would be solve ###
+You need to describe the problem related to textures in this block world which mip-mapping of the texture would solve.
 
 ## Exam Details ##
 
@@ -60,5 +64,5 @@ Notes
 * You can use the shaders and file loaders from assignments.
 * The program should compile and run in Visual Studio 2013 or 2015, SDL2.0.x and C/C++
 
-### Questions ###
+### Questions from Students ###
   If you have any questions email them to both Simon and Johannes with the subject “IMT2531 Exam Question”. Questions and answers will be added to the exam FAQ on the Bitbucket repository and emailed to the class.  Do not wait until Friday if you have a question.
