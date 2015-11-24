@@ -34,6 +34,9 @@ public:
     bool initialize() noexcept;
     bool windowIsOpen() const noexcept;
 
+    void advanceLight(float deltaTime) noexcept;
+    void regressLight(float deltaTime) noexcept;
+
     void keepWindowOpen(bool isOpen) noexcept;
 
     const std::string windowName{ "Graphics Exam 2015 - Per-Morten Straume" };
@@ -52,6 +55,7 @@ private:
     gsl::owner<SDL_Window*> _window{};
     gsl::owner<SDL_GLContext> _context{};
     float _ambientFactor{0.1f};
+    glm::vec3 _lightDirection{ -2.0f, 2.0f, -2.0f };
 
     glm::mat4 _projectionMatrix{};
     std::unordered_map<std::string, gsl::owner<ShaderProgram*>> _shaderPrograms{};

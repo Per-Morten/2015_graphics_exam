@@ -255,8 +255,7 @@ void Renderer::render(const std::string& shaderName,
         glUniform1f(ambientFactorId, _ambientFactor);
 
         // Send in lightDirection
-        glm::vec3 lightDirection = glm::vec3(-2.0f, 2.0f, -2.0f);
-        glUniform3f(lightDirectionId, lightDirection.x, lightDirection.y, lightDirection.z);
+        glUniform3f(lightDirectionId, _lightDirection.x, _lightDirection.y, _lightDirection.z);
 
         glUniform2f(textureOffsetId, textureOffset.x, textureOffset.y);
         static std::string lastTexture;
@@ -319,6 +318,16 @@ bool Renderer::initialize() noexcept
 bool Renderer::windowIsOpen() const noexcept
 {
     return _windowIsOpen;
+}
+
+void Renderer::advanceLight(float deltaTime) noexcept
+{
+    _lightDirection.x += deltaTime;
+}
+
+void Renderer::regressLight(float deltaTime) noexcept
+{
+    _lightDirection.x -= deltaTime;
 }
 
 void Renderer::keepWindowOpen(bool isOpen) noexcept

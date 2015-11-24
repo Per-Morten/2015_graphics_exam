@@ -16,13 +16,16 @@ InputHandler::InputHandler()
     eventRepeatRate[ActionEnum::RESET] = INACTIVE;  // This currently results in the standard key repeat of the Window keyboard
     // You need to add to here to have new keys 
     // 1) add a repeat rate
-
+    eventRepeatRate[ActionEnum::LATER] = 0;
+    eventRepeatRate[ActionEnum::EARLIER] = 0;
 
     eventRepeat[ActionEnum::RAISE] = INACTIVE;
     eventRepeat[ActionEnum::LOWER] = INACTIVE; // Make sure all new events are inactive
     eventRepeat[ActionEnum::RESET] = INACTIVE; // Make sure all new events are inactive
     // 2) make sure it is initialised to inactive
-
+    eventRepeat[ActionEnum::LATER] = INACTIVE;
+    eventRepeat[ActionEnum::EARLIER] = INACTIVE;
+    
 }
 
 /* Handles the keyboard events.  Updates the events queue with new Game Events. quits on esc*/
@@ -45,7 +48,13 @@ bool InputHandler::handleKeys(SDL_Event &eventHandler, std::queue<GameEvent>& ev
                     break;
 
                     // 3) add the case for which key to set to the action
+                case SDLK_1:
+                    action = ActionEnum::EARLIER;
+                    break;
 
+                case SDLK_2:
+                    action = ActionEnum::LATER;
+                    break;
 
                 case SDLK_ESCAPE:
                     return false;
@@ -74,7 +83,13 @@ bool InputHandler::handleKeys(SDL_Event &eventHandler, std::queue<GameEvent>& ev
 
                     // 4 ) make sure the keyup resets the event to inactive
                     // remember to add the key up to turn off repeating.
+                case SDLK_1:
+                    action = ActionEnum::EARLIER;
+                    break;
 
+                case SDLK_2:
+                    action = ActionEnum::LATER;
+                    break;
                 default:
                     break;
             }

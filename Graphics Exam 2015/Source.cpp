@@ -83,7 +83,7 @@ std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>> createCubes(Rend
                 {
                     textureOffset = glm::vec2(3.0f/4.0f, 0.0f);
                 }
-                else if (k< 3)
+                else if (k < 3)
                 {
                     textureOffset = glm::vec2(0.0f, 0.0f);
                 }
@@ -209,6 +209,14 @@ int main(int argc, char* argv[])
                     break;
                 case ActionEnum::RESET:
                     std::cout << "Reset" << std::endl;
+                    break;
+                case ActionEnum::LATER:
+                    renderer.advanceLight(deltaTime);
+                    std::cout << "LATER" << std::endl;
+                    break;
+                case ActionEnum::EARLIER:
+                    renderer.regressLight(deltaTime);
+                    std::cout << "EARLIER" << std::endl;
                     break;
             }
         }

@@ -12,7 +12,7 @@ Camera::~Camera() noexcept
 
 void Camera::update(float deltaTime) noexcept
 {
-    rotate(glm::vec3({ 0.0f, 1.0f, 0.0f }) * deltaTime);
+   // rotate(glm::vec3({ 0.0f, 1.0f, 0.0f }) * deltaTime);
 }
 
 const glm::mat4& Camera::getViewMatrix() const noexcept
