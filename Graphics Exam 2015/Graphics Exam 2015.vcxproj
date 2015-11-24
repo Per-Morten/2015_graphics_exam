@@ -85,7 +85,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="gameEvent.cpp" />
     <ClCompile Include="inputHandler.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

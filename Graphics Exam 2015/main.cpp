@@ -1,4 +1,22 @@
-#include <iostream>
+/* Template Author:Simon McCallum
+Notes:
+Created for the IMT2531 Graphics Exam 2015
+
+To get the naming right I have set.
+Project-> Properties -> Configuration properties -> General -> Target name  = exam2015.exe
+Project-> Properties -> Configuration properties -> Debugging -> Commande Arguments = terrain.pnm
+
+I suggest you read and understand how the input handler works.  It uses and event queue system.  
+The keyboard events create game events which are pushed onto the gameEvent queue.  These are the
+events which the program should actually repond to rather than the actual keyboard presses.
+
+You should have environment variables set up for home of SDL GLEW and GLM so the calls below work
+$(SDL_HOME)\include;$(GLEW_HOME)\include;$(GLM_HOME);$(IncludePath)
+
+
+*/
+
+
 #include <SDL.h>
 #include <gl\glew.h>
 #include <SDL_opengl.h>
@@ -11,6 +29,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <stdio.h>
+#include <iostream>
 #include <string>
 #include <queue>
 #include <fstream>
@@ -20,9 +39,11 @@
 #include "gameEvent.h"
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 1024;
-const int SCREEN_HEIGHT = 768;
-std::string windowName = "Graphics Exam 2015 - Student Name";
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
+std::string windowName = "Graphics Exam 2015 - Student Name"; //You should update this to your name
+
+
 
 SDL_Window* gWindow = NULL;
 
@@ -31,10 +52,11 @@ SDL_GLContext gContext;
 bool init();
 bool initGL();
 
-
 using namespace std;
 SDL_Event input;
 
+
+/*Does the initialisaiton of SDL*/
 bool init()
 {
 	bool success = true;
@@ -73,7 +95,9 @@ bool init()
 }
 
 
-
+/*
+This is where all the initialisation for OpenGL would go.  You may want to move this to its own file.
+*/
 bool initGL()
 {
 	//Success flag
@@ -82,6 +106,9 @@ bool initGL()
 	return success;
 }
 
+/*
+This shows how to start loading the terrain file.  You should be able to find how to do the rest.
+*/
 void LoadTerrain(std::string terrainFilename){
 	ifstream inputFile(terrainFilename); 
 	stringstream lineStream;
@@ -115,21 +142,20 @@ int main(int argc, char * argv[])
 		exit(-1);
 	}
 	
-
 	if (!init()){
 		printf("Failed to initialize!\n");
 	} else {
 		while (running){
-			running = inputs.processEvents(eventHandler, eventQueue);
+			running = inputs.processEvents(eventHandler, eventQueue); // returns a quit and updates the eventQueue with events
 			while (!eventQueue.empty())
 			{
-				if (eventQueue.front().action == ActionEnum::RAISE)
+				if (eventQueue.front().action == ActionEnum::RAISE)  // use the Action Enum to decide what to do.
 					std::cout << ' ' << "raise" << endl;
 				if (eventQueue.front().action == ActionEnum::LOWER)
 					std::cout << ' ' << "lower" << endl;
 				eventQueue.pop();
 			}
-			SDL_Delay(30);
+			SDL_Delay(30); // you need to control frame rate so the input events do not go crazy fast.
 		}
 	}
 	return 0;

@@ -1,6 +1,6 @@
 #pragma once
-#include <queue>
-#include <map>
+
+//An emun for all the possible actions in the game
 
 enum class ActionEnum:int {
 	NOACTION = 0,
@@ -16,13 +16,9 @@ enum class ActionEnum:int {
 	DESTROY,
 };
 
-
-
-class gameEvent
+/* This struct deals with an agent creating events.  This has an agent number and the action*/
+struct gameEvent
 {
-public:
-	gameEvent(ActionEnum action);
-	~gameEvent();
 	int agent;
 	ActionEnum action;
 };
