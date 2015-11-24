@@ -10,6 +10,7 @@ enum class ActionEnum:int {
 	BACK,
 	RAISE,
 	LOWER,
+	RESET,
 	LATER,
 	EARLIER,
 	CREATE,

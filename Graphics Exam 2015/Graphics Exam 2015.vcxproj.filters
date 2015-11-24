@@ -18,15 +18,15 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="inputHandler.cpp">
+    <ClCompile Include="InputHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inputHandler.h">
+    <ClInclude Include="GameEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gameEvent.h">
+    <ClInclude Include="InputHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

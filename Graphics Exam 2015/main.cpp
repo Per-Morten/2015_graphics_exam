@@ -35,7 +35,7 @@ $(SDL_HOME)\include;$(GLEW_HOME)\include;$(GLM_HOME);$(IncludePath)
 #include <fstream>
 #include <sstream>
 
-#include "inputHandler.h"
+#include "InputHandler.h"
 #include "gameEvent.h"
 
 //Screen dimension constants
@@ -132,7 +132,7 @@ int main(int argc, char * argv[])
 	bool running = true;
 	SDL_Event eventHandler;
 	std::queue<gameEvent> eventQueue;
-	inputHandler inputs;
+	InputHandler inputs;
 	
 	if (argc > 1){
 		LoadTerrain(std::string(argv[1]));

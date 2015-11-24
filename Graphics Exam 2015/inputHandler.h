@@ -6,11 +6,11 @@
 
 #define INACTIVE -1
 
-class inputHandler
+class InputHandler
 {
 public:
-	inputHandler();
-	~inputHandler();
+	InputHandler();
+	~InputHandler();
 
 	//Key repeat system if key still down issue event
 	std::map<ActionEnum, int> eventRepeat; // this holds the count down to the next trigger of the event 
