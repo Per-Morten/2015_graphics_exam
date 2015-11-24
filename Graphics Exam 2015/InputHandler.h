@@ -5,6 +5,7 @@
 #include <queue>
 
 #define INACTIVE -1
+constexpr auto a = INT_MAX / 30 / 86400;
 
 class InputHandler
 {

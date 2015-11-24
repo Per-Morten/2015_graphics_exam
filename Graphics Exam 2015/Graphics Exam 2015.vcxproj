@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -14,18 +14,19 @@
     <ProjectGuid>{E03E5535-2099-4136-AEB6-EFBF84752A7E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>GraphicsExam2015</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -43,7 +44,7 @@
     <IncludePath>$(SDL_HOME)\include;$(GLEW_HOME)\include;$(GLM_HOME);$(IncludePath)</IncludePath>
     <LibraryPath>$(SDL_HOME)\lib;$(GLEW_HOME)/lib/Release/Win32;$(LibraryPath)</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>exam2015.exe</TargetName>
+    <TargetName>exam2015</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(SDL_HOME)\include;$(GLEW_HOME)\include;$(GLM_HOME);$(IncludePath)</IncludePath>
@@ -85,12 +86,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="SceneObject.cpp" />
+    <ClCompile Include="shader.cpp" />
+    <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="stb_image.c" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="GameEvent.h" />
+    <ClInclude Include="GLTypes.h" />
+    <ClInclude Include="GSL\array_view.h" />
+    <ClInclude Include="GSL\fail_fast.h" />
+    <ClInclude Include="GSL\gsl.h" />
+    <ClInclude Include="GSL\string_view.h" />
     <ClInclude Include="InputHandler.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="SceneObject.h" />
+    <ClInclude Include="shader.hpp" />
+    <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
