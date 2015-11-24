@@ -43,4 +43,6 @@ private:
     glm::vec3 _rotation{};
     glm::vec3 _scale{};
     glm::mat4 _modelMatrix{1};
+
+    int _textureIndex = 0;
 };

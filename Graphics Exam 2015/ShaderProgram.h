@@ -27,6 +27,7 @@ public:
     static const UniformName normalMatrix;
     static const UniformName ambientFactor;
     static const UniformName lightDirection;
+    static const UniformName textureOffset;
 
 private:
     ProgramHandle _programHandle{};

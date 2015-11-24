@@ -163,7 +163,7 @@ namespace
     }
 }
 
-Renderer::Renderer(GLint width, 
+Renderer::Renderer(GLint width,
                    GLint height,
                    Camera& camera) noexcept
     : width(width)
@@ -210,38 +210,61 @@ void Renderer::render(const std::string& shaderName,
 {
     if (_shaderPrograms[shaderName] != nullptr)
     {
-        _shaderPrograms[shaderName]->bind();
+        static ShaderProgram::UniformAddress colorId;
+        static ShaderProgram::UniformAddress viewMatrixId;
+        static ShaderProgram::UniformAddress modelMatrixId;
+        static ShaderProgram::UniformAddress mvpId;
+        static ShaderProgram::UniformAddress normalMatrixId;
+        static ShaderProgram::UniformAddress ambientFactorId;
+        static ShaderProgram::UniformAddress lightDirectionId;
+        static ShaderProgram::UniformAddress textureOffsetId;
+        static std::string lastShader;
 
-        // Set color
-        ShaderProgram::UniformAddress colorId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::color);
+        if (lastShader != shaderName)
+        {
+            _shaderPrograms[shaderName]->bind();
+            lastShader = shaderName;
+
+            // Set it here, cause looking up map in debug can be slow. Especially if its done 1016 times a second :P
+            colorId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::color);
+            viewMatrixId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::viewMatrix);
+            modelMatrixId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::modelMatrix);
+            mvpId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::mvp);
+            normalMatrixId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::normalMatrix);
+            ambientFactorId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::ambientFactor);
+            lightDirectionId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::lightDirection);
+            textureOffsetId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::textureOffset);
+        }
+
         glUniform4f(colorId, color.r, color.g, color.b, color.a);
 
         // Calculate needed matrices
         glm::mat4 viewMatrix = _camera.getViewMatrix();
-        ShaderProgram::UniformAddress viewMatrixId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::viewMatrix);
         glUniformMatrix4fv(viewMatrixId, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
-        ShaderProgram::UniformAddress modelMatrixId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::modelMatrix);
         glUniformMatrix4fv(modelMatrixId, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
         glm::mat4 mvp = _projectionMatrix * viewMatrix * modelMatrix;
-        ShaderProgram::UniformAddress mvpId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::mvp);
         glUniformMatrix4fv(mvpId, 1, GL_FALSE, glm::value_ptr(mvp));
 
         glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(viewMatrix * modelMatrix)));
-        ShaderProgram::UniformAddress normalMatrixId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::normalMatrix);
         glUniformMatrix3fv(normalMatrixId, 1, GL_FALSE, glm::value_ptr(normalMatrix));
 
         // Send in ambientFactor for light
-        ShaderProgram::UniformAddress ambientFactorId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::ambientFactor);
         glUniform1f(ambientFactorId, _ambientFactor);
 
         // Send in lightDirection
-        ShaderProgram::UniformAddress lightDirectionId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::lightDirection);
-        glm::vec3 lightDirection = glm::vec3(2.0f, 0.0f, 2.0f); //* _camera.getPositionWorldSpace();
+        glm::vec3 lightDirection = glm::vec3(-2.0f, 2.0f, -2.0f);
         glUniform3f(lightDirectionId, lightDirection.x, lightDirection.y, lightDirection.z);
 
-        _textures[textureName]->bind();
+        glUniform2f(textureOffsetId, 0 / 4.0f, 1 / 4.0f);
+        static std::string lastTexture;
+        if (lastTexture != textureName)
+        {
+            _textures[textureName]->bind();
+            lastTexture = textureName;
+        }
+
         _meshes[meshName]->draw();
     }
     else
@@ -378,7 +401,7 @@ void Renderer::initializeOpenGL() noexcept
 
 void Renderer::initializeVariables() noexcept
 {
-    std::string shaderName = "Resources/Shaders/directionalFullTextureV2";
+    std::string shaderName = "Resources/Shaders/directionalFullTextureV3";
     _shaderPrograms["DirectionalFullTexture"] = new ShaderProgram(shaderName + ".vert", shaderName + ".frag");
 
     auto meshData = Local::createCube();
@@ -387,5 +410,5 @@ void Renderer::initializeVariables() noexcept
                                std::get<2>(meshData),
                                std::get<3>(meshData));
 
-    _textures["Bricks"] = new Texture("Resources/Textures/bricks.jpg");
+    _textures["Bricks"] = new Texture("Resources/Textures/texture.png");
 }

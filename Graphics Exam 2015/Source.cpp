@@ -57,6 +57,7 @@ std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
         for (std::size_t j = 0; j < positions.size(); ++j)
         {
             inputFile >> positions[i][j];
+            positions[i][j] += 1;
         }
     }
 
@@ -78,17 +79,44 @@ std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>> createCubes(Rend
             for (int k = 0; k < heights[i][j]; ++k)
             {
                 SceneObject* object = new SceneObject(renderer,
-                                              "DirectionalFullTexture",
-                                              "Cube",
-                                              "Bricks",
-                                              glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
-                                              glm::vec3(i, k, j));
+                                                      "DirectionalFullTexture",
+                                                      "Cube",
+                                                      "Bricks",
+                                                      glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+                                                      glm::vec3(i * 10, k * 10.0f, j * 10),
+                                                      glm::vec3(0.0f, 0.0f, 0.0f),
+                                                      glm::vec3(1.0f, 1.0f, 1.0f));
                 objects[i][j].push_back(object);
             }
         }
     }
 
     return objects;
+}
+
+std::vector<gsl::owner<SceneObject*>> createCubes1D(Renderer& renderer, std::vector<std::vector<int>> heights)
+{
+    std::vector<gsl::owner<SceneObject*>> cubes;
+
+    for (std::size_t i = 0; i < heights.size(); ++i)
+    {
+        for (std::size_t j = 0; j < heights[i].size(); ++j)
+        {
+            for (int k = 0; k < heights[i][j]; ++k)
+            {
+                SceneObject* object = new SceneObject(renderer,
+                                                      "DirectionalFullTexture",
+                                                      "Cube",
+                                                      "Bricks",
+                                                      glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+                                                      glm::vec3(i * 10, k * 10.0f, j * 10),
+                                                      glm::vec3(0.0f, 0.0f, 0.0f),
+                                                      glm::vec3(1.0f, 1.0f, 1.0f));
+                cubes.push_back(object);
+            }
+        }
+    }
+    return cubes;
 }
 
 int main(int argc, char* argv[])
@@ -117,31 +145,31 @@ int main(int argc, char* argv[])
     InputHandler inputHandler;
     std::queue<GameEvent> eventQueue;
 
-    auto objects = createCubes(renderer, heights);
-
+    auto cubes = createCubes(renderer, heights);
     float deltaTime = 0.1f;
 
     while (renderer.windowIsOpen())
     {
         bool keepWindowOpen = inputHandler.processEvents(eventHandler, eventQueue);
-
+        
         auto clockStart = std::chrono::high_resolution_clock::now();
         camera.update(deltaTime);
 
         renderer.keepWindowOpen(keepWindowOpen);
         renderer.clear();
 
-        for (std::size_t i = 0; i < objects.size(); ++i)
+        for (std::size_t i = 0; i < cubes.size(); ++i)
         {
-            for (std::size_t j = 0; j < objects[i].size(); ++j)
+            for (std::size_t j = 0; j < cubes[i].size(); ++j)
             {
-                for (std::size_t k = 0; k < objects[i][j].size(); ++k)
+                for (std::size_t k = 0; k < cubes[i][j].size(); ++k)
                 {
-                    objects[i][j][k]->update(deltaTime);
-                    objects[i][j][k]->draw();
+                    cubes[i][j][k]->update(deltaTime);
+                    cubes[i][j][k]->draw();
                 }
             }
         }
+
         renderer.present();
 
 
@@ -149,7 +177,7 @@ int main(int argc, char* argv[])
         {
             GameEvent nextEvent = eventQueue.front();
             eventQueue.pop();
-
+        
             switch (nextEvent.action)
             {
                 case ActionEnum::RAISE:
