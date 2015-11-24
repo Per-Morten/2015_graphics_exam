@@ -78,6 +78,23 @@ std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>> createCubes(Rend
         {
             for (int k = 0; k < heights[i][j]; ++k)
             {
+                glm::vec2 textureOffset;
+                if (k < 2)
+                {
+                    textureOffset = glm::vec2(3.0f/4.0f, 0.0f);
+                }
+                else if (k< 3)
+                {
+                    textureOffset = glm::vec2(0.0f, 0.0f);
+                }
+                else if (k < 18)
+                {
+                    textureOffset = glm::vec2(1.0f/4.0f, 0.0f);
+                }
+                else if (k < 21)
+                {
+                    textureOffset = glm::vec2(2.0f/4.0f, 0.0f);
+                }
                 SceneObject* object = new SceneObject(renderer,
                                                       "DirectionalFullTexture",
                                                       "Cube",
@@ -85,8 +102,10 @@ std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>> createCubes(Rend
                                                       glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
                                                       glm::vec3(i * 10, k * 10.0f, j * 10),
                                                       glm::vec3(0.0f, 0.0f, 0.0f),
-                                                      glm::vec3(1.0f, 1.0f, 1.0f));
+                                                      glm::vec3(1.0f, 1.0f, 1.0f),
+                                                      textureOffset);
                 objects[i][j].push_back(object);
+
             }
         }
     }
@@ -118,6 +137,8 @@ std::vector<gsl::owner<SceneObject*>> createCubes1D(Renderer& renderer, std::vec
     }
     return cubes;
 }
+
+
 
 int main(int argc, char* argv[])
 {

@@ -16,7 +16,8 @@ public:
                 const glm::vec4& color = glm::vec4(1.0f, 0.8f, 0.8f, 1.0f), 
                 const glm::vec3& position = glm::vec3(0.0f, 0.0f, 0.0f), 
                 const glm::vec3& rotation = glm::vec3(0.0f, 0.0f, 0.0f), 
-                const glm::vec3& scale = glm::vec3(1.0f, 1.0f, 1.0f)) noexcept;
+                const glm::vec3& scale = glm::vec3(1.0f, 1.0f, 1.0f),
+                const glm::vec2& textureOffset = glm::vec2(0.0f, 0.0f)) noexcept;
     ~SceneObject() noexcept;
 
     void update(float deltaTime) noexcept;
@@ -26,6 +27,7 @@ public:
     void setPosition(const glm::vec3& position) noexcept;
     void setRotation(const glm::vec3& rotation) noexcept;
     void setScale(const glm::vec3& scale) noexcept;
+    void setTextureOffset(const glm::vec2& textureOffset) noexcept;
 
     const glm::vec4& getColor() const noexcept;
     const glm::vec3& getPosition() const noexcept;
@@ -43,6 +45,6 @@ private:
     glm::vec3 _rotation{};
     glm::vec3 _scale{};
     glm::mat4 _modelMatrix{1};
+    glm::vec2 _textureOffset{};
 
-    int _textureIndex = 0;
 };

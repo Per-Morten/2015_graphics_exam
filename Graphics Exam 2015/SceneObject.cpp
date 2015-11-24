@@ -9,7 +9,8 @@ SceneObject::SceneObject(Renderer& renderer,
                          const glm::vec4& color,
                          const glm::vec3& position,
                          const glm::vec3& rotation,
-                         const glm::vec3& scale) noexcept
+                         const glm::vec3& scale,
+                         const glm::vec2& textureOffset) noexcept
     : _renderer(renderer)
     , _shaderName(shaderName)
     , _meshName(meshName)
@@ -18,6 +19,7 @@ SceneObject::SceneObject(Renderer& renderer,
     , _position(position)
     , _rotation(rotation)
     , _scale(scale)
+    , _textureOffset(textureOffset)
 {
 }
 
@@ -41,7 +43,7 @@ void SceneObject::update(float deltaTime) noexcept
 
 void SceneObject::draw() noexcept
 {
-    _renderer.render(_shaderName, _meshName, _textureName, _modelMatrix, _color);
+    _renderer.render(_shaderName, _meshName, _textureName, _modelMatrix, _color, _textureOffset);
 }
 
 void SceneObject::setColor(const glm::vec4& color) noexcept
@@ -62,6 +64,11 @@ void SceneObject::setRotation(const glm::vec3& rotation) noexcept
 void SceneObject::setScale(const glm::vec3& scale) noexcept
 {
     _scale = scale;
+}
+
+void SceneObject::setTextureOffset(const glm::vec2& textureOffset) noexcept
+{
+    _textureOffset = _textureOffset;
 }
 
 const glm::vec4 & SceneObject::getColor() const noexcept

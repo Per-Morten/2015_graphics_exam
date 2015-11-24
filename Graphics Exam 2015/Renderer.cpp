@@ -206,7 +206,8 @@ void Renderer::render(const std::string& shaderName,
                       const std::string& meshName,
                       const std::string& textureName,
                       const glm::mat4& modelMatrix,
-                      const glm::vec4& color) noexcept
+                      const glm::vec4& color,
+                      const glm::vec2& textureOffset) noexcept
 {
     if (_shaderPrograms[shaderName] != nullptr)
     {
@@ -257,7 +258,7 @@ void Renderer::render(const std::string& shaderName,
         glm::vec3 lightDirection = glm::vec3(-2.0f, 2.0f, -2.0f);
         glUniform3f(lightDirectionId, lightDirection.x, lightDirection.y, lightDirection.z);
 
-        glUniform2f(textureOffsetId, 0 / 4.0f, 1 / 4.0f);
+        glUniform2f(textureOffsetId, textureOffset.x, textureOffset.y);
         static std::string lastTexture;
         if (lastTexture != textureName)
         {

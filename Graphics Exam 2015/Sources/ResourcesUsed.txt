@@ -1,1 +1,2 @@
-https://www.youtube.com/watch?v=6T182r4F6J8
+https://www.youtube.com/watch?v=6T182r4F6J8 For Textures (Do this if time)
+http://0fps.net/2013/07/09/texture-atlases-wrapping-and-mip-mapping/ For textures in Frag.

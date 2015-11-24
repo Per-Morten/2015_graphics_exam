@@ -25,7 +25,8 @@ public:
                 const std::string& meshName,
                 const std::string& textureName,
                 const glm::mat4& modelMatrix,
-                const glm::vec4& color) noexcept;
+                const glm::vec4& color,
+                const glm::vec2& textureOffset) noexcept;
     void present() noexcept;
 
     void handleInput() noexcept;
