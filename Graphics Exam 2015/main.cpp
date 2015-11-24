@@ -121,7 +121,6 @@ $(SDL_HOME)\include;$(GLEW_HOME)\include;$(GLM_HOME);$(IncludePath)
 //
 ///*
 //This shows how to start loading the terrain file.  You should be able to find how to do the rest.
-//*/
 //void LoadTerrain(std::string terrainFilename)
 //{
 //    ifstream inputFile(terrainFilename);

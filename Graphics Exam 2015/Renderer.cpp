@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+#include <iostream>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <tuple>
@@ -241,6 +243,10 @@ void Renderer::render(const std::string& shaderName,
 
         _textures[textureName]->bind();
         _meshes[meshName]->draw();
+    }
+    else
+    {
+        std::cout << shaderName << " Does not exist" << std::endl;
     }
 }
 
