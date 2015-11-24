@@ -19,7 +19,7 @@ Here you must explain how you dealt with texture lookup and scaling of the verte
 ### Exam Q&A ###
 Any question asked by students during the exam will *only* be answered here not directly.
 
-### Exam Details###
+### Exam Details ###
 
 Due 27th November 2015 at 12:00.  This 3 day, take home exam, together with the oral, will be worth 60% of the grade for the course. Each student will select a 10-12 minute slot on the 30th of November for an oral discussion of their project. You will have received and email to participate on the 23rd at about 12:15.
 
