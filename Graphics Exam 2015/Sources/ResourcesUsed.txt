@@ -16,3 +16,11 @@ Performance 0.37 unoptimized Normals;
 Performance 0.37 Optimized Normals";
 
 Performance 0.37 unoptimized camera matrix
+
+
+
+Stor Coca Cola
+Stor pizza Halfnhalf,
+25 Chorizoen
+07 Meksikaneren
+90 12 77 95

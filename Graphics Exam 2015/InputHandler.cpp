@@ -25,8 +25,9 @@ InputHandler::InputHandler()
     eventRepeatRate[ActionEnum::RIGHT] = 0;
     eventRepeatRate[ActionEnum::DOWN] = 0;
     eventRepeatRate[ActionEnum::UP] = 0;
-    
     eventRepeatRate[ActionEnum::MOUSEMOTION] = 0;
+    eventRepeatRate[ActionEnum::CREATE] = 0;
+    eventRepeatRate[ActionEnum::ENABLEMOVEMENT] = 10;
 
     eventRepeat[ActionEnum::RAISE] = INACTIVE;
     eventRepeat[ActionEnum::LOWER] = INACTIVE; // Make sure all new events are inactive
@@ -43,7 +44,8 @@ InputHandler::InputHandler()
     eventRepeat[ActionEnum::UP] = INACTIVE;
 
     eventRepeat[ActionEnum::MOUSEMOTION] = INACTIVE;
-
+    eventRepeat[ActionEnum::CREATE] = INACTIVE;
+    eventRepeat[ActionEnum::ENABLEMOVEMENT] = INACTIVE;
 }
 
 /* Handles the keyboard events.  Updates the events queue with new Game Events. quits on esc*/
@@ -95,6 +97,18 @@ bool InputHandler::handleKeys(SDL_Event &eventHandler, std::queue<GameEvent>& ev
 
                 case SDLK_c:
                     action = ActionEnum::UP;
+                    break;
+
+                case SDLK_k:
+                    action = ActionEnum::CREATE;
+                    break;
+
+                case SDLK_i:
+                    action = ActionEnum::DESTROY;
+                    break;
+
+                case SDLK_p:
+                    action = ActionEnum::ENABLEMOVEMENT;
                     break;
 
                 case SDLK_ESCAPE:
@@ -158,6 +172,18 @@ bool InputHandler::handleKeys(SDL_Event &eventHandler, std::queue<GameEvent>& ev
                     action = ActionEnum::UP;
                     break;
 
+                case SDLK_k:
+                    action = ActionEnum::CREATE;
+                    break;
+
+                case SDLK_i:
+                    action = ActionEnum::DESTROY;
+                    break;
+
+                case SDLK_p:
+                    action = ActionEnum::ENABLEMOVEMENT;
+                    break;
+
                 default:
                     break;
             }
@@ -190,8 +216,6 @@ void InputHandler::handleMouse(SDL_Event& eventHandler, std::queue<GameEvent>& e
             mousePosition.x = eventHandler.motion.x;
             mousePosition.y = eventHandler.motion.y;
             action = ActionEnum::MOUSEMOTION;
-            //std::cout << "Button Motion: " << x << "\t" << y << std::endl;
-            ///events.push(GameEvent{0, action });
             break;
     }
     if (eventRepeat[action] < 0)

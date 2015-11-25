@@ -118,8 +118,14 @@ std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>> createCubes(Rend
     return objects;
 }
 
+void createCube() noexcept
+{
+
+}
+
 void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, Camera& camera, float deltaTime, glm::vec2& mousePosition)
 {
+    static bool enableMovement = false;
     while (!eventQueue.empty())
     {
         GameEvent nextEvent = eventQueue.front();
@@ -148,33 +154,66 @@ void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, Camera& 
                 break;
 
             case ActionEnum::FORWARD:
-                camera.moveForward(deltaTime);
+                if (enableMovement)
+                {
+                    camera.moveForward(deltaTime);
+                }
                 break;
 
             case ActionEnum::BACK:
-                camera.moveBack(deltaTime);
+                if (enableMovement)
+                {
+                    camera.moveBack(deltaTime);
+                }
                 break;
 
             case ActionEnum::LEFT:
-                camera.strafeLeft(deltaTime);
+                if (enableMovement)
+                {
+                    camera.strafeLeft(deltaTime);
+                }
                 break;
 
             case ActionEnum::RIGHT:
-                camera.strafeRight(deltaTime);
-
+                if (enableMovement)
+                {
+                    camera.strafeRight(deltaTime);
+                }
                 break;
 
             case ActionEnum::DOWN:
-                camera.moveDown(deltaTime);
+                if (enableMovement)
+                {
+                    camera.moveDown(deltaTime);
+                }
                 break;
 
             case ActionEnum::UP:
-                camera.moveUp(deltaTime);
+                if (enableMovement)
+                {
+                    camera.moveUp(deltaTime);
+                }
                 break;
 
             case ActionEnum::MOUSEMOTION:
-                camera.rotateCamera(mousePosition / 100.0f);
+                if (enableMovement)
+                {
+                    camera.rotateCamera(mousePosition / 100.0f);
+                }
                 break;
+
+            case ActionEnum::ENABLEMOVEMENT:
+                enableMovement = !enableMovement;
+                break;
+
+            case ActionEnum::CREATE:
+                std::cout << "Create" << std::endl;
+                break;
+
+            case ActionEnum::DESTROY:
+                std::cout << "Destroy" << std::endl;
+                break;
+
         }
     }
 }
@@ -182,7 +221,7 @@ void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, Camera& 
 void drawVisibleObjects(const std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>>& objects, float deltaTime) noexcept
 {
     constexpr std::size_t maxSizeT = std::numeric_limits<std::size_t>::max();
-    
+
     for (std::size_t i = 0; i < objects.size(); ++i)
     {
         for (std::size_t j = 0; j < objects[i].size(); ++j)
@@ -191,8 +230,8 @@ void drawVisibleObjects(const std::vector<std::vector<std::vector<gsl::owner<Sce
             {
                 // Draw and update the cubes which should be visible
                 bool hidden = false;
-                if (i != 0 && i != objects.size() - 1 && 
-                    j != 0 && j != objects[i].size() - 1 && 
+                if (i != 0 && i != objects.size() - 1 &&
+                    j != 0 && j != objects[i].size() - 1 &&
                     k != 0 && k != objects[i][j].size() - 1)
                 {
                     hidden = true;
@@ -210,6 +249,7 @@ void drawVisibleObjects(const std::vector<std::vector<std::vector<gsl::owner<Sce
         }
     }
 }
+
 
 int main(int argc, char* argv[])
 {
@@ -237,7 +277,7 @@ int main(int argc, char* argv[])
     InputHandler inputHandler;
     std::queue<GameEvent> eventQueue;
     glm::vec2 mousePosition;
-    
+
     constexpr auto a = std::numeric_limits<std::size_t>::max;
 
     auto cubes = createCubes(renderer, heights);
@@ -255,7 +295,7 @@ int main(int argc, char* argv[])
         drawVisibleObjects(cubes, deltaTime);
         renderer.present();
         handleInput(eventQueue, renderer, camera, deltaTime, mousePosition);
-        
+
         auto clockStop = std::chrono::high_resolution_clock::now();
         deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(clockStop - clockStart).count();
         printf("%f\n", deltaTime);
