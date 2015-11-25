@@ -222,17 +222,17 @@ void Renderer::render(const std::string& shaderName,
         }
 
         // Object related Uniforms
-        setColorUniform(shaderName, newShader,color);
+        setColorUniform(shaderName, newShader, color);
         setModelMatrixUniform(shaderName, newShader, modelMatrix);
         setTextureOffsetUniform(shaderName, newShader, textureOffset);
         setNormalMatrixUniform(shaderName, newShader, modelMatrix);
-        
-        // Calculate needed matrices
+
+        // Total Drawing loop Uniforms
         setViewMatrixUniform(shaderName, newShader);
-        setProjectionMatrixUniform(shaderName,newShader);
+        setProjectionMatrixUniform(shaderName, newShader);
         setAmbientFactorUniform(shaderName, newShader);
         setLightDirectionUniform(shaderName, newShader);
-        setWorldScaleUniform(shaderName, newShader);        
+        setWorldScaleUniform(shaderName, newShader);
 
         static std::string lastTexture;
         if (lastTexture != textureName)
@@ -401,6 +401,7 @@ void Renderer::setNormalMatrixUniform(const std::string& shaderName, bool newSha
 // Static for each total draw round
 void Renderer::setViewMatrixUniform(const std::string& shaderName, bool newShader) noexcept
 {
+
     static ShaderProgram::UniformAddress viewMatrixId;
     static glm::mat4 prevViewMatrix;
     const glm::mat4& viewMatrix = _camera.getViewMatrix();
@@ -413,6 +414,7 @@ void Renderer::setViewMatrixUniform(const std::string& shaderName, bool newShade
     }
     if (viewMatrix != prevViewMatrix)
     {
+
         prevViewMatrix = viewMatrix;
         glUniformMatrix4fv(viewMatrixId, 1, GL_FALSE, glm::value_ptr(viewMatrix));
         return;
@@ -432,6 +434,7 @@ void Renderer::setProjectionMatrixUniform(const std::string& shaderName, bool ne
     }
     if (_projectionMatrix != prevProjectionMatrix)
     {
+
         prevProjectionMatrix = _projectionMatrix;
         glUniformMatrix4fv(projectionMatrixId, 1, GL_FALSE, glm::value_ptr(_projectionMatrix));
         return;
@@ -451,6 +454,7 @@ void Renderer::setAmbientFactorUniform(const std::string & shaderName, bool newS
     }
     if (_ambientFactor != prevAmbientFactor)
     {
+
         prevAmbientFactor = _ambientFactor;
         glUniform1f(ambientFactorId, _ambientFactor);
         return;

@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <limits>
 
 #include "GameEvent.h"
 #include "InputHandler.h"
@@ -178,6 +179,38 @@ void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, Camera& 
     }
 }
 
+void drawVisibleObjects(const std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>>& objects, float deltaTime) noexcept
+{
+    constexpr std::size_t maxSizeT = std::numeric_limits<std::size_t>::max();
+    
+    for (std::size_t i = 0; i < objects.size(); ++i)
+    {
+        for (std::size_t j = 0; j < objects[i].size(); ++j)
+        {
+            for (std::size_t k = objects[i][j].size() - 1; k != maxSizeT; --k)
+            {
+                // Draw and update the cubes which should be visible
+                bool hidden = false;
+                if (i != 0 && i != objects.size() - 1 && 
+                    j != 0 && j != objects[i].size() - 1 && 
+                    k != 0 && k != objects[i][j].size() - 1)
+                {
+                    hidden = true;
+                    hidden = hidden && (k < objects[i + 1][j + 0].size()); // Right
+                    hidden = hidden && (k < objects[i + 0][j + 1].size()); // Up
+                    hidden = hidden && (k < objects[i - 1][j + 0].size()); // Left
+                    hidden = hidden && (k < objects[i + 0][j - 1].size()); // Down
+                }
+                if (!hidden)
+                {
+                    objects[i][j][k]->update(deltaTime);
+                    objects[i][j][k]->draw();
+                }
+            }
+        }
+    }
+}
+
 int main(int argc, char* argv[])
 {
     Camera camera;
@@ -204,6 +237,8 @@ int main(int argc, char* argv[])
     InputHandler inputHandler;
     std::queue<GameEvent> eventQueue;
     glm::vec2 mousePosition;
+    
+    constexpr auto a = std::numeric_limits<std::size_t>::max;
 
     auto cubes = createCubes(renderer, heights);
     float deltaTime = 0.1f;
@@ -217,24 +252,13 @@ int main(int argc, char* argv[])
         renderer.keepWindowOpen(keepWindowOpen);
         renderer.clear();
 
-        for (std::size_t i = 0; i < cubes.size(); ++i)
-        {
-            for (std::size_t j = 0; j < cubes[i].size(); ++j)
-            {
-                for (std::size_t k = 0; k < cubes[i][j].size(); ++k)
-                {
-                    cubes[i][j][k]->update(deltaTime);
-                    cubes[i][j][k]->draw();
-                }
-            }
-        }
-
+        drawVisibleObjects(cubes, deltaTime);
         renderer.present();
         handleInput(eventQueue, renderer, camera, deltaTime, mousePosition);
-        //SDL_Delay(50030);
+        
         auto clockStop = std::chrono::high_resolution_clock::now();
         deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(clockStop - clockStart).count();
-        printf("%f\n",deltaTime);
+        printf("%f\n", deltaTime);
     }
 
     return 0;

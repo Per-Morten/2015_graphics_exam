@@ -82,7 +82,7 @@ private:
     glm::vec3 _lightDirection{ -1.8792f, 0.684, -0.2 };
 
     glm::mat4 _worldScale{ 1.0f, 0.0f, 0.0f, 0.0f,
-                           0.0f, 2.0f, 0.0f, 0.0f,
+                           0.0f, 1.0f, 0.0f, 0.0f,
                            0.0f, 0.0f, 1.0f, 0.0f,
                            0.0f, 0.0f, 0.0f, 1.0f };
     glm::mat4 _projectionMatrix{};
