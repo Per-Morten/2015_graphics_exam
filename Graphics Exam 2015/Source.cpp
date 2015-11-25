@@ -130,18 +130,22 @@ void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, Camera& 
                 renderer.increaseWorldScale();
                 std::cout << "Raise" << std::endl;
                 break;
+
             case ActionEnum::LOWER:
                 renderer.decreaseWorldScale();
                 std::cout << "Lower" << std::endl;
                 break;
+
             case ActionEnum::RESET:
                 renderer.resetWorldScale();
                 std::cout << "Reset" << std::endl;
                 break;
+
             case ActionEnum::LATER:
                 renderer.advanceLight(deltaTime);
                 std::cout << "LATER" << std::endl;
                 break;
+
             case ActionEnum::EARLIER:
                 renderer.regressLight(deltaTime);
                 std::cout << "EARLIER" << std::endl;
@@ -181,7 +185,6 @@ void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, Camera& 
             case ActionEnum::MOUSEMOTION:
                 camera.rotateCamera(mousePosition / 100.0f);
                 break;
-
         }
     }
 }

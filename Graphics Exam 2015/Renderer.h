@@ -49,7 +49,19 @@ public:
     const GLint width{};
     const GLint height{};
 private:
+    // Rendering Functions
+    // Cube related
+    void setColorUniform(const std::string& shaderName, bool newShader, const glm::vec4& color) noexcept;
+    void setModelMatrixUniform(const std::string& shaderName, bool newShader, const glm::mat4& modelMatrix) noexcept;
+    void setTextureOffsetUniform(const std::string& shaderName, bool newShader, const glm::vec2& textureOffset) noexcept;
 
+    // Static for 
+    void setViewMatrixUniform(const std::string& shaderName, bool newShader) noexcept;
+    void setProjectionMatrixUniform(const std::string& shaderName, bool newShader) noexcept;
+    void setAmbientFactorUniform(const std::string& shaderName, bool newShader) noexcept;
+    void setLightDirectionUniform(const std::string& shaderName, bool newShader) noexcept;
+
+    // initializing Functions
     bool initializeSDL() noexcept;
     bool createWindow() noexcept;
     bool createContext() noexcept;
@@ -57,6 +69,7 @@ private:
     bool setVsyncOn() noexcept;
     void initializeOpenGL() noexcept;
     void initializeVariables() noexcept;
+
 
     Camera& _camera;
     gsl::owner<SDL_Window*> _window{};

@@ -68,6 +68,5 @@ void Camera::rotateCamera(const glm::vec2& newMousePosition) noexcept
     _viewDirection = glm::mat3(glm::rotate(-mouseDelta.y, toRotateAround)) * _viewDirection;
 
     oldMousePosition = newMousePosition;
-
 }
 
