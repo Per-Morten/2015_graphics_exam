@@ -148,37 +148,38 @@ void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, Camera& 
                 break;
 
             case ActionEnum::FORWARD:
-                camera.moveCamera({ 0.0f, 0.0f, 10.0f });
+                camera.moveForward(deltaTime);
                 std::cout << "Forward" << std::endl;
                 break;
 
             case ActionEnum::BACK:
-                camera.moveCamera({ 0.0f, 0.0f, -10.0f });
+                camera.moveBack(deltaTime);
                 std::cout << "Back" << std::endl;
                 break;
 
             case ActionEnum::LEFT:
-                camera.moveCamera({ 10.0f, 0.0f, 0.0f });
+                camera.strafeLeft(deltaTime);
                 std::cout << "Left" << std::endl;
                 break;
 
             case ActionEnum::RIGHT:
-                camera.moveCamera({ -10.0f, 0.0f, 0.0f });
+                camera.strafeRight(deltaTime);
+
                 std::cout << "Right" << std::endl;
                 break;
 
             case ActionEnum::DOWN:
-                camera.moveCamera({ 0.0f, -10.0f, 0.0f });
+                camera.moveDown(deltaTime);
                 std::cout << "Down" << std::endl;
                 break;
 
             case ActionEnum::UP:
-                camera.moveCamera({ 0.0f, 10.0f, 0.0f });
+                camera.moveUp(deltaTime);
                 std::cout << "UP" << std::endl;
                 break;
 
             case ActionEnum::MOUSEMOTION:
-                camera.rotateCamera(mousePosition/ 100.0f);
+                camera.rotateCamera(mousePosition / 100.0f);
                 break;
 
         }
@@ -239,7 +240,7 @@ int main(int argc, char* argv[])
 
         renderer.present();
         handleInput(eventQueue, renderer, camera, deltaTime, mousePosition);
-        //SDL_Delay(30);
+        //SDL_Delay(50030);
         auto clockStop = std::chrono::high_resolution_clock::now();
         deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(clockStop - clockStart).count();
     }

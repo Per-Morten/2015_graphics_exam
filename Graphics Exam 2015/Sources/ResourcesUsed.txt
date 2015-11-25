@@ -4,3 +4,4 @@ http://0fps.net/2013/07/09/texture-atlases-wrapping-and-mip-mapping/ For texture
 For Camera Movement:
 https://www.youtube.com/watch?v=HhXzKOMkA1k for Horizontal
 https://www.youtube.com/watch?v=7oNLw9Bct1k for Vertical
+https://www.youtube.com/watch?v=v6RZRPo0O3k for Keyboard

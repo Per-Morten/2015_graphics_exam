@@ -12,12 +12,7 @@ Camera::~Camera() noexcept
 
 void Camera::update(float deltaTime) noexcept
 {
-    //rotate(glm::vec3({ 0.0f, 1.0f, 0.0f }) * deltaTime);
-    static float counter;
-    //counter -= deltaTime;
-    //_focusPoint.z -= counter;
-    //_position.z += deltaTime * 15;
-    //_viewMatrix = glm::lookAt(_position, _focusPoint, { 0.0f, 1.0f, 0.0f });
+    
 }
 
 const glm::mat4& Camera::getViewMatrix() const noexcept
@@ -30,9 +25,35 @@ void Camera::rotate(const glm::vec3& rotationVector) noexcept
     _viewMatrix = glm::rotate(_viewMatrix, glm::length(rotationVector), rotationVector);
 }
 
-void Camera::moveCamera(const glm::vec3& movement) noexcept
+void Camera::strafeLeft(float deltaTime) noexcept
 {
-    _position = _position + movement;
+    glm::vec3 directionToStrafe = glm::cross(_viewDirection, upDirection);
+    _position -= directionToStrafe * movementSpeed * deltaTime;
+}
+
+void Camera::strafeRight(float deltaTime) noexcept
+{
+    glm::vec3 directionToStrafe = glm::cross(_viewDirection, upDirection);
+    _position += directionToStrafe * movementSpeed * deltaTime;
+
+}
+
+void Camera::moveForward(float deltaTime) noexcept
+{
+    _position += _viewDirection * movementSpeed * deltaTime;
+}
+
+void Camera::moveBack(float deltaTime) noexcept
+{
+    _position -= _viewDirection * movementSpeed * deltaTime;
+}
+
+void Camera::moveUp(float deltaTime) noexcept
+{
+}
+
+void Camera::moveDown(float deltaTime) noexcept
+{
 }
 
 void Camera::updateMovableCamera() noexcept
