@@ -334,6 +334,21 @@ void Renderer::regressLight(float deltaTime) noexcept
     _lightDirection.x -= deltaTime;
 }
 
+void Renderer::increaseWorldScale() noexcept
+{
+    _worldScale[1][1] *= 1.1f;
+}
+
+void Renderer::decreaseWorldScale() noexcept
+{
+    _worldScale[1][1] *= 0.9f;
+}
+
+void Renderer::resetWorldScale() noexcept
+{
+    _worldScale[1][1] = 1.0f;
+}
+
 void Renderer::keepWindowOpen(bool isOpen) noexcept
 {
     _windowIsOpen = isOpen;

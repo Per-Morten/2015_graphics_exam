@@ -128,12 +128,15 @@ void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, Camera& 
         switch (nextEvent.action)
         {
             case ActionEnum::RAISE:
+                renderer.increaseWorldScale();
                 std::cout << "Raise" << std::endl;
                 break;
             case ActionEnum::LOWER:
+                renderer.decreaseWorldScale();
                 std::cout << "Lower" << std::endl;
                 break;
             case ActionEnum::RESET:
+                renderer.resetWorldScale();
                 std::cout << "Reset" << std::endl;
                 break;
             case ActionEnum::LATER:
@@ -174,6 +177,7 @@ void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, Camera& 
                 camera.moveCamera({ 0.0f, 10.0f, 0.0f });
                 std::cout << "UP" << std::endl;
                 break;
+
         }
     }
 }
@@ -230,7 +234,6 @@ int main(int argc, char* argv[])
         }
 
         renderer.present();
-
         handleInput(eventQueue, renderer, camera, deltaTime);
         //SDL_Delay(30);
         auto clockStop = std::chrono::high_resolution_clock::now();

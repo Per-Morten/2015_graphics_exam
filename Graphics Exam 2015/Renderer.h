@@ -37,7 +37,12 @@ public:
     void advanceLight(float deltaTime) noexcept;
     void regressLight(float deltaTime) noexcept;
 
+    void increaseWorldScale() noexcept;
+    void decreaseWorldScale() noexcept;
+    void resetWorldScale() noexcept;
+
     void keepWindowOpen(bool isOpen) noexcept;
+
 
 
     const std::string windowName{ "Graphics Exam 2015 - Per-Morten Straume" };
@@ -61,10 +66,10 @@ private:
     // length*sin(angle) = yDirection,
     glm::vec3 _lightDirection{ -1.8792f, 0.684, -0.2 };
 
-    glm::mat4 _worldScale{1.0f,0.0f,0.0f,0.0f,
-                          0.0f,4.0f,0.0f,0.0f,
-                          0.0f,0.0f,1.0f,0.0f,
-                          0.0f,0.0f,0.0f,1.0f};
+    glm::mat4 _worldScale{ 1.0f, 0.0f, 0.0f, 0.0f,
+                           0.0f, 2.0f, 0.0f, 0.0f,
+                           0.0f, 0.0f, 1.0f, 0.0f,
+                           0.0f, 0.0f, 0.0f, 1.0f };
     glm::mat4 _projectionMatrix{};
     std::unordered_map<std::string, gsl::owner<ShaderProgram*>> _shaderPrograms{};
     std::unordered_map<std::string, gsl::owner<Mesh*>> _meshes{};
