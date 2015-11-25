@@ -5,3 +5,14 @@ For Camera Movement:
 https://www.youtube.com/watch?v=HhXzKOMkA1k for Horizontal
 https://www.youtube.com/watch?v=7oNLw9Bct1k for Vertical
 https://www.youtube.com/watch?v=v6RZRPo0O3k for Keyboard
+
+
+Performance 0.47 without "Optimized Color";
+Performance 0.41 with "Optimized Color";
+
+Performance 0.37 with "Removed MVP and Optimized modelMatrix";
+
+Performance 0.37 unoptimized Normals;
+Performance 0.37 Optimized Normals";
+
+Performance 0.37 unoptimized camera matrix

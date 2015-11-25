@@ -128,58 +128,47 @@ void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, Camera& 
         {
             case ActionEnum::RAISE:
                 renderer.increaseWorldScale();
-                std::cout << "Raise" << std::endl;
                 break;
 
             case ActionEnum::LOWER:
                 renderer.decreaseWorldScale();
-                std::cout << "Lower" << std::endl;
                 break;
 
             case ActionEnum::RESET:
                 renderer.resetWorldScale();
-                std::cout << "Reset" << std::endl;
                 break;
 
             case ActionEnum::LATER:
                 renderer.advanceLight(deltaTime);
-                std::cout << "LATER" << std::endl;
                 break;
 
             case ActionEnum::EARLIER:
                 renderer.regressLight(deltaTime);
-                std::cout << "EARLIER" << std::endl;
                 break;
 
             case ActionEnum::FORWARD:
                 camera.moveForward(deltaTime);
-                std::cout << "Forward" << std::endl;
                 break;
 
             case ActionEnum::BACK:
                 camera.moveBack(deltaTime);
-                std::cout << "Back" << std::endl;
                 break;
 
             case ActionEnum::LEFT:
                 camera.strafeLeft(deltaTime);
-                std::cout << "Left" << std::endl;
                 break;
 
             case ActionEnum::RIGHT:
                 camera.strafeRight(deltaTime);
 
-                std::cout << "Right" << std::endl;
                 break;
 
             case ActionEnum::DOWN:
                 camera.moveDown(deltaTime);
-                std::cout << "Down" << std::endl;
                 break;
 
             case ActionEnum::UP:
                 camera.moveUp(deltaTime);
-                std::cout << "UP" << std::endl;
                 break;
 
             case ActionEnum::MOUSEMOTION:
@@ -245,6 +234,7 @@ int main(int argc, char* argv[])
         //SDL_Delay(50030);
         auto clockStop = std::chrono::high_resolution_clock::now();
         deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(clockStop - clockStart).count();
+        printf("%f\n",deltaTime);
     }
 
     return 0;

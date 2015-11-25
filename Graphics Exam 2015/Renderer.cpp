@@ -211,64 +211,28 @@ void Renderer::render(const std::string& shaderName,
 {
     if (_shaderPrograms[shaderName] != nullptr)
     {
-        static ShaderProgram::UniformAddress colorId;
-        static ShaderProgram::UniformAddress viewMatrixId;
-        static ShaderProgram::UniformAddress modelMatrixId;
-        static ShaderProgram::UniformAddress mvpId;
-        static ShaderProgram::UniformAddress normalMatrixId;
-        static ShaderProgram::UniformAddress ambientFactorId;
-        static ShaderProgram::UniformAddress lightDirectionId;
-        static ShaderProgram::UniformAddress textureOffsetId;
-        static ShaderProgram::UniformAddress worldScaleId;
-        static ShaderProgram::UniformAddress projectionMatrixId;
-
         static std::string lastShader;
 
+        bool newShader = false;
         if (lastShader != shaderName)
         {
+            newShader = true;
             _shaderPrograms[shaderName]->bind();
             lastShader = shaderName;
-
-            // Set it here, cause looking up map in debug can be slow. Especially if its done 1016 times a second :P
-            colorId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::color);
-            viewMatrixId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::viewMatrix);
-            modelMatrixId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::modelMatrix);
-            mvpId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::mvp);
-            normalMatrixId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::normalMatrix);
-            ambientFactorId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::ambientFactor);
-            lightDirectionId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::lightDirection);
-            textureOffsetId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::textureOffset);
-            worldScaleId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::worldScale);
-            projectionMatrixId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::projectionMatrix);
         }
 
-        glUniform4f(colorId, color.r, color.g, color.b, color.a);
-
+        // Object related Uniforms
+        setColorUniform(shaderName, newShader,color);
+        setModelMatrixUniform(shaderName, newShader, modelMatrix);
+        setTextureOffsetUniform(shaderName, newShader, textureOffset);
+        setNormalMatrixUniform(shaderName, newShader, modelMatrix);
+        
         // Calculate needed matrices
-
-        glm::mat4 viewMatrix = _camera.getViewMatrix();
-        glUniformMatrix4fv(viewMatrixId, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-
-        glUniformMatrix4fv(modelMatrixId, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-
-        glm::mat4 mvp = _projectionMatrix * viewMatrix * modelMatrix;
-        glUniformMatrix4fv(mvpId, 1, GL_FALSE, glm::value_ptr(mvp));
-
-        glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(viewMatrix * modelMatrix)));
-        glUniformMatrix3fv(normalMatrixId, 1, GL_FALSE, glm::value_ptr(normalMatrix));
-
-        // Send in ambientFactor for light
-        glUniform1f(ambientFactorId, _ambientFactor);
-
-        // Send in lightDirection
-        glUniform3f(lightDirectionId, _lightDirection.x, _lightDirection.y, _lightDirection.z);
-
-        glUniform2f(textureOffsetId, textureOffset.x, textureOffset.y);
-
-        // Scaling
-        glUniformMatrix4fv(worldScaleId, 1, GL_FALSE, glm::value_ptr(_worldScale));
-        glUniformMatrix4fv(projectionMatrixId, 1, GL_FALSE, glm::value_ptr(_projectionMatrix));
-
+        setViewMatrixUniform(shaderName, newShader);
+        setProjectionMatrixUniform(shaderName,newShader);
+        setAmbientFactorUniform(shaderName, newShader);
+        setLightDirectionUniform(shaderName, newShader);
+        setWorldScaleUniform(shaderName, newShader);        
 
         static std::string lastTexture;
         if (lastTexture != textureName)
@@ -318,7 +282,6 @@ bool Renderer::initialize() noexcept
     return true;
 }
 
-
 bool Renderer::windowIsOpen() const noexcept
 {
     return _windowIsOpen;
@@ -355,6 +318,185 @@ void Renderer::keepWindowOpen(bool isOpen) noexcept
 }
 
 // Private functions
+// Rendering functions
+// Object related
+void Renderer::setColorUniform(const std::string& shaderName, bool newShader, const glm::vec4& color) noexcept
+{
+    static ShaderProgram::UniformAddress colorId;
+    static glm::vec4 prevColor;
+    if (newShader)
+    {
+        colorId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::color);
+        prevColor = color;
+        glUniform4f(colorId, color.r, color.g, color.b, color.a);
+        return;
+    }
+    if (color != prevColor)
+    {
+        prevColor = color;
+        glUniform4f(colorId, color.r, color.g, color.b, color.a);
+        return;
+    }
+}
+
+void Renderer::setModelMatrixUniform(const std::string& shaderName, bool newShader, const glm::mat4& modelMatrix) noexcept
+{
+    static ShaderProgram::UniformAddress modelMatrixId;
+    static glm::mat4 prevModelMatrix;
+    if (newShader)
+    {
+        modelMatrixId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::modelMatrix);
+        prevModelMatrix = modelMatrix;
+        glUniformMatrix4fv(modelMatrixId, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+        return;
+    }
+    if (modelMatrix != prevModelMatrix)
+    {
+        prevModelMatrix = modelMatrix;
+        glUniformMatrix4fv(modelMatrixId, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+        return;
+    }
+}
+
+void Renderer::setTextureOffsetUniform(const std::string& shaderName, bool newShader, const glm::vec2& textureOffset) noexcept
+{
+    static ShaderProgram::UniformAddress textureOffsetId;
+    static glm::vec2 prevTextureOffset;
+    if (newShader)
+    {
+        textureOffsetId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::textureOffset);
+        prevTextureOffset = textureOffset;
+        glUniform2f(textureOffsetId, textureOffset.x, textureOffset.y);
+        return;
+    }
+    if (textureOffset != prevTextureOffset)
+    {
+        prevTextureOffset = textureOffset;
+        glUniform2f(textureOffsetId, textureOffset.x, textureOffset.y);
+        return;
+    }
+}
+
+void Renderer::setNormalMatrixUniform(const std::string& shaderName, bool newShader, const glm::mat4& modelMatrix) noexcept
+{
+    static ShaderProgram::UniformAddress normalMatrixId;
+    static glm::mat4 prevModelMatrix;
+    if (newShader)
+    {
+        normalMatrixId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::normalMatrix);
+        prevModelMatrix = modelMatrix;
+        glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(_camera.getViewMatrix() * modelMatrix)));
+        glUniformMatrix3fv(normalMatrixId, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+        return;
+    }
+    if (modelMatrix != prevModelMatrix)
+    {
+        prevModelMatrix = modelMatrix;
+        glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(_camera.getViewMatrix() * modelMatrix)));
+        glUniformMatrix3fv(normalMatrixId, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+        return;
+    }
+}
+
+// Static for each total draw round
+void Renderer::setViewMatrixUniform(const std::string& shaderName, bool newShader) noexcept
+{
+    static ShaderProgram::UniformAddress viewMatrixId;
+    static glm::mat4 prevViewMatrix;
+    const glm::mat4& viewMatrix = _camera.getViewMatrix();
+    if (newShader)
+    {
+        viewMatrixId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::viewMatrix);
+        prevViewMatrix = viewMatrix;
+        glUniformMatrix4fv(viewMatrixId, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+        return;
+    }
+    if (viewMatrix != prevViewMatrix)
+    {
+        prevViewMatrix = viewMatrix;
+        glUniformMatrix4fv(viewMatrixId, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+        return;
+    }
+}
+
+void Renderer::setProjectionMatrixUniform(const std::string& shaderName, bool newShader) noexcept
+{
+    static ShaderProgram::UniformAddress projectionMatrixId;
+    static glm::mat4 prevProjectionMatrix;
+    if (newShader)
+    {
+        projectionMatrixId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::projectionMatrix);
+        prevProjectionMatrix = _projectionMatrix;
+        glUniformMatrix4fv(projectionMatrixId, 1, GL_FALSE, glm::value_ptr(_projectionMatrix));
+        return;
+    }
+    if (_projectionMatrix != prevProjectionMatrix)
+    {
+        prevProjectionMatrix = _projectionMatrix;
+        glUniformMatrix4fv(projectionMatrixId, 1, GL_FALSE, glm::value_ptr(_projectionMatrix));
+        return;
+    }
+}
+
+void Renderer::setAmbientFactorUniform(const std::string & shaderName, bool newShader) noexcept
+{
+    static ShaderProgram::UniformAddress ambientFactorId;
+    static float prevAmbientFactor;
+    if (newShader)
+    {
+        ambientFactorId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::ambientFactor);
+        prevAmbientFactor = _ambientFactor;
+        glUniform1f(ambientFactorId, _ambientFactor);
+        return;
+    }
+    if (_ambientFactor != prevAmbientFactor)
+    {
+        prevAmbientFactor = _ambientFactor;
+        glUniform1f(ambientFactorId, _ambientFactor);
+        return;
+    }
+}
+
+void Renderer::setLightDirectionUniform(const std::string & shaderName, bool newShader) noexcept
+{
+    static ShaderProgram::UniformAddress lightDirectionId;
+    static glm::vec3 prevLightDirection;
+    if (newShader)
+    {
+        lightDirectionId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::lightDirection);
+        prevLightDirection = _lightDirection;
+        glUniform3f(lightDirectionId, _lightDirection.x, _lightDirection.y, _lightDirection.z);
+        return;
+    }
+    if (_lightDirection != prevLightDirection)
+    {
+        prevLightDirection = _lightDirection;
+        glUniform3f(lightDirectionId, _lightDirection.x, _lightDirection.y, _lightDirection.z);
+        return;
+    }
+}
+
+void Renderer::setWorldScaleUniform(const std::string& shaderName, bool newShader) noexcept
+{
+    static ShaderProgram::UniformAddress worldScaleId;
+    static glm::mat4 prevWorldScale;
+    if (newShader)
+    {
+        worldScaleId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::worldScale);
+        prevWorldScale = _worldScale;
+        glUniformMatrix4fv(worldScaleId, 1, GL_FALSE, glm::value_ptr(_worldScale));
+        return;
+    }
+    if (_worldScale != prevWorldScale)
+    {
+        prevWorldScale = _worldScale;
+        glUniformMatrix4fv(worldScaleId, 1, GL_FALSE, glm::value_ptr(_worldScale));
+        return;
+    }
+}
+
+
+// Initializing Functions
 bool Renderer::initializeSDL() noexcept
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -442,6 +584,3 @@ void Renderer::initializeVariables() noexcept
     _textures["Bricks"] = new Texture("Resources/Textures/texture.png");
 }
 
-void Renderer::setColorUniform(const std::string & shaderName, bool newShader, const glm::vec4 & color) noexcept
-{
-}

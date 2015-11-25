@@ -50,16 +50,18 @@ public:
     const GLint height{};
 private:
     // Rendering Functions
-    // Cube related
+    // object related
     void setColorUniform(const std::string& shaderName, bool newShader, const glm::vec4& color) noexcept;
     void setModelMatrixUniform(const std::string& shaderName, bool newShader, const glm::mat4& modelMatrix) noexcept;
     void setTextureOffsetUniform(const std::string& shaderName, bool newShader, const glm::vec2& textureOffset) noexcept;
+    void setNormalMatrixUniform(const std::string& shaderName, bool newShader, const glm::mat4& modelMatrix) noexcept;
 
-    // Static for 
+    // Static for each total draw round
     void setViewMatrixUniform(const std::string& shaderName, bool newShader) noexcept;
     void setProjectionMatrixUniform(const std::string& shaderName, bool newShader) noexcept;
     void setAmbientFactorUniform(const std::string& shaderName, bool newShader) noexcept;
     void setLightDirectionUniform(const std::string& shaderName, bool newShader) noexcept;
+    void setWorldScaleUniform(const std::string& shaderName, bool newShader) noexcept;
 
     // initializing Functions
     bool initializeSDL() noexcept;
