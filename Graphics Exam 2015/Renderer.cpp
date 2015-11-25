@@ -441,3 +441,7 @@ void Renderer::initializeVariables() noexcept
 
     _textures["Bricks"] = new Texture("Resources/Textures/texture.png");
 }
+
+void Renderer::setColorUniform(const std::string & shaderName, bool newShader, const glm::vec4 & color) noexcept
+{
+}
