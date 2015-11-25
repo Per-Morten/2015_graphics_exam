@@ -118,7 +118,7 @@ std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>> createCubes(Rend
     return objects;
 }
 
-void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, float deltaTime)
+void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, Camera& camera, float deltaTime)
 {
     while (!eventQueue.empty())
     {
@@ -143,6 +143,36 @@ void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, float de
             case ActionEnum::EARLIER:
                 renderer.regressLight(deltaTime);
                 std::cout << "EARLIER" << std::endl;
+                break;
+
+            case ActionEnum::FORWARD:
+                camera.moveCamera({ 0.0f, 0.0f, 10.0f });
+                std::cout << "Forward" << std::endl;
+                break;
+
+            case ActionEnum::BACK:
+                camera.moveCamera({ 0.0f, 0.0f, -10.0f });
+                std::cout << "Back" << std::endl;
+                break;
+
+            case ActionEnum::LEFT:
+                camera.moveCamera({ 10.0f, 0.0f, 0.0f });
+                std::cout << "Left" << std::endl;
+                break;
+
+            case ActionEnum::RIGHT:
+                camera.moveCamera({ -10.0f, 0.0f, 0.0f });
+                std::cout << "Right" << std::endl;
+                break;
+
+            case ActionEnum::DOWN:
+                camera.moveCamera({ 0.0f, -10.0f, 0.0f });
+                std::cout << "Down" << std::endl;
+                break;
+
+            case ActionEnum::UP:
+                camera.moveCamera({ 0.0f, 10.0f, 0.0f });
+                std::cout << "UP" << std::endl;
                 break;
         }
     }
@@ -182,7 +212,7 @@ int main(int argc, char* argv[])
         bool keepWindowOpen = inputHandler.processEvents(eventHandler, eventQueue);
 
         auto clockStart = std::chrono::high_resolution_clock::now();
-        camera.update(deltaTime);
+        camera.updateMovableCamera();
 
         renderer.keepWindowOpen(keepWindowOpen);
         renderer.clear();
@@ -201,7 +231,7 @@ int main(int argc, char* argv[])
 
         renderer.present();
 
-        handleInput(eventQueue, renderer, deltaTime);
+        handleInput(eventQueue, renderer, camera, deltaTime);
         //SDL_Delay(30);
         auto clockStop = std::chrono::high_resolution_clock::now();
         deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(clockStop - clockStart).count();
