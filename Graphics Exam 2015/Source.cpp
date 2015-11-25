@@ -74,7 +74,6 @@ std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>> createCubes(Rend
     const glm::vec2 waterOffset{ 0.75f, 0.0f };
 
     objects.resize(heights.size());
-
     for (std::size_t i = 0; i < heights.size(); ++i)
     {
         objects[i].resize(heights[i].size());
@@ -118,7 +117,7 @@ std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>> createCubes(Rend
     return objects;
 }
 
-void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, Camera& camera, float deltaTime)
+void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, Camera& camera, float deltaTime, glm::vec2& mousePosition)
 {
     while (!eventQueue.empty())
     {
@@ -178,6 +177,10 @@ void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, Camera& 
                 std::cout << "UP" << std::endl;
                 break;
 
+            case ActionEnum::MOUSEMOTION:
+                camera.rotateCamera(mousePosition/ 100.0f);
+                break;
+
         }
     }
 }
@@ -207,13 +210,14 @@ int main(int argc, char* argv[])
     SDL_Event eventHandler;
     InputHandler inputHandler;
     std::queue<GameEvent> eventQueue;
+    glm::vec2 mousePosition;
 
     auto cubes = createCubes(renderer, heights);
     float deltaTime = 0.1f;
 
     while (renderer.windowIsOpen())
     {
-        bool keepWindowOpen = inputHandler.processEvents(eventHandler, eventQueue);
+        bool keepWindowOpen = inputHandler.processEvents(eventHandler, eventQueue, mousePosition);
 
         auto clockStart = std::chrono::high_resolution_clock::now();
         camera.updateMovableCamera();
@@ -234,7 +238,7 @@ int main(int argc, char* argv[])
         }
 
         renderer.present();
-        handleInput(eventQueue, renderer, camera, deltaTime);
+        handleInput(eventQueue, renderer, camera, deltaTime, mousePosition);
         //SDL_Delay(30);
         auto clockStop = std::chrono::high_resolution_clock::now();
         deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(clockStop - clockStart).count();

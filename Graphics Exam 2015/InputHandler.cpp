@@ -26,6 +26,7 @@ InputHandler::InputHandler()
     eventRepeatRate[ActionEnum::DOWN] = 0;
     eventRepeatRate[ActionEnum::UP] = 0;
     
+    eventRepeatRate[ActionEnum::MOUSEMOTION] = 0;
 
     eventRepeat[ActionEnum::RAISE] = INACTIVE;
     eventRepeat[ActionEnum::LOWER] = INACTIVE; // Make sure all new events are inactive
@@ -40,6 +41,8 @@ InputHandler::InputHandler()
     eventRepeat[ActionEnum::RIGHT] = INACTIVE;
     eventRepeat[ActionEnum::DOWN] = INACTIVE;
     eventRepeat[ActionEnum::UP] = INACTIVE;
+
+    eventRepeat[ActionEnum::MOUSEMOTION] = INACTIVE;
 
 }
 
@@ -167,9 +170,9 @@ bool InputHandler::handleKeys(SDL_Event &eventHandler, std::queue<GameEvent>& ev
     return true; // no exit key pressed.
 }
 
-void InputHandler::handleMouse(SDL_Event& eventHandler, std::queue<GameEvent>& events)
+void InputHandler::handleMouse(SDL_Event& eventHandler, std::queue<GameEvent>& events, glm::vec2& mousePosition)
 {
-    ActionEnum action;
+    ActionEnum action = ActionEnum::NOACTION;
     int x = 0;
     int y = 0;
     switch (eventHandler.type)
@@ -184,10 +187,17 @@ void InputHandler::handleMouse(SDL_Event& eventHandler, std::queue<GameEvent>& e
             std::cout << "Button wheel" << std::endl;
             break;
         case SDL_MOUSEMOTION:
-            x = eventHandler.motion.x;
-            y = eventHandler.motion.y;
+            mousePosition.x = eventHandler.motion.x;
+            mousePosition.y = eventHandler.motion.y;
+            action = ActionEnum::MOUSEMOTION;
             //std::cout << "Button Motion: " << x << "\t" << y << std::endl;
+            ///events.push(GameEvent{0, action });
             break;
+    }
+    if (eventRepeat[action] < 0)
+    {
+        events.push(GameEvent{ 0, action }); //trigger event
+        eventRepeat[action] = eventRepeatRate[action]; // set the repeat cool down
     }
 }
 
@@ -197,7 +207,7 @@ InputHandler::~InputHandler()
 }
 
 //returns continue true for continue
-bool InputHandler::processEvents(SDL_Event& eventHandler, std::queue<GameEvent>& events)
+bool InputHandler::processEvents(SDL_Event& eventHandler, std::queue<GameEvent>& events, glm::vec2& mousePosition)
 {
     bool keyContinue = true;
     //Handle new events on queue
@@ -218,7 +228,7 @@ bool InputHandler::processEvents(SDL_Event& eventHandler, std::queue<GameEvent>&
             eventHandler.type == SDL_MOUSEMOTION ||
             eventHandler.type == SDL_MOUSEWHEEL)
         {
-            handleMouse(eventHandler, events);
+            handleMouse(eventHandler, events, mousePosition);
         }
     }
     /*This will trigger all events that have reached cool down */
