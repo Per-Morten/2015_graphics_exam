@@ -118,32 +118,35 @@ std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>> createCubes(Rend
     return objects;
 }
 
-std::vector<gsl::owner<SceneObject*>> createCubes1D(Renderer& renderer, std::vector<std::vector<int>> heights)
+void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, float deltaTime)
 {
-    std::vector<gsl::owner<SceneObject*>> cubes;
-
-    for (std::size_t i = 0; i < heights.size(); ++i)
+    while (!eventQueue.empty())
     {
-        for (std::size_t j = 0; j < heights[i].size(); ++j)
+        GameEvent nextEvent = eventQueue.front();
+        eventQueue.pop();
+
+        switch (nextEvent.action)
         {
-            for (int k = 0; k < heights[i][j]; ++k)
-            {
-                SceneObject* object = new SceneObject(renderer,
-                                                      "DirectionalFullTexture",
-                                                      "Cube",
-                                                      "Bricks",
-                                                      glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-                                                      glm::vec3(i * 10, k * 10.0f, j * 10),
-                                                      glm::vec3(0.0f, 0.0f, 0.0f),
-                                                      glm::vec3(1.0f, 1.0f, 1.0f));
-                cubes.push_back(object);
-            }
+            case ActionEnum::RAISE:
+                std::cout << "Raise" << std::endl;
+                break;
+            case ActionEnum::LOWER:
+                std::cout << "Lower" << std::endl;
+                break;
+            case ActionEnum::RESET:
+                std::cout << "Reset" << std::endl;
+                break;
+            case ActionEnum::LATER:
+                renderer.advanceLight(deltaTime);
+                std::cout << "LATER" << std::endl;
+                break;
+            case ActionEnum::EARLIER:
+                renderer.regressLight(deltaTime);
+                std::cout << "EARLIER" << std::endl;
+                break;
         }
     }
-    return cubes;
 }
-
-
 
 int main(int argc, char* argv[])
 {
@@ -177,7 +180,7 @@ int main(int argc, char* argv[])
     while (renderer.windowIsOpen())
     {
         bool keepWindowOpen = inputHandler.processEvents(eventHandler, eventQueue);
-        
+
         auto clockStart = std::chrono::high_resolution_clock::now();
         camera.update(deltaTime);
 
@@ -198,33 +201,7 @@ int main(int argc, char* argv[])
 
         renderer.present();
 
-
-        while (!eventQueue.empty())
-        {
-            GameEvent nextEvent = eventQueue.front();
-            eventQueue.pop();
-        
-            switch (nextEvent.action)
-            {
-                case ActionEnum::RAISE:
-                    std::cout << "Raise" << std::endl;
-                    break;
-                case ActionEnum::LOWER:
-                    std::cout << "Lower" << std::endl;
-                    break;
-                case ActionEnum::RESET:
-                    std::cout << "Reset" << std::endl;
-                    break;
-                case ActionEnum::LATER:
-                    renderer.advanceLight(deltaTime);
-                    std::cout << "LATER" << std::endl;
-                    break;
-                case ActionEnum::EARLIER:
-                    renderer.regressLight(deltaTime);
-                    std::cout << "EARLIER" << std::endl;
-                    break;
-            }
-        }
+        handleInput(eventQueue, renderer, deltaTime);
         //SDL_Delay(30);
         auto clockStop = std::chrono::high_resolution_clock::now();
         deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(clockStop - clockStart).count();

@@ -102,6 +102,30 @@ bool InputHandler::handleKeys(SDL_Event &eventHandler, std::queue<GameEvent>& ev
     return true; // no exit key pressed.
 }
 
+void InputHandler::handleMouse(SDL_Event& eventHandler, std::queue<GameEvent>& events)
+{
+    ActionEnum action;
+    int x = 0;
+    int y = 0;
+    switch (eventHandler.type)
+    {
+        case SDL_MOUSEBUTTONDOWN:
+            std::cout << "Button down" <<std::endl;
+            break;
+        case SDL_MOUSEBUTTONUP:
+            std::cout << "Button up" << std::endl;
+            break;
+        case SDL_MOUSEWHEEL:
+            std::cout << "Button wheel" << std::endl;
+            break;
+        case SDL_MOUSEMOTION:
+            x = eventHandler.motion.x;
+            y = eventHandler.motion.y;
+            std::cout << "Button Motion: " << x << "\t" <<  y <<  std::endl;
+            break;
+    }
+}
+
 
 InputHandler::~InputHandler()
 {
@@ -119,9 +143,16 @@ bool InputHandler::processEvents(SDL_Event& eventHandler, std::queue<GameEvent>&
         {
             return false;
         }
-        else
+        if(eventHandler.type == SDL_KEYDOWN || eventHandler.type == SDL_KEYUP)
         {
             keyContinue = handleKeys(eventHandler, events);
+        }
+        if (eventHandler.type == SDL_MOUSEBUTTONDOWN ||
+            eventHandler.type == SDL_MOUSEBUTTONUP ||
+            eventHandler.type == SDL_MOUSEMOTION ||
+            eventHandler.type == SDL_MOUSEWHEEL)
+        {
+            handleMouse(eventHandler, events);
         }
     }
     /*This will trigger all events that have reached cool down */

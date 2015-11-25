@@ -54,14 +54,16 @@ private:
     Camera& _camera;
     gsl::owner<SDL_Window*> _window{};
     gsl::owner<SDL_GLContext> _context{};
-    float _ambientFactor{0.1f};
-    glm::vec3 _lightDirection{ -0.9363f,0.3420,-2.0 };
+    float _ambientFactor{ 0.1f };
+    // length*cos(angle) = xDirection,
+    // length*sin(angle) = yDirection,
+    glm::vec3 _lightDirection{ -1.8792f, 0.684, -0.2 };
 
     glm::mat4 _projectionMatrix{};
     std::unordered_map<std::string, gsl::owner<ShaderProgram*>> _shaderPrograms{};
     std::unordered_map<std::string, gsl::owner<Mesh*>> _meshes{};
     std::unordered_map<std::string, gsl::owner<Texture*>> _textures{};
-    
+
     bool _windowIsOpen{};
 };
 
