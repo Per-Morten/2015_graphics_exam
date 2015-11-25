@@ -19,7 +19,8 @@ enum class ActionEnum :int
     CREATE, // creating and removing blocks
     DESTROY,
     MOUSEMOTION,
-    ENABLEMOVEMENT
+    ENABLEMOVEMENT,
+    GENERATE
 };
 
 /* This struct deals with an agent creating events.  This has an agent number and the action*/

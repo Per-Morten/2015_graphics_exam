@@ -20,6 +20,11 @@ const glm::mat4& Camera::getViewMatrix() const noexcept
     return _viewMatrix;
 }
 
+const glm::vec3& Camera::getPosition() const noexcept
+{
+    return _position;
+}
+
 void Camera::rotate(const glm::vec3& rotationVector) noexcept
 {
     _viewMatrix = glm::rotate(_viewMatrix, glm::length(rotationVector), rotationVector);

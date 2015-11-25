@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <limits>
+#include <random>
 
 #include "GameEvent.h"
 #include "InputHandler.h"
@@ -19,9 +20,36 @@ extern "C"
     _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
 }
 
+// Defines etc for easier reads.
 constexpr int SCREEN_WIDTH = 800;
 constexpr int SCREEN_HEIGHT = 600;
 std::string windowName = "Graphics Exam 2015 - Per-Morten Straume";
+
+namespace GameObject
+{
+    using SceneObjectList = std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>>;
+}
+
+std::vector<std::vector<int>> generateTerrain()
+{
+    std::random_device randomizer;
+    std::default_random_engine engine(randomizer());
+    std::uniform_int_distribution<std::size_t> distribution(1,100);
+
+    int kvadraticSize = distribution(engine);
+    std::vector<std::vector<int>> height;
+    height.resize(kvadraticSize);
+    
+    for (std::size_t i = 0; i < height.size(); ++i)
+    {
+        height[i].resize(kvadraticSize);
+        for (std::size_t j = 0; j < height[i].size(); ++j)
+        {
+            height[i][j] = distribution(engine);
+        }
+    }
+    return height;
+}
 
 std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
 {
@@ -65,7 +93,7 @@ std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
     return positions;
 }
 
-std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>> createCubes(Renderer& renderer, std::vector<std::vector<int>> heights)
+GameObject::SceneObjectList createCubes(Renderer& renderer, std::vector<std::vector<int>> heights)
 {
     std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>> objects;
 
@@ -118,12 +146,42 @@ std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>> createCubes(Rend
     return objects;
 }
 
-void createCube() noexcept
+void deleteCubes(GameObject::SceneObjectList& toBeDeleted)
 {
+    for (std::size_t i = 0; i < toBeDeleted.size(); ++i)
+    {
+        for (std::size_t j = 0; j < toBeDeleted[i].size(); ++j)
+        {
+            for (std::size_t k = 0; k < toBeDeleted[i][j].size(); ++k)
+            {
+                delete toBeDeleted[i][j][k];
+            }
+        }
+    }
+}
+// In development
+void createCube(Camera& camera, GameObject::SceneObjectList& objects) noexcept
+{
+    glm::vec3 position = camera.getPosition();
+    glm::vec3 indexPos = { (position.x / 10) - 5,(position.x / 10) - 5, position.y };
 
+    if (indexPos.x >= 0 && indexPos.x < objects.size())
+    {
+        if (indexPos.y < objects[indexPos.x].size())
+        {
+            static int counter;
+            counter++;
+            std::cout << indexPos.x << "\t" << indexPos.y << std::endl;
+        }
+    }
 }
 
-void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, Camera& camera, float deltaTime, glm::vec2& mousePosition)
+void handleInput(std::queue<GameEvent>& eventQueue,
+                 Renderer& renderer,
+                 Camera& camera,
+                 float deltaTime,
+                 glm::vec2& mousePosition,
+                 GameObject::SceneObjectList& objects)
 {
     static bool enableMovement = false;
     while (!eventQueue.empty())
@@ -207,18 +265,23 @@ void handleInput(std::queue<GameEvent>& eventQueue, Renderer& renderer, Camera& 
                 break;
 
             case ActionEnum::CREATE:
-                std::cout << "Create" << std::endl;
+                createCube(camera, objects);
                 break;
 
             case ActionEnum::DESTROY:
                 std::cout << "Destroy" << std::endl;
                 break;
 
+            case ActionEnum::GENERATE:
+                deleteCubes(objects);
+                objects = createCubes(renderer, generateTerrain());
+                break;
+
         }
     }
 }
 
-void drawVisibleObjects(const std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>>& objects, float deltaTime) noexcept
+void drawVisibleObjects(const GameObject::SceneObjectList& objects, float deltaTime) noexcept
 {
     constexpr std::size_t maxSizeT = std::numeric_limits<std::size_t>::max();
 
@@ -251,6 +314,7 @@ void drawVisibleObjects(const std::vector<std::vector<std::vector<gsl::owner<Sce
 }
 
 
+
 int main(int argc, char* argv[])
 {
     Camera camera;
@@ -278,7 +342,6 @@ int main(int argc, char* argv[])
     std::queue<GameEvent> eventQueue;
     glm::vec2 mousePosition;
 
-    constexpr auto a = std::numeric_limits<std::size_t>::max;
 
     auto cubes = createCubes(renderer, heights);
     float deltaTime = 0.1f;
@@ -294,11 +357,11 @@ int main(int argc, char* argv[])
 
         drawVisibleObjects(cubes, deltaTime);
         renderer.present();
-        handleInput(eventQueue, renderer, camera, deltaTime, mousePosition);
+        handleInput(eventQueue, renderer, camera, deltaTime, mousePosition, cubes);
 
         auto clockStop = std::chrono::high_resolution_clock::now();
         deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(clockStop - clockStart).count();
-        printf("%f\n", deltaTime);
+        printf("%f\n", 1/deltaTime);
     }
 
     return 0;

@@ -10,6 +10,7 @@ public:
 
     void update(float deltaTime) noexcept;
     const glm::mat4& getViewMatrix() const noexcept;
+    const glm::vec3& getPosition() const noexcept;
 
     void rotate(const glm::vec3& rotationVector) noexcept;
     void strafeLeft(float deltaTime) noexcept;

@@ -111,6 +111,10 @@ bool InputHandler::handleKeys(SDL_Event &eventHandler, std::queue<GameEvent>& ev
                     action = ActionEnum::ENABLEMOVEMENT;
                     break;
 
+                case SDLK_g:
+                    action = ActionEnum::GENERATE;
+                    break;
+
                 case SDLK_ESCAPE:
                     return false;
                     break;
@@ -183,6 +187,11 @@ bool InputHandler::handleKeys(SDL_Event &eventHandler, std::queue<GameEvent>& ev
                 case SDLK_p:
                     action = ActionEnum::ENABLEMOVEMENT;
                     break;
+
+                case SDLK_g:
+                    action = ActionEnum::GENERATE;
+                    break;
+
 
                 default:
                     break;
