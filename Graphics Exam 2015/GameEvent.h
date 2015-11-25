@@ -8,7 +8,9 @@ enum class ActionEnum :int
     LEFT, // movment
     RIGHT,
     FORWARD,
-    BACK,
+    BACK, 
+    DOWN,
+    UP,
     RAISE, // raising terrain
     LOWER,
     RESET,

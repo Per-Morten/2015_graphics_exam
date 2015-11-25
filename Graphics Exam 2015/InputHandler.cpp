@@ -19,13 +19,28 @@ InputHandler::InputHandler()
     eventRepeatRate[ActionEnum::LATER] = 0;
     eventRepeatRate[ActionEnum::EARLIER] = 0;
 
+    eventRepeatRate[ActionEnum::FORWARD] = 0;
+    eventRepeatRate[ActionEnum::BACK] = 0;
+    eventRepeatRate[ActionEnum::LEFT] = 0;
+    eventRepeatRate[ActionEnum::RIGHT] = 0;
+    eventRepeatRate[ActionEnum::DOWN] = 0;
+    eventRepeatRate[ActionEnum::UP] = 0;
+    
+
     eventRepeat[ActionEnum::RAISE] = INACTIVE;
     eventRepeat[ActionEnum::LOWER] = INACTIVE; // Make sure all new events are inactive
     eventRepeat[ActionEnum::RESET] = INACTIVE; // Make sure all new events are inactive
     // 2) make sure it is initialised to inactive
     eventRepeat[ActionEnum::LATER] = INACTIVE;
     eventRepeat[ActionEnum::EARLIER] = INACTIVE;
-    
+
+    eventRepeat[ActionEnum::FORWARD] = INACTIVE;
+    eventRepeat[ActionEnum::BACK] = INACTIVE;
+    eventRepeat[ActionEnum::LEFT] = INACTIVE;
+    eventRepeat[ActionEnum::RIGHT] = INACTIVE;
+    eventRepeat[ActionEnum::DOWN] = INACTIVE;
+    eventRepeat[ActionEnum::UP] = INACTIVE;
+
 }
 
 /* Handles the keyboard events.  Updates the events queue with new Game Events. quits on esc*/
@@ -55,10 +70,35 @@ bool InputHandler::handleKeys(SDL_Event &eventHandler, std::queue<GameEvent>& ev
                 case SDLK_2:
                     action = ActionEnum::LATER;
                     break;
+                
+                case SDLK_w:
+                    action = ActionEnum::FORWARD;
+                    break;
+
+                case SDLK_s:
+                    action = ActionEnum::BACK;
+                    break;
+
+                case SDLK_a:
+                    action = ActionEnum::LEFT;
+                    break;
+                case SDLK_d:
+                    action = ActionEnum::RIGHT;
+                    break;
+
+                case SDLK_x:
+                    action = ActionEnum::DOWN;
+                    break;
+
+                case SDLK_c:
+                    action = ActionEnum::UP;
+                    break;
 
                 case SDLK_ESCAPE:
                     return false;
                     break;
+
+
             }
             //This checks if the event is active and on cool down
             if (eventRepeat[action] < 0)
@@ -90,6 +130,31 @@ bool InputHandler::handleKeys(SDL_Event &eventHandler, std::queue<GameEvent>& ev
                 case SDLK_2:
                     action = ActionEnum::LATER;
                     break;
+
+                case SDLK_w:
+                    action = ActionEnum::FORWARD;
+                    break;
+
+                case SDLK_s:
+                    action = ActionEnum::BACK;
+                    break;
+                
+                case SDLK_a:
+                    action = ActionEnum::LEFT;
+                    break;
+                
+                case SDLK_d:
+                    action = ActionEnum::RIGHT;
+                    break;
+
+                case SDLK_x:
+                    action = ActionEnum::DOWN;
+                    break;
+
+                case SDLK_c:
+                    action = ActionEnum::UP;
+                    break;
+
                 default:
                     break;
             }
@@ -110,7 +175,7 @@ void InputHandler::handleMouse(SDL_Event& eventHandler, std::queue<GameEvent>& e
     switch (eventHandler.type)
     {
         case SDL_MOUSEBUTTONDOWN:
-            std::cout << "Button down" <<std::endl;
+            std::cout << "Button down" << std::endl;
             break;
         case SDL_MOUSEBUTTONUP:
             std::cout << "Button up" << std::endl;
@@ -121,7 +186,7 @@ void InputHandler::handleMouse(SDL_Event& eventHandler, std::queue<GameEvent>& e
         case SDL_MOUSEMOTION:
             x = eventHandler.motion.x;
             y = eventHandler.motion.y;
-            std::cout << "Button Motion: " << x << "\t" <<  y <<  std::endl;
+            std::cout << "Button Motion: " << x << "\t" << y << std::endl;
             break;
     }
 }
@@ -143,7 +208,8 @@ bool InputHandler::processEvents(SDL_Event& eventHandler, std::queue<GameEvent>&
         {
             return false;
         }
-        if(eventHandler.type == SDL_KEYDOWN || eventHandler.type == SDL_KEYUP)
+        if (eventHandler.type == SDL_KEYDOWN ||
+            eventHandler.type == SDL_KEYUP)
         {
             keyContinue = handleKeys(eventHandler, events);
         }
