@@ -221,7 +221,6 @@ int main(int argc, char* argv[])
         bool keepWindowOpen = inputHandler.processEvents(eventHandler, eventQueue, mousePosition);
 
         auto clockStart = std::chrono::high_resolution_clock::now();
-        camera.updateMovableCamera();
         camera.update(deltaTime);
         renderer.keepWindowOpen(keepWindowOpen);
         renderer.clear();

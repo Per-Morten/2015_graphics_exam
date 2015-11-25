@@ -12,14 +12,12 @@ public:
     const glm::mat4& getViewMatrix() const noexcept;
 
     void rotate(const glm::vec3& rotationVector) noexcept;
-    //void moveCamera(const glm::vec3& movement) noexcept;
     void strafeLeft(float deltaTime) noexcept;
     void strafeRight(float deltaTime) noexcept;
     void moveForward(float deltaTime) noexcept;
     void moveBack(float deltaTime) noexcept;
     void moveUp(float deltaTime) noexcept;
     void moveDown(float deltaTime) noexcept;
-    void updateMovableCamera() noexcept;
 
     void rotateCamera(const glm::vec2& newMousePosition) noexcept;
 
