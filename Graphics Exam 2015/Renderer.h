@@ -39,10 +39,12 @@ public:
 
     void keepWindowOpen(bool isOpen) noexcept;
 
+
     const std::string windowName{ "Graphics Exam 2015 - Per-Morten Straume" };
     const GLint width{};
     const GLint height{};
 private:
+
     bool initializeSDL() noexcept;
     bool createWindow() noexcept;
     bool createContext() noexcept;
@@ -59,6 +61,10 @@ private:
     // length*sin(angle) = yDirection,
     glm::vec3 _lightDirection{ -1.8792f, 0.684, -0.2 };
 
+    glm::mat4 _worldScale{1.0f,0.0f,0.0f,0.0f,
+                          0.0f,4.0f,0.0f,0.0f,
+                          0.0f,0.0f,1.0f,0.0f,
+                          0.0f,0.0f,0.0f,1.0f};
     glm::mat4 _projectionMatrix{};
     std::unordered_map<std::string, gsl::owner<ShaderProgram*>> _shaderPrograms{};
     std::unordered_map<std::string, gsl::owner<Mesh*>> _meshes{};

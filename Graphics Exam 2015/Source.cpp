@@ -213,7 +213,7 @@ int main(int argc, char* argv[])
 
         auto clockStart = std::chrono::high_resolution_clock::now();
         camera.updateMovableCamera();
-
+        camera.update(deltaTime);
         renderer.keepWindowOpen(keepWindowOpen);
         renderer.clear();
 

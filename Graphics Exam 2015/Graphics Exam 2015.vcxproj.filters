@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="GSL">
+      <UniqueIdentifier>{021d80dc-3be3-47fe-b979-bc6fff8357e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -84,16 +87,16 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GSL\array_view.h">
-      <Filter>Header Files</Filter>
+      <Filter>GSL</Filter>
     </ClInclude>
     <ClInclude Include="GSL\fail_fast.h">
-      <Filter>Header Files</Filter>
+      <Filter>GSL</Filter>
     </ClInclude>
     <ClInclude Include="GSL\gsl.h">
-      <Filter>Header Files</Filter>
+      <Filter>GSL</Filter>
     </ClInclude>
     <ClInclude Include="GSL\string_view.h">
-      <Filter>Header Files</Filter>
+      <Filter>GSL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

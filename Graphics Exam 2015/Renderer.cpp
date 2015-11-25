@@ -219,6 +219,9 @@ void Renderer::render(const std::string& shaderName,
         static ShaderProgram::UniformAddress ambientFactorId;
         static ShaderProgram::UniformAddress lightDirectionId;
         static ShaderProgram::UniformAddress textureOffsetId;
+        static ShaderProgram::UniformAddress worldScaleId;
+        static ShaderProgram::UniformAddress projectionMatrixId;
+
         static std::string lastShader;
 
         if (lastShader != shaderName)
@@ -235,11 +238,14 @@ void Renderer::render(const std::string& shaderName,
             ambientFactorId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::ambientFactor);
             lightDirectionId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::lightDirection);
             textureOffsetId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::textureOffset);
+            worldScaleId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::worldScale);
+            projectionMatrixId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::projectionMatrix);
         }
 
         glUniform4f(colorId, color.r, color.g, color.b, color.a);
 
         // Calculate needed matrices
+
         glm::mat4 viewMatrix = _camera.getViewMatrix();
         glUniformMatrix4fv(viewMatrixId, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
@@ -258,6 +264,12 @@ void Renderer::render(const std::string& shaderName,
         glUniform3f(lightDirectionId, _lightDirection.x, _lightDirection.y, _lightDirection.z);
 
         glUniform2f(textureOffsetId, textureOffset.x, textureOffset.y);
+
+        // Scaling
+        glUniformMatrix4fv(worldScaleId, 1, GL_FALSE, glm::value_ptr(_worldScale));
+        glUniformMatrix4fv(projectionMatrixId, 1, GL_FALSE, glm::value_ptr(_projectionMatrix));
+
+
         static std::string lastTexture;
         if (lastTexture != textureName)
         {
@@ -280,15 +292,7 @@ void Renderer::present() noexcept
 
 void Renderer::handleInput() noexcept
 {
-    //SDL_Event event;
-    //
-    //while (SDL_PollEvent(&event) != 0)
-    //{
-    //    if (event.type == SDL_QUIT)
-    //    {
-    //        _windowIsOpen = false;
-    //    }
-    //}
+
 }
 
 bool Renderer::initialize() noexcept
@@ -411,7 +415,7 @@ void Renderer::initializeOpenGL() noexcept
 
 void Renderer::initializeVariables() noexcept
 {
-    std::string shaderName = "Resources/Shaders/directionalFullTextureV3";
+    std::string shaderName = "Resources/Shaders/directionalFullTextureV3WScale";
     _shaderPrograms["DirectionalFullTexture"] = new ShaderProgram(shaderName + ".vert", shaderName + ".frag");
 
     auto meshData = Local::createCube();

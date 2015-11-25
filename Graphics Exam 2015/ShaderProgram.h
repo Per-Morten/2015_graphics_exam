@@ -28,6 +28,8 @@ public:
     static const UniformName ambientFactor;
     static const UniformName lightDirection;
     static const UniformName textureOffset;
+    static const UniformName worldScale;
+    static const UniformName projectionMatrix;
 
 private:
     ProgramHandle _programHandle{};

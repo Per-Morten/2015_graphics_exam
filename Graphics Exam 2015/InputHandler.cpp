@@ -186,7 +186,7 @@ void InputHandler::handleMouse(SDL_Event& eventHandler, std::queue<GameEvent>& e
         case SDL_MOUSEMOTION:
             x = eventHandler.motion.x;
             y = eventHandler.motion.y;
-            std::cout << "Button Motion: " << x << "\t" << y << std::endl;
+            //std::cout << "Button Motion: " << x << "\t" << y << std::endl;
             break;
     }
 }
