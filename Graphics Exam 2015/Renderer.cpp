@@ -208,7 +208,8 @@ void Renderer::render(const std::string& shaderName,
                       const glm::mat4& modelMatrix,
                       const glm::vec4& color,
                       const glm::vec2& textureOffset,
-                      Renderer::FacingDirection facing) noexcept
+                      Renderer::FacingDirection facing,
+                      GLuint index) noexcept
 {
     if (_shaderPrograms[shaderName] != nullptr)
     {
@@ -222,7 +223,7 @@ void Renderer::render(const std::string& shaderName,
             lastShader = shaderName;
         }
 
-        
+
         static FacingDirection prevFacingDirection;
         // Feels very like a hack!
         if (prevFacingDirection != facing)
@@ -238,11 +239,17 @@ void Renderer::render(const std::string& shaderName,
             prevFacingDirection = facing;
         }
 
+        GLuint numberOfRows = _textures[textureName]->getNumberOfRows();
+        float column = index%numberOfRows;
+        float row = index / numberOfRows;
+        glm::vec2 offset = { column / numberOfRows, row / numberOfRows };
+
         // Object related Uniforms
         setColorUniform(shaderName, newShader, color);
         setModelMatrixUniform(shaderName, newShader, modelMatrix);
-        setTextureOffsetUniform(shaderName, newShader, textureOffset);
+        setTextureOffsetUniform(shaderName, newShader, offset);
         setNormalMatrixUniform(shaderName, newShader, modelMatrix);
+        setNumberOfRows(shaderName, newShader, numberOfRows);
 
         // Total Drawing loop Uniforms
         setViewMatrixUniform(shaderName, newShader);
@@ -250,6 +257,7 @@ void Renderer::render(const std::string& shaderName,
         setAmbientFactorUniform(shaderName, newShader);
         setLightDirectionUniform(shaderName, newShader);
         setWorldScaleUniform(shaderName, newShader);
+        
 
         static std::string lastTexture;
         if (lastTexture != textureName)
@@ -411,6 +419,25 @@ void Renderer::setNormalMatrixUniform(const std::string& shaderName, bool newSha
         prevModelMatrix = modelMatrix;
         glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(_camera.getViewMatrix() * modelMatrix)));
         glUniformMatrix3fv(normalMatrixId, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+        return;
+    }
+}
+
+void Renderer::setNumberOfRows(const std::string & shaderName, bool newShader, GLuint numberOfRows) noexcept
+{
+    static ShaderProgram::UniformAddress numberOfRowsId;
+    static GLuint prevNumberOfRows;
+    if (newShader)
+    {
+        numberOfRowsId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::numberOfRows);
+        prevNumberOfRows = numberOfRows;
+        glUniform1ui(numberOfRowsId, numberOfRows);
+        return;
+    }
+    if (numberOfRows != prevNumberOfRows)
+    {
+        prevNumberOfRows = numberOfRows;
+        glUniform1ui(numberOfRowsId, numberOfRows);
         return;
     }
 }
@@ -580,7 +607,6 @@ bool Renderer::setVsyncOn() noexcept
 
 void Renderer::initializeOpenGL() noexcept
 {
-
     glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 
     glEnable(GL_DEPTH_TEST);
@@ -592,9 +618,8 @@ void Renderer::initializeOpenGL() noexcept
 
 void Renderer::initializeVariables() noexcept
 {
-    std::string shaderName = "Resources/Shaders/directionalFullTextureV3WScale";
+    std::string shaderName = "Resources/Shaders/directionalFullTexturev3Indexed";
     _shaderPrograms["DirectionalFullTexture"] = new ShaderProgram(shaderName + ".vert", shaderName + ".frag");
-    _shaderPrograms["SkyBox"] = new ShaderProgram("Resources/Shaders/basicTexture.vert", "Resources/Shaders/basicTexture.frag");
 
     auto meshData = Local::createCube();
     _meshes["Cube"] = new Mesh(std::get<0>(meshData),

@@ -10,6 +10,7 @@ const ShaderProgram::UniformName ShaderProgram::lightDirection{ "LightDirection_
 const ShaderProgram::UniformName ShaderProgram::textureOffset{ "TextureOffset" };
 const ShaderProgram::UniformName ShaderProgram::worldScale{ "WorldScale" };
 const ShaderProgram::UniformName ShaderProgram::projectionMatrix{ "ProjectionMatrix" };
+const ShaderProgram::UniformName ShaderProgram::numberOfRows{ "NumberOfRows" };
 
 ShaderProgram::ShaderProgram(const std::string& vertexShaderPath, const std::string& fragmentShaderPath) noexcept
     : _programHandle(LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str()))
@@ -23,6 +24,7 @@ ShaderProgram::ShaderProgram(const std::string& vertexShaderPath, const std::str
     _uniformAddresses[textureOffset] = glGetUniformLocation(_programHandle, textureOffset.c_str());
     _uniformAddresses[worldScale] = glGetUniformLocation(_programHandle, worldScale.c_str());
     _uniformAddresses[projectionMatrix] = glGetUniformLocation(_programHandle, projectionMatrix.c_str());
+    _uniformAddresses[numberOfRows] = glGetUniformLocation(_programHandle, numberOfRows.c_str());
 }
 
 ShaderProgram::~ShaderProgram() noexcept

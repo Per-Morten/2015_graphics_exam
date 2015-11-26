@@ -2,7 +2,7 @@
 #include <string>
 
 #include <glm\glm.hpp>
-
+#include <GL\glew.h>
 #include "Renderer.h"
 
 class SceneObject
@@ -31,10 +31,8 @@ public:
     ~SceneObject() noexcept;
 
     void update(float deltaTime) noexcept;
-    inline void draw() noexcept
-    {
-        _renderer.render(_shaderName, _meshName, _textureName, _modelMatrix, _color, _textureOffset, _facingDirection);
-    };
+    void draw() noexcept;
+    
 
     void setColor(const glm::vec4& color) noexcept;
     void setPosition(const glm::vec3& position) noexcept;
@@ -64,4 +62,7 @@ private:
     glm::vec2 _textureOffset{};
     Renderer::FacingDirection _facingDirection{};
     bool _isVisible{false};
+    
+    // For indexed texture
+    GLuint _textureIndex{0};
 };

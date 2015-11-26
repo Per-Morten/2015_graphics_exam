@@ -9,13 +9,13 @@ public:
     using TextureHandle = GLuint;
 
     Texture() = delete;
-    Texture(const std::string& fileName) noexcept;
+    Texture(const std::string& fileName, GLuint numberOfRows = 4) noexcept;
     ~Texture() noexcept;
 
     void bind() noexcept;
-
+    GLuint getNumberOfRows() noexcept;
 private:
     TextureHandle _textureHandle{};
-
+    GLuint _numberOfRows{};
 
 };

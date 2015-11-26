@@ -29,6 +29,7 @@ public:
     static const UniformName textureOffset;
     static const UniformName worldScale;
     static const UniformName projectionMatrix;
+    static const UniformName numberOfRows;
 
 private:
     ProgramHandle _programHandle{};

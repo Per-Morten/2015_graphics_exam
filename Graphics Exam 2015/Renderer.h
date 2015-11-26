@@ -32,7 +32,8 @@ public:
                 const glm::mat4& modelMatrix,
                 const glm::vec4& color,
                 const glm::vec2& textureOffset,
-                FacingDirection facing = FacingDirection::BACK) noexcept;
+                FacingDirection facing = FacingDirection::BACK,
+                GLuint index = 0) noexcept;
     void present() noexcept;
 
     void handleInput() noexcept;
@@ -61,6 +62,7 @@ private:
     void setModelMatrixUniform(const std::string& shaderName, bool newShader, const glm::mat4& modelMatrix) noexcept;
     void setTextureOffsetUniform(const std::string& shaderName, bool newShader, const glm::vec2& textureOffset) noexcept;
     void setNormalMatrixUniform(const std::string& shaderName, bool newShader, const glm::mat4& modelMatrix) noexcept;
+    void setNumberOfRows(const std::string& shaderName, bool newShader, GLuint numberOfRows) noexcept;
 
     // Static for each total draw round
     void setViewMatrixUniform(const std::string& shaderName, bool newShader) noexcept;

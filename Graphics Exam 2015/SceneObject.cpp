@@ -8,10 +8,10 @@ const glm::vec2 SceneObject::dirtOffset{ 0.0f, 0.0f };
 const glm::vec2 SceneObject::grassOffset{ 0.25f, 0.0f };
 const glm::vec2 SceneObject::snowOffset{ 0.50f, 0.0f };
 
-SceneObject::SceneObject(Renderer& renderer, 
-                         const std::string& shaderName, 
-                         const std::string& meshName, 
-                         const std::string& textureName, 
+SceneObject::SceneObject(Renderer& renderer,
+                         const std::string& shaderName,
+                         const std::string& meshName,
+                         const std::string& textureName,
                          const glm::vec4& color,
                          const glm::vec3& position,
                          const glm::vec3& rotation,
@@ -49,6 +49,13 @@ void SceneObject::update(float deltaTime) noexcept
     _modelMatrix = positionMatrix * rotationMatrix * scaleMatrix;
 }
 
+void SceneObject::draw() noexcept
+{
+
+    _renderer.render(_shaderName, _meshName, _textureName, _modelMatrix, _color, _textureOffset, _facingDirection, _textureIndex);
+
+}
+
 void SceneObject::setColor(const glm::vec4& color) noexcept
 {
     _color = color;
@@ -79,7 +86,7 @@ void SceneObject::setVisible(bool isVisible) noexcept
     _isVisible = isVisible;
 }
 
-const glm::vec4 & SceneObject::getColor() const noexcept
+const glm::vec4& SceneObject::getColor() const noexcept
 {
     return _color;
 }

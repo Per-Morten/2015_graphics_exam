@@ -2,7 +2,8 @@
 
 #include "stb_image.h"
 
-Texture::Texture(const std::string& fileName) noexcept
+Texture::Texture(const std::string& fileName, GLuint numberOfRows) noexcept
+    : _numberOfRows(numberOfRows)
 {
     int width = 0;
     int height = 0;
@@ -38,4 +39,9 @@ void Texture::bind() noexcept
 {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _textureHandle);
+}
+
+GLuint Texture::getNumberOfRows() noexcept
+{
+    return _numberOfRows;
 }
