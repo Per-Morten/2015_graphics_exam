@@ -594,7 +594,7 @@ void Renderer::initializeVariables() noexcept
 {
     std::string shaderName = "Resources/Shaders/directionalFullTextureV3WScale";
     _shaderPrograms["DirectionalFullTexture"] = new ShaderProgram(shaderName + ".vert", shaderName + ".frag");
-    _shaderPrograms["SkyBox"] = new ShaderProgram("Resources/Shaders/SkyBox.vert", "Resources/Shaders/SkyBox.frag");
+    _shaderPrograms["SkyBox"] = new ShaderProgram("Resources/Shaders/basicTexture.vert", "Resources/Shaders/basicTexture.frag");
 
     auto meshData = Local::createCube();
     _meshes["Cube"] = new Mesh(std::get<0>(meshData),

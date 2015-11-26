@@ -13,7 +13,6 @@
 #include "Renderer.h"
 #include "SceneObject.h"
 
-#include "Diamond.h"
 
 // Force external GPU
 // As my PC Sometimes decides 
@@ -33,44 +32,7 @@ namespace GameObject
 }
 
 // ON HOLD!
-std::vector<std::vector<int>> generateTerrain()
-{
-    //int kvadraticSize = distribution(engine);
-    //std::vector<std::vector<int>> height;
-    //height.resize(kvadraticSize);
-    //
-    //for (std::size_t i = 0; i < height.size(); ++i)
-    //{
-    //    height[i].resize(kvadraticSize);
-    //    for (std::size_t j = 0; j < height[i].size(); ++j)
-    //    {
-    //        height[i][j] = distribution(engine);
-    //    }
-    //}
 
-    //std::random_device randomizer;
-    //std::default_random_engine engine(randomizer());
-    //std::uniform_int_distribution<std::size_t> distribution(1, 100);
-    //std::vector<std::vector<int>> heightMap;
-    //
-    //std::size_t quadraticSize = 4;//distribution(engine);
-    //std::size_t height = quadraticSize / 2;
-    //heightMap.resize(quadraticSize + 1);
-    //
-    //for (std::size_t i = 0; i < heightMap.size(); ++i)
-    //{
-    //    heightMap[i].resize(quadraticSize +1);
-    //}
-    //heightMap[0][0] = height;
-    //heightMap[0][quadraticSize] = height;
-    //heightMap[quadraticSize][0] = height;
-    //heightMap[quadraticSize][quadraticSize] = height;
-    //
-    //GenerateTerrain::diamondSquare(heightMap, quadraticSize, quadraticSize, quadraticSize, 1);
-    //
-    //return heightMap;
-    return{};
-}
 
 std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
 {
@@ -180,7 +142,6 @@ void deleteCubes(GameObject::SceneObjectList& toBeDeleted)
         }
     }
 }
-// EO ON HOLD!
 
 void handleInput(std::queue<GameEvent>& eventQueue,
                  Renderer& renderer,
@@ -328,7 +289,7 @@ gsl::owner<SceneObject*> createSkyBox(Renderer& renderer)
                                           glm::vec3(0.0f,0.0f,0.0f),
                                           glm::vec3(0.0f, 0.0f, 0.0f),
                                           glm::vec3(100.0f, 100.0f, 100.0f),
-                                          { 0.0f, 0.0f },
+                                          { 0.75f, 0.0f },
                                           Renderer::FacingDirection::FRONT);
     return skyBox;
 }
