@@ -40,23 +40,20 @@ void TerrainHandler::addCube(std::size_t xIndex, std::size_t zIndex) noexcept
     glm::vec3 newPosition;
     if (size > 0)
     {
-        newPosition = _sceneObjects[xIndex][zIndex][size-1]->getPosition();
+        newPosition = _sceneObjects[xIndex][zIndex][size - 1]->getPosition();
         newPosition.y += SceneObject::cubeSize;
     }
     else
     {
         newPosition = { xIndex * SceneObject::cubeSize, 0.0f, zIndex * SceneObject::cubeSize };
     }
-    _sceneObjects[xIndex][zIndex].push_back(new SceneObject(_renderer, 
+    _sceneObjects[xIndex][zIndex].push_back(new SceneObject(_renderer,
                                                             "DirectionalFullTexture",
                                                             "Cube",
                                                             "Bricks",
-                                                            {1.0f, 1.0f, 1.0f, 1.0f},
-                                                            newPosition,
-                                                            { 0.0f, 0.0f, 0.0f },
-                                                            { 1.0f, 1.0f, 1.0f },
-                                                            { 0.0f, 0.75f }));
-
+                                                            { 1.0f, 1.0f, 1.0f, 1.0f },
+                                                            newPosition));
+    applyCorrectTextures();
     hideUndrawableTerrain();
     createDrawableSceneList();
 }
@@ -66,66 +63,25 @@ void TerrainHandler::deleteCube(std::size_t xIndex, std::size_t zIndex) noexcept
     std::size_t size = _sceneObjects[xIndex][zIndex].size();
     if (size > 0)
     {
+        delete _sceneObjects[xIndex][zIndex][size - 1];
 
-    delete _sceneObjects[xIndex][zIndex][size-1];
-    
-    _sceneObjects[xIndex][zIndex].pop_back();
-    hideUndrawableTerrain();
-    createDrawableSceneList();
+        _sceneObjects[xIndex][zIndex].pop_back();
+        applyCorrectTextures();
+        hideUndrawableTerrain();
+        createDrawableSceneList();
     }
 }
 
 void TerrainHandler::createTerrain(const HeightMap& heightMap) noexcept
 {
-    const glm::vec2 dirtOffset{ 0.0f, 0.0f };
-    const glm::vec2 grassOffset{ 0.25f, 0.0f };
-    const glm::vec2 snowOffset{ 0.50f, 0.0f };
-    const glm::vec2 deepWaterOffset{ 0.0f, 0.75f };
-
-    const glm::vec2 waterOffset{ 0.75f, 0.0f };
-
     _sceneObjects.resize(heightMap.size());
     for (std::size_t i = 0; i < heightMap.size(); ++i)
     {
         _sceneObjects[i].resize(heightMap[i].size());
-
         for (std::size_t j = 0; j < heightMap[i].size(); ++j)
         {
             for (int k = 0; k < heightMap[i][j]; ++k)
             {
-                glm::vec2 textureOffset;
-                if (k < 1)
-                {
-                    textureOffset = deepWaterOffset;
-                }
-                else if (k < 2)
-                {
-                    textureOffset = waterOffset;
-                }
-                else if (k < 3)
-                {
-                    textureOffset = dirtOffset;
-                }
-                else if (k < 18)
-                {
-                    textureOffset = grassOffset;
-                }
-                else
-                {
-                    textureOffset = snowOffset;
-                }
-
-                //make sure borders of the map get the dirt texture
-                if ((i == 0 || i == heightMap.size() - 1 ||
-                     j == 0 || j == heightMap[i].size() - 1) &&
-                    k < heightMap[i][j] - 1 && k > 2 && !(k > 17))
-                {
-                    textureOffset = dirtOffset;
-                }
-                if (k < heightMap[i][j] - 1 && k > 2 && !(k > 17))
-                {
-                    textureOffset = dirtOffset;
-                }
                 SceneObject* object = new SceneObject(_renderer,
                                                       "DirectionalFullTexture",
                                                       "Cube",
@@ -134,11 +90,12 @@ void TerrainHandler::createTerrain(const HeightMap& heightMap) noexcept
                                                       glm::vec3(i * SceneObject::cubeSize, k * SceneObject::cubeSize, j * SceneObject::cubeSize),
                                                       glm::vec3(0.0f, 0.0f, 0.0f),
                                                       glm::vec3(1.0f, 1.0f, 1.0f),
-                                                      textureOffset);
+                                                      SceneObject::deepWaterOffset);
                 _sceneObjects[i][j].push_back(object);
             }
         }
-    }    
+    }
+    applyCorrectTextures();
 }
 
 void TerrainHandler::hideUndrawableTerrain() noexcept
@@ -186,13 +143,61 @@ void TerrainHandler::createDrawableSceneList() noexcept
         }
     }
 
-    auto tempEnd = std::partition(temp.begin(), temp.end(), [](auto& object){return object->isVisible();});
-    
+    auto tempEnd = std::partition(temp.begin(), temp.end(), [](auto& object) { return object->isVisible(); });
+
     // Copy into the list of drawable elements
     _drawableSceneObjects.clear();
-    std::copy(temp.begin(), tempEnd,std::back_inserter(_drawableSceneObjects));
-    
+    std::copy(temp.begin(), tempEnd, std::back_inserter(_drawableSceneObjects));
+
     // Sort it based on the texture offset so we don't have to send that uniform so often
-    std::sort(_drawableSceneObjects.begin(), _drawableSceneObjects.end(), [](auto& a, auto& b) {return (a->getTextureOffset().x < b->getTextureOffset().x);});
+    std::sort(_drawableSceneObjects.begin(), _drawableSceneObjects.end(), [](auto& a, auto& b) { return (a->getTextureOffset().x < b->getTextureOffset().x); });
+}
+
+void TerrainHandler::applyCorrectTextures() noexcept
+{
+    for (std::size_t i = 0; i < _sceneObjects.size(); ++i)
+    {
+        for (std::size_t j = 0; j < _sceneObjects[i].size(); ++j)
+        {
+            for (std::size_t k = 0; k < _sceneObjects[i][j].size(); ++k)
+            {
+                glm::vec2 textureOffset;
+                if (k < shallowWaterLevel)
+                {
+                    textureOffset = SceneObject::deepWaterOffset;
+                }
+                else if (k < dirtLevel)
+                {
+                    textureOffset = SceneObject::shallowWaterOffset;
+                }
+                else if (k < grassLevel)
+                {
+                    textureOffset = SceneObject::dirtOffset;
+                }
+                else if (k < snowLevel)
+                {
+                    textureOffset = SceneObject::grassOffset;
+                }
+                else
+                {
+                    textureOffset = SceneObject::snowOffset;
+                }
+
+                //make sure borders of the map get the dirt texture
+                if ((i == 0 || i == _sceneObjects.size() - 1 ||
+                     j == 0 || j == _sceneObjects[i].size() - 1) &&
+                    k < _sceneObjects[i][j].size() - 1 && k > dirtLevel && (k <= snowLevel))
+                {
+                    textureOffset = SceneObject::dirtOffset;
+                }
+                if (k < _sceneObjects[i][j].size() - 1 && k > dirtLevel && (k <= snowLevel))
+                {
+                    textureOffset = SceneObject::dirtOffset;
+                }
+
+                _sceneObjects[i][j][k]->setTextureOffset(textureOffset);
+            }
+        }
+    }
 }
 

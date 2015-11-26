@@ -12,6 +12,11 @@ public:
     using SceneObject3DList = std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>>;
     using HeightMap = std::vector<std::vector<int>>;
 
+    static constexpr int shallowWaterLevel = 1;
+    static constexpr int dirtLevel = 2;
+    static constexpr int grassLevel = 3;
+    static constexpr int snowLevel = 17;
+
     TerrainHandler(Renderer& renderer,const HeightMap& heightMap) noexcept;
     ~TerrainHandler() noexcept;
 
@@ -23,6 +28,7 @@ private:
     void createTerrain(const HeightMap& heightMap) noexcept;
     void hideUndrawableTerrain() noexcept;
     void createDrawableSceneList() noexcept;
+    void applyCorrectTextures() noexcept;
 
     Renderer& _renderer;
     SceneObject3DList _sceneObjects{};

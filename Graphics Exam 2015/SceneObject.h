@@ -9,6 +9,12 @@ class SceneObject
 {
 public:
     static constexpr float cubeSize = 10.0f;
+    static const glm::vec2 deepWaterOffset;
+    static const glm::vec2 shallowWaterOffset;
+    static const glm::vec2 dirtOffset;
+    static const glm::vec2 grassOffset;
+    static const glm::vec2 snowOffset;
+
 
     SceneObject() = delete;
     SceneObject(Renderer& renderer,

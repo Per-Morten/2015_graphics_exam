@@ -2,6 +2,12 @@
 
 #include <glm\gtx\transform.hpp>
 
+const glm::vec2 SceneObject::deepWaterOffset{ 0.0f, 0.75f };
+const glm::vec2 SceneObject::shallowWaterOffset{ 0.75f, 0.0f };
+const glm::vec2 SceneObject::dirtOffset{ 0.0f, 0.0f };
+const glm::vec2 SceneObject::grassOffset{ 0.25f, 0.0f };
+const glm::vec2 SceneObject::snowOffset{ 0.50f, 0.0f };
+
 SceneObject::SceneObject(Renderer& renderer, 
                          const std::string& shaderName, 
                          const std::string& meshName, 
@@ -65,7 +71,7 @@ void SceneObject::setScale(const glm::vec3& scale) noexcept
 
 void SceneObject::setTextureOffset(const glm::vec2& textureOffset) noexcept
 {
-    _textureOffset = _textureOffset;
+    _textureOffset = textureOffset;
 }
 
 void SceneObject::setVisible(bool isVisible) noexcept
