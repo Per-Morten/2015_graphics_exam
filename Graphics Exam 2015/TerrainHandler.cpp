@@ -86,11 +86,8 @@ void TerrainHandler::createTerrain(const HeightMap& heightMap) noexcept
                                                       "DirectionalFullTexture",
                                                       "Cube",
                                                       "Bricks",
-                                                      1,
-                                                      glm::vec3(i * SceneObject::cubeSize, k * SceneObject::cubeSize, j * SceneObject::cubeSize),
-                                                      glm::vec3(1.0f, 1.0f, 1.0f),
-                                                      glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-                                                      glm::vec3(0.0f, 0.0f, 0.0f));
+                                                      0,
+                                                      glm::vec3(i * SceneObject::cubeSize, k * SceneObject::cubeSize, j * SceneObject::cubeSize));
                 _sceneObjects[i][j].push_back(object);
             }
         }
@@ -150,7 +147,7 @@ void TerrainHandler::createDrawableSceneList() noexcept
     std::copy(temp.begin(), tempEnd, std::back_inserter(_drawableSceneObjects));
 
     // Sort it based on the texture offset so we don't have to send that uniform so often
-    std::sort(_drawableSceneObjects.begin(), _drawableSceneObjects.end(), [](auto& a, auto& b) { return (a->getTextureOffset().x < b->getTextureOffset().x); });
+    std::sort(_drawableSceneObjects.begin(), _drawableSceneObjects.end(), [](auto& a, auto& b) { return (a->getTextureIndex() < b->getTextureIndex()); });
 }
 
 void TerrainHandler::applyCorrectTextures() noexcept
@@ -161,26 +158,26 @@ void TerrainHandler::applyCorrectTextures() noexcept
         {
             for (std::size_t k = 0; k < _sceneObjects[i][j].size(); ++k)
             {
-                glm::vec2 textureOffset;
+                GLuint textureIndex = 0;
                 if (k < shallowWaterLevel)
                 {
-                    textureOffset = SceneObject::deepWaterOffset;
+                    textureIndex = SceneObject::deepWaterTexture;
                 }
                 else if (k < dirtLevel)
                 {
-                    textureOffset = SceneObject::shallowWaterOffset;
+                    textureIndex = SceneObject::shallowWaterTexture;
                 }
                 else if (k < grassLevel)
                 {
-                    textureOffset = SceneObject::dirtOffset;
+                    textureIndex = SceneObject::dirtTexture;
                 }
                 else if (k < snowLevel)
                 {
-                    textureOffset = SceneObject::grassOffset;
+                    textureIndex = SceneObject::grassTexture;
                 }
                 else
                 {
-                    textureOffset = SceneObject::snowOffset;
+                    textureIndex = SceneObject::snowTexture;
                 }
 
                 //make sure borders of the map get the dirt texture
@@ -188,14 +185,14 @@ void TerrainHandler::applyCorrectTextures() noexcept
                      j == 0 || j == _sceneObjects[i].size() - 1) &&
                     k < _sceneObjects[i][j].size() - 1 && k > dirtLevel && (k <= snowLevel))
                 {
-                    textureOffset = SceneObject::dirtOffset;
+                    textureIndex = SceneObject::dirtTexture;
                 }
                 if (k < _sceneObjects[i][j].size() - 1 && k > dirtLevel && (k <= snowLevel))
                 {
-                    textureOffset = SceneObject::dirtOffset;
+                    textureIndex = SceneObject::dirtTexture;
                 }
 
-                _sceneObjects[i][j][k]->setTextureOffset(textureOffset);
+                _sceneObjects[i][j][k]->setTextureIndex(textureIndex);
             }
         }
     }
