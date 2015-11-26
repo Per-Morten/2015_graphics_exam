@@ -104,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Diamond.h" />
     <ClInclude Include="GameEvent.h" />
     <ClInclude Include="GLTypes.h" />
     <ClInclude Include="GSL\array_view.h" />

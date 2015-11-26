@@ -2,7 +2,6 @@
 #include "shader.hpp"
 
 const ShaderProgram::UniformName ShaderProgram::color{"VertexColor"};
-const ShaderProgram::UniformName ShaderProgram::mvp{ "MVP" };
 const ShaderProgram::UniformName ShaderProgram::viewMatrix{ "ViewMatrix" };
 const ShaderProgram::UniformName ShaderProgram::modelMatrix{ "ModelMatrix" };
 const ShaderProgram::UniformName ShaderProgram::normalMatrix{ "NormalMatrix" };
@@ -16,7 +15,6 @@ ShaderProgram::ShaderProgram(const std::string& vertexShaderPath, const std::str
     : _programHandle(LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str()))
 {
     _uniformAddresses[color] = glGetUniformLocation(_programHandle, color.c_str());
-    _uniformAddresses[mvp] = glGetUniformLocation(_programHandle, mvp.c_str());
     _uniformAddresses[viewMatrix] = glGetUniformLocation(_programHandle, viewMatrix.c_str());
     _uniformAddresses[modelMatrix] = glGetUniformLocation(_programHandle, modelMatrix.c_str());
     _uniformAddresses[normalMatrix] = glGetUniformLocation(_programHandle, normalMatrix.c_str());

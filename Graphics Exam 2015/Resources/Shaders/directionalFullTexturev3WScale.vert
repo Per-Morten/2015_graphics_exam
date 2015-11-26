@@ -12,7 +12,6 @@ out vec3 fragmentNormal_cameraspace;
 out vec3 lightDirection_cameraspace;
 
 uniform vec4 VertexColor;
-uniform mat4 MVP;
 uniform mat4 ViewMatrix;
 uniform mat4 ModelMatrix;
 uniform mat3 NormalMatrix;

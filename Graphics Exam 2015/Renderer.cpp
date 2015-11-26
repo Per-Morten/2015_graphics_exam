@@ -207,7 +207,8 @@ void Renderer::render(const std::string& shaderName,
                       const std::string& textureName,
                       const glm::mat4& modelMatrix,
                       const glm::vec4& color,
-                      const glm::vec2& textureOffset) noexcept
+                      const glm::vec2& textureOffset,
+                      Renderer::FacingDirection facing) noexcept
 {
     if (_shaderPrograms[shaderName] != nullptr)
     {
@@ -219,6 +220,22 @@ void Renderer::render(const std::string& shaderName,
             newShader = true;
             _shaderPrograms[shaderName]->bind();
             lastShader = shaderName;
+        }
+
+        
+        static FacingDirection prevFacingDirection;
+        // Feels very like a hack!
+        if (prevFacingDirection != facing)
+        {
+            if (facing == FacingDirection::FRONT)
+            {
+                glCullFace(GL_FRONT);
+            }
+            if (facing == FacingDirection::BACK)
+            {
+                glCullFace(GL_BACK);
+            }
+            prevFacingDirection = facing;
         }
 
         // Object related Uniforms
@@ -414,7 +431,6 @@ void Renderer::setViewMatrixUniform(const std::string& shaderName, bool newShade
     }
     if (viewMatrix != prevViewMatrix)
     {
-
         prevViewMatrix = viewMatrix;
         glUniformMatrix4fv(viewMatrixId, 1, GL_FALSE, glm::value_ptr(viewMatrix));
         return;
@@ -578,6 +594,7 @@ void Renderer::initializeVariables() noexcept
 {
     std::string shaderName = "Resources/Shaders/directionalFullTextureV3WScale";
     _shaderPrograms["DirectionalFullTexture"] = new ShaderProgram(shaderName + ".vert", shaderName + ".frag");
+    _shaderPrograms["SkyBox"] = new ShaderProgram("Resources/Shaders/SkyBox.vert", "Resources/Shaders/SkyBox.frag");
 
     auto meshData = Local::createCube();
     _meshes["Cube"] = new Mesh(std::get<0>(meshData),

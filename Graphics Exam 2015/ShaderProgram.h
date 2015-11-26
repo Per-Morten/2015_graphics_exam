@@ -21,7 +21,6 @@ public:
     UniformAddress getUniformAddress(const UniformName& uniformName) noexcept; 
 
     static const UniformName color;
-    static const UniformName mvp;
     static const UniformName viewMatrix;
     static const UniformName modelMatrix;
     static const UniformName normalMatrix;

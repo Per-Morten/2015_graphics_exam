@@ -17,6 +17,11 @@
 class Renderer
 {
 public:
+    enum class FacingDirection
+    {
+        FRONT,
+        BACK,
+    };
     Renderer(GLint width, GLint height, Camera& _camera) noexcept;
     ~Renderer() noexcept;
 
@@ -26,7 +31,8 @@ public:
                 const std::string& textureName,
                 const glm::mat4& modelMatrix,
                 const glm::vec4& color,
-                const glm::vec2& textureOffset) noexcept;
+                const glm::vec2& textureOffset,
+                FacingDirection facing = FacingDirection::BACK) noexcept;
     void present() noexcept;
 
     void handleInput() noexcept;

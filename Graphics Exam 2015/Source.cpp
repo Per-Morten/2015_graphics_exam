@@ -13,6 +13,8 @@
 #include "Renderer.h"
 #include "SceneObject.h"
 
+#include "Diamond.h"
+
 // Force external GPU
 // As my PC Sometimes decides 
 extern "C"
@@ -30,25 +32,44 @@ namespace GameObject
     using SceneObjectList = std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>>;
 }
 
+// ON HOLD!
 std::vector<std::vector<int>> generateTerrain()
 {
-    std::random_device randomizer;
-    std::default_random_engine engine(randomizer());
-    std::uniform_int_distribution<std::size_t> distribution(1,100);
+    //int kvadraticSize = distribution(engine);
+    //std::vector<std::vector<int>> height;
+    //height.resize(kvadraticSize);
+    //
+    //for (std::size_t i = 0; i < height.size(); ++i)
+    //{
+    //    height[i].resize(kvadraticSize);
+    //    for (std::size_t j = 0; j < height[i].size(); ++j)
+    //    {
+    //        height[i][j] = distribution(engine);
+    //    }
+    //}
 
-    int kvadraticSize = distribution(engine);
-    std::vector<std::vector<int>> height;
-    height.resize(kvadraticSize);
-    
-    for (std::size_t i = 0; i < height.size(); ++i)
-    {
-        height[i].resize(kvadraticSize);
-        for (std::size_t j = 0; j < height[i].size(); ++j)
-        {
-            height[i][j] = distribution(engine);
-        }
-    }
-    return height;
+    //std::random_device randomizer;
+    //std::default_random_engine engine(randomizer());
+    //std::uniform_int_distribution<std::size_t> distribution(1, 100);
+    //std::vector<std::vector<int>> heightMap;
+    //
+    //std::size_t quadraticSize = 4;//distribution(engine);
+    //std::size_t height = quadraticSize / 2;
+    //heightMap.resize(quadraticSize + 1);
+    //
+    //for (std::size_t i = 0; i < heightMap.size(); ++i)
+    //{
+    //    heightMap[i].resize(quadraticSize +1);
+    //}
+    //heightMap[0][0] = height;
+    //heightMap[0][quadraticSize] = height;
+    //heightMap[quadraticSize][0] = height;
+    //heightMap[quadraticSize][quadraticSize] = height;
+    //
+    //GenerateTerrain::diamondSquare(heightMap, quadraticSize, quadraticSize, quadraticSize, 1);
+    //
+    //return heightMap;
+    return{};
 }
 
 std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
@@ -124,7 +145,7 @@ GameObject::SceneObjectList createCubes(Renderer& renderer, std::vector<std::vec
                 {
                     textureOffset = grassOffset;
                 }
-                else if (k < 21)
+                else
                 {
                     textureOffset = snowOffset;
                 }
@@ -159,22 +180,7 @@ void deleteCubes(GameObject::SceneObjectList& toBeDeleted)
         }
     }
 }
-// In development
-void createCube(Camera& camera, GameObject::SceneObjectList& objects) noexcept
-{
-    glm::vec3 position = camera.getPosition();
-    glm::vec3 indexPos = { (position.x / 10) - 5,(position.x / 10) - 5, position.y };
-
-    if (indexPos.x >= 0 && indexPos.x < objects.size())
-    {
-        if (indexPos.y < objects[indexPos.x].size())
-        {
-            static int counter;
-            counter++;
-            std::cout << indexPos.x << "\t" << indexPos.y << std::endl;
-        }
-    }
-}
+// EO ON HOLD!
 
 void handleInput(std::queue<GameEvent>& eventQueue,
                  Renderer& renderer,
@@ -265,7 +271,6 @@ void handleInput(std::queue<GameEvent>& eventQueue,
                 break;
 
             case ActionEnum::CREATE:
-                createCube(camera, objects);
                 break;
 
             case ActionEnum::DESTROY:
@@ -313,7 +318,20 @@ void drawVisibleObjects(const GameObject::SceneObjectList& objects, float deltaT
     }
 }
 
-
+gsl::owner<SceneObject*> createSkyBox(Renderer& renderer)
+{
+    SceneObject* skyBox = new SceneObject(renderer,
+                                          "DirectionalFullTexture",
+                                          "Cube",
+                                          "Bricks",
+                                          glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+                                          glm::vec3(0.0f,0.0f,0.0f),
+                                          glm::vec3(0.0f, 0.0f, 0.0f),
+                                          glm::vec3(100.0f, 100.0f, 100.0f),
+                                          { 0.0f, 0.0f },
+                                          Renderer::FacingDirection::FRONT);
+    return skyBox;
+}
 
 int main(int argc, char* argv[])
 {
@@ -344,6 +362,7 @@ int main(int argc, char* argv[])
 
 
     auto cubes = createCubes(renderer, heights);
+    auto skyBox = createSkyBox(renderer);
     float deltaTime = 0.1f;
 
     while (renderer.windowIsOpen())
@@ -352,16 +371,19 @@ int main(int argc, char* argv[])
 
         auto clockStart = std::chrono::high_resolution_clock::now();
         camera.update(deltaTime);
+        
         renderer.keepWindowOpen(keepWindowOpen);
         renderer.clear();
 
         drawVisibleObjects(cubes, deltaTime);
+        skyBox->update(deltaTime);
+        skyBox->draw();
         renderer.present();
         handleInput(eventQueue, renderer, camera, deltaTime, mousePosition, cubes);
 
         auto clockStop = std::chrono::high_resolution_clock::now();
         deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(clockStop - clockStart).count();
-        printf("%f\n", 1/deltaTime);
+        //printf("%f\n", 1 / deltaTime);
     }
 
     return 0;

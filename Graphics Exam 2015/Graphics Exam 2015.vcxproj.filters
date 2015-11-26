@@ -98,5 +98,8 @@
     <ClInclude Include="GSL\string_view.h">
       <Filter>GSL</Filter>
     </ClInclude>
+    <ClInclude Include="Diamond.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
