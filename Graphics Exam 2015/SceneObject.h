@@ -8,6 +8,8 @@
 class SceneObject
 {
 public:
+    static constexpr float cubeSize = 10.0f;
+
     SceneObject() = delete;
     SceneObject(Renderer& renderer,
                 const std::string& shaderName,
@@ -19,6 +21,7 @@ public:
                 const glm::vec3& scale = glm::vec3(1.0f, 1.0f, 1.0f),
                 const glm::vec2& textureOffset = glm::vec2(0.0f, 0.0f),
                 Renderer::FacingDirection facingDirection = Renderer::FacingDirection::BACK) noexcept;
+    
     ~SceneObject() noexcept;
 
     void update(float deltaTime) noexcept;

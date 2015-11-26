@@ -43,8 +43,6 @@ void SceneObject::update(float deltaTime) noexcept
     _modelMatrix = positionMatrix * rotationMatrix * scaleMatrix;
 }
 
-
-
 void SceneObject::setColor(const glm::vec4& color) noexcept
 {
     _color = color;

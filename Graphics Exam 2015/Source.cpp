@@ -17,64 +17,103 @@
 
 // Force external GPU
 // As my PC Sometimes decides 
-extern "C"
-{
-    _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
-}
+//extern "C"
+//{
+//    _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+//}
 
-// Defines etc for easier reads.
 constexpr int SCREEN_WIDTH = 800;
 constexpr int SCREEN_HEIGHT = 600;
 std::string windowName = "Graphics Exam 2015 - Per-Morten Straume";
-
-std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
+namespace
 {
-
-    std::ifstream inputFile(terrainFilename);
-    std::stringstream lineStream;
-    std::string inputLine;
-
-    std::getline(inputFile, inputLine);
-
-    if (inputLine.compare("P2") != 0)
+    std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
     {
-        std::cerr << "Version error" << std::endl;
-    }
-    else
-    {
-        std::cout << "Version : " << inputLine << std::endl;
-    }
+        std::ifstream inputFile(terrainFilename);
+        std::stringstream lineStream;
+        std::string inputLine;
 
-    std::vector<std::vector<int>> positions;
-    int xSize = 0;
-    int ySize = 0;
-    int maxValue = 0;
-    inputFile >> xSize >> ySize >> maxValue;
+        std::getline(inputFile, inputLine);
 
-    positions.resize(xSize);
-    for (std::size_t i = 0; i < xSize; ++i)
-    {
-        positions[i].resize(ySize);
-    }
-
-    for (std::size_t i = 0; i < positions.size(); ++i)
-    {
-        for (std::size_t j = 0; j < positions[i].size(); ++j)
+        if (inputLine.compare("P2") != 0)
         {
-            inputFile >> positions[i][j];
-            positions[i][j] += 1;
+            std::cerr << "Version error" << std::endl;
         }
-    }
+        else
+        {
+            std::cout << "Version : " << inputLine << std::endl;
+        }
 
-    return positions;
+        std::vector<std::vector<int>> positions;
+        int xSize = 0;
+        int ySize = 0;
+        int maxValue = 0;
+        inputFile >> xSize >> ySize >> maxValue;
+
+        positions.resize(xSize);
+        for (std::size_t i = 0; i < xSize; ++i)
+        {
+            positions[i].resize(ySize);
+        }
+
+        for (std::size_t i = 0; i < positions.size(); ++i)
+        {
+            for (std::size_t j = 0; j < positions[i].size(); ++j)
+            {
+                inputFile >> positions[i][j];
+                positions[i][j] += 1;
+            }
+        }
+
+        return positions;
+    }
+    gsl::owner<SceneObject*> createSkyBox(Renderer& renderer)
+    {
+        SceneObject* skyBox = new SceneObject(renderer,
+                                              "DirectionalFullTexture",
+                                              "Cube",
+                                              "Bricks",
+                                              glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+                                              glm::vec3(0.0f, 0.0f, 0.0f),
+                                              glm::vec3(0.0f, 0.0f, 0.0f),
+                                              glm::vec3(100.0f, 100.0f, 100.0f),
+                                              { 0.75f, 0.0f },
+                                              Renderer::FacingDirection::FRONT);
+        return skyBox;
+    }
 }
 
+
+
+
+std::tuple<bool, std::size_t, std::size_t> calculateCameraPositionInGrid(const std::vector<std::vector<int>>& heightMap,
+                                                                         const Camera& camera) noexcept
+{
+    // Calculate into index space,
+    std::size_t cameraPositionIndexSpaceX = (camera.getPosition().x + (SceneObject::cubeSize / 2)) / SceneObject::cubeSize;
+    std::size_t cameraPositionIndexSpaceZ = (camera.getPosition().z + (SceneObject::cubeSize / 2)) / SceneObject::cubeSize;
+
+    if (cameraPositionIndexSpaceX >= 0 &&
+        cameraPositionIndexSpaceX < heightMap.size())
+    {
+        if (cameraPositionIndexSpaceZ >= 0 &&
+            cameraPositionIndexSpaceZ < heightMap[cameraPositionIndexSpaceX].size())
+        {
+            auto indexCoordinates = std::make_tuple(true, cameraPositionIndexSpaceX, cameraPositionIndexSpaceZ);
+            return indexCoordinates;
+        }
+    }
+    auto indexCoordinates = std::make_tuple(false, cameraPositionIndexSpaceX, cameraPositionIndexSpaceZ);
+    return indexCoordinates;
+}
 
 void handleInput(std::queue<GameEvent>& eventQueue,
                  Renderer& renderer,
                  Camera& camera,
                  float deltaTime,
-                 glm::vec2& mousePosition)
+                 glm::vec2& mousePosition,
+                 const std::vector<std::vector<int>>& heightMap,
+                 TerrainHandler& terrainHandler) noexcept
 {
     static bool enableMovement = false;
     while (!eventQueue.empty())
@@ -158,33 +197,26 @@ void handleInput(std::queue<GameEvent>& eventQueue,
                 break;
 
             case ActionEnum::CREATE:
-                break;
+            {
+                auto calculationResult = calculateCameraPositionInGrid(heightMap, camera);
+                if (std::get<0>(calculationResult))
+                {
+                    terrainHandler.addCube(std::get<1>(calculationResult), std::get<2>(calculationResult));
+                }
+            }
+            break;
 
             case ActionEnum::DESTROY:
-                std::cout << "Destroy" << std::endl;
+            {
+                auto calculationResult = calculateCameraPositionInGrid(heightMap, camera);
+                if (std::get<0>(calculationResult))
+                {
+                    terrainHandler.deleteCube(std::get<1>(calculationResult), std::get<2>(calculationResult));
+                }
+            }
                 break;
-
-            case ActionEnum::GENERATE:
-                std::cout << "Generate" << std::endl;
-                break;
-
         }
     }
-}
-
-gsl::owner<SceneObject*> createSkyBox(Renderer& renderer)
-{
-    SceneObject* skyBox = new SceneObject(renderer,
-                                          "DirectionalFullTexture",
-                                          "Cube",
-                                          "Bricks",
-                                          glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-                                          glm::vec3(0.0f, 0.0f, 0.0f),
-                                          glm::vec3(0.0f, 0.0f, 0.0f),
-                                          glm::vec3(100.0f, 100.0f, 100.0f),
-                                          { 0.75f, 0.0f },
-                                          Renderer::FacingDirection::FRONT);
-    return skyBox;
 }
 
 int main(int argc, char* argv[])
@@ -232,11 +264,11 @@ int main(int argc, char* argv[])
         skyBox->update(deltaTime);
         skyBox->draw();
         renderer.present();
-        handleInput(eventQueue, renderer, camera, deltaTime, mousePosition);
+        handleInput(eventQueue, renderer, camera, deltaTime, mousePosition, heights, terrainHandler);
 
         auto clockStop = std::chrono::high_resolution_clock::now();
         deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(clockStop - clockStart).count();
-        
+
         printf("%f\n", 1 / deltaTime);
     }
 
