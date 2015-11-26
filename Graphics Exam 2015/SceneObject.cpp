@@ -31,6 +31,9 @@ SceneObject::~SceneObject() noexcept
 
 void SceneObject::update(float deltaTime) noexcept
 {
+    if (_hasBeenUpdated)
+    {
+
     glm::mat4 positionMatrix = glm::translate(_position);
 
     glm::mat4 rotMatrixX = glm::rotate(_rotation.x, glm::vec3(1, 0, 0));
@@ -41,6 +44,8 @@ void SceneObject::update(float deltaTime) noexcept
     glm::mat4 scaleMatrix = glm::scale(_scale);
 
     _modelMatrix = positionMatrix * rotationMatrix * scaleMatrix;
+    _hasBeenUpdated = false;
+    }
 }
 
 void SceneObject::draw() noexcept
@@ -79,6 +84,11 @@ void SceneObject::setScale(const glm::vec3& scale) noexcept
 void SceneObject::setVisible(bool isVisible) noexcept
 {
     _isVisible = isVisible;
+}
+
+void SceneObject::setUpdated() noexcept
+{
+    _hasBeenUpdated = true;
 }
 
 const glm::vec4& SceneObject::getColor() const noexcept

@@ -50,6 +50,7 @@ public:
     void setRotation(const glm::vec3& rotation) noexcept;
     void setScale(const glm::vec3& scale) noexcept;
     void setVisible(bool isVisible) noexcept;
+    void setUpdated() noexcept;
 
     const glm::vec4& getColor() const noexcept;
     const glm::vec3& getPosition() const noexcept;
@@ -57,7 +58,6 @@ public:
     const glm::vec3& getScale() const noexcept;
     GLuint getTextureIndex() const noexcept;
     bool isVisible() const noexcept;
-
 private:
     Renderer& _renderer;
     std::string _shaderName{};
@@ -71,6 +71,7 @@ private:
     glm::mat4 _modelMatrix{ 1 };
     Renderer::FacingDirection _facingDirection{};
     bool _isVisible{ false };
+    bool _hasBeenUpdated{ true };
 
     // For indexed texture
     GLuint _textureIndex{ 0 };
