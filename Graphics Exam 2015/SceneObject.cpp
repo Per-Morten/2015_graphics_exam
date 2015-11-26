@@ -43,10 +43,7 @@ void SceneObject::update(float deltaTime) noexcept
     _modelMatrix = positionMatrix * rotationMatrix * scaleMatrix;
 }
 
-void SceneObject::draw() noexcept
-{
-    _renderer.render(_shaderName, _meshName, _textureName, _modelMatrix, _color, _textureOffset, _facingDirection);
-}
+
 
 void SceneObject::setColor(const glm::vec4& color) noexcept
 {
@@ -73,6 +70,11 @@ void SceneObject::setTextureOffset(const glm::vec2& textureOffset) noexcept
     _textureOffset = _textureOffset;
 }
 
+void SceneObject::setVisible(bool isVisible) noexcept
+{
+    _isVisible = isVisible;
+}
+
 const glm::vec4 & SceneObject::getColor() const noexcept
 {
     return _color;
@@ -91,4 +93,14 @@ const glm::vec3& SceneObject::getRotation() const noexcept
 const glm::vec3& SceneObject::getScale() const noexcept
 {
     return _scale;
+}
+
+const glm::vec2& SceneObject::getTextureOffset() const noexcept
+{
+    return _textureOffset;
+}
+
+bool SceneObject::isVisible() const noexcept
+{
+    return _isVisible;
 }

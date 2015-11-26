@@ -12,6 +12,7 @@
 #include "Camera.h"
 #include "Renderer.h"
 #include "SceneObject.h"
+#include "TerrainHandler.h"
 
 
 // Force external GPU
@@ -147,8 +148,7 @@ void handleInput(std::queue<GameEvent>& eventQueue,
                  Renderer& renderer,
                  Camera& camera,
                  float deltaTime,
-                 glm::vec2& mousePosition,
-                 GameObject::SceneObjectList& objects)
+                 glm::vec2& mousePosition)
 {
     static bool enableMovement = false;
     while (!eventQueue.empty())
@@ -239,42 +239,9 @@ void handleInput(std::queue<GameEvent>& eventQueue,
                 break;
 
             case ActionEnum::GENERATE:
-                deleteCubes(objects);
-                objects = createCubes(renderer, generateTerrain());
+                std::cout << "Generate" << std::endl;
                 break;
 
-        }
-    }
-}
-
-void drawVisibleObjects(const GameObject::SceneObjectList& objects, float deltaTime) noexcept
-{
-    constexpr std::size_t maxSizeT = std::numeric_limits<std::size_t>::max();
-
-    for (std::size_t i = 0; i < objects.size(); ++i)
-    {
-        for (std::size_t j = 0; j < objects[i].size(); ++j)
-        {
-            for (std::size_t k = objects[i][j].size() - 1; k != maxSizeT; --k)
-            {
-                // Draw and update the cubes which should be visible
-                bool hidden = false;
-                if (i != 0 && i != objects.size() - 1 &&
-                    j != 0 && j != objects[i].size() - 1 &&
-                    k != 0 && k != objects[i][j].size() - 1)
-                {
-                    hidden = true;
-                    hidden = hidden && (k < objects[i + 1][j + 0].size()); // Right
-                    hidden = hidden && (k < objects[i + 0][j + 1].size()); // Up
-                    hidden = hidden && (k < objects[i - 1][j + 0].size()); // Left
-                    hidden = hidden && (k < objects[i + 0][j - 1].size()); // Down
-                }
-                if (!hidden)
-                {
-                    objects[i][j][k]->update(deltaTime);
-                    objects[i][j][k]->draw();
-                }
-            }
         }
     }
 }
@@ -286,7 +253,7 @@ gsl::owner<SceneObject*> createSkyBox(Renderer& renderer)
                                           "Cube",
                                           "Bricks",
                                           glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-                                          glm::vec3(0.0f,0.0f,0.0f),
+                                          glm::vec3(0.0f, 0.0f, 0.0f),
                                           glm::vec3(0.0f, 0.0f, 0.0f),
                                           glm::vec3(100.0f, 100.0f, 100.0f),
                                           { 0.75f, 0.0f },
@@ -320,9 +287,9 @@ int main(int argc, char* argv[])
     InputHandler inputHandler;
     std::queue<GameEvent> eventQueue;
     glm::vec2 mousePosition;
+    TerrainHandler terrainHandler(renderer, heights);
 
-
-    auto cubes = createCubes(renderer, heights);
+    //auto cubes = createCubes(renderer, heights);
     auto skyBox = createSkyBox(renderer);
     float deltaTime = 0.1f;
 
@@ -332,19 +299,20 @@ int main(int argc, char* argv[])
 
         auto clockStart = std::chrono::high_resolution_clock::now();
         camera.update(deltaTime);
-        
+
         renderer.keepWindowOpen(keepWindowOpen);
         renderer.clear();
 
-        drawVisibleObjects(cubes, deltaTime);
+        terrainHandler.update(deltaTime);
         skyBox->update(deltaTime);
         skyBox->draw();
         renderer.present();
-        handleInput(eventQueue, renderer, camera, deltaTime, mousePosition, cubes);
+        handleInput(eventQueue, renderer, camera, deltaTime, mousePosition);
 
         auto clockStop = std::chrono::high_resolution_clock::now();
         deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(clockStop - clockStart).count();
-        //printf("%f\n", 1 / deltaTime);
+        
+        printf("%f\n", 1 / deltaTime);
     }
 
     return 0;

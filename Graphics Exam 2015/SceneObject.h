@@ -22,18 +22,24 @@ public:
     ~SceneObject() noexcept;
 
     void update(float deltaTime) noexcept;
-    void draw() noexcept;
+    inline void draw() noexcept
+    {
+        _renderer.render(_shaderName, _meshName, _textureName, _modelMatrix, _color, _textureOffset, _facingDirection);
+    };
 
     void setColor(const glm::vec4& color) noexcept;
     void setPosition(const glm::vec3& position) noexcept;
     void setRotation(const glm::vec3& rotation) noexcept;
     void setScale(const glm::vec3& scale) noexcept;
     void setTextureOffset(const glm::vec2& textureOffset) noexcept;
-
+    void setVisible(bool isVisible) noexcept;
+   
     const glm::vec4& getColor() const noexcept;
     const glm::vec3& getPosition() const noexcept;
     const glm::vec3& getRotation() const noexcept;
     const glm::vec3& getScale() const noexcept;
+    const glm::vec2& getTextureOffset() const noexcept;
+    bool isVisible() const noexcept;
 
 private:
     Renderer& _renderer;
@@ -48,5 +54,5 @@ private:
     glm::mat4 _modelMatrix{ 1 };
     glm::vec2 _textureOffset{};
     Renderer::FacingDirection _facingDirection{};
-
+    bool _isVisible{false};
 };

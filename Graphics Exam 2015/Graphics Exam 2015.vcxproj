@@ -100,11 +100,11 @@
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="stb_image.c" />
+    <ClCompile Include="TerrainHandler.cpp" />
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Diamond.h" />
     <ClInclude Include="GameEvent.h" />
     <ClInclude Include="GLTypes.h" />
     <ClInclude Include="GSL\array_view.h" />
@@ -118,6 +118,7 @@
     <ClInclude Include="shader.hpp" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="TerrainHandler.h" />
     <ClInclude Include="Texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

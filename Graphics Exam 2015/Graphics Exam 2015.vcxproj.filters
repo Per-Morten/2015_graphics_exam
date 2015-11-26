@@ -51,6 +51,9 @@
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TerrainHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEvent.h">
@@ -98,7 +101,7 @@
     <ClInclude Include="GSL\string_view.h">
       <Filter>GSL</Filter>
     </ClInclude>
-    <ClInclude Include="Diamond.h">
+    <ClInclude Include="TerrainHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
