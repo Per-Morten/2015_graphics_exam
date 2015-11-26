@@ -31,9 +31,8 @@ public:
                 const std::string& textureName,
                 const glm::mat4& modelMatrix,
                 const glm::vec4& color,
-                const glm::vec2& textureOffset,
-                FacingDirection facing = FacingDirection::BACK,
-                GLuint index = 0) noexcept;
+                GLuint textureIndex,
+                FacingDirection facing = FacingDirection::BACK) noexcept;
     void present() noexcept;
 
     void handleInput() noexcept;

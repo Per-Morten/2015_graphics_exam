@@ -207,9 +207,8 @@ void Renderer::render(const std::string& shaderName,
                       const std::string& textureName,
                       const glm::mat4& modelMatrix,
                       const glm::vec4& color,
-                      const glm::vec2& textureOffset,
-                      Renderer::FacingDirection facing,
-                      GLuint index) noexcept
+                      GLuint textureIndex,
+                      Renderer::FacingDirection facing) noexcept
 {
     if (_shaderPrograms[shaderName] != nullptr)
     {
@@ -240,8 +239,8 @@ void Renderer::render(const std::string& shaderName,
         }
 
         GLuint numberOfRows = _textures[textureName]->getNumberOfRows();
-        float column = index%numberOfRows;
-        float row = index / numberOfRows;
+        float column = textureIndex%numberOfRows;
+        float row = textureIndex / numberOfRows;
         glm::vec2 offset = { column / numberOfRows, row / numberOfRows };
 
         // Object related Uniforms

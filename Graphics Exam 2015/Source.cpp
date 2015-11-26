@@ -73,11 +73,11 @@ namespace
                                               "DirectionalFullTexture",
                                               "Cube",
                                               "Bricks",
-                                              glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-                                              glm::vec3(0.0f, 0.0f, 0.0f),
+                                              0,
                                               glm::vec3(0.0f, 0.0f, 0.0f),
                                               glm::vec3(100.0f, 100.0f, 100.0f),
-                                              { 0.75f, 0.0f },
+                                              glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+                                              glm::vec3(0.0f, 0.0f, 0.0f),
                                               Renderer::FacingDirection::FRONT);
         return skyBox;
     }

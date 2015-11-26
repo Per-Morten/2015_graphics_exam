@@ -51,7 +51,7 @@ void TerrainHandler::addCube(std::size_t xIndex, std::size_t zIndex) noexcept
                                                             "DirectionalFullTexture",
                                                             "Cube",
                                                             "Bricks",
-                                                            { 1.0f, 1.0f, 1.0f, 1.0f },
+                                                            0,
                                                             newPosition));
     applyCorrectTextures();
     hideUndrawableTerrain();
@@ -86,11 +86,11 @@ void TerrainHandler::createTerrain(const HeightMap& heightMap) noexcept
                                                       "DirectionalFullTexture",
                                                       "Cube",
                                                       "Bricks",
-                                                      glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+                                                      1,
                                                       glm::vec3(i * SceneObject::cubeSize, k * SceneObject::cubeSize, j * SceneObject::cubeSize),
-                                                      glm::vec3(0.0f, 0.0f, 0.0f),
                                                       glm::vec3(1.0f, 1.0f, 1.0f),
-                                                      SceneObject::deepWaterOffset);
+                                                      glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+                                                      glm::vec3(0.0f, 0.0f, 0.0f));
                 _sceneObjects[i][j].push_back(object);
             }
         }

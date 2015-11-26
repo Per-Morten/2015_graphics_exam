@@ -21,11 +21,11 @@ public:
                 const std::string& shaderName,
                 const std::string& meshName,
                 const std::string& textureName,
-                const glm::vec4& color = glm::vec4(1.0f, 0.8f, 0.8f, 1.0f),
+                GLuint textureIndex,
                 const glm::vec3& position = glm::vec3(0.0f, 0.0f, 0.0f),
-                const glm::vec3& rotation = glm::vec3(0.0f, 0.0f, 0.0f),
                 const glm::vec3& scale = glm::vec3(1.0f, 1.0f, 1.0f),
-                const glm::vec2& textureOffset = glm::vec2(0.0f, 0.0f),
+                const glm::vec4& color = glm::vec4(1.0f, 0.8f, 0.8f, 1.0f),
+                const glm::vec3& rotation = glm::vec3(0.0f, 0.0f, 0.0f),
                 Renderer::FacingDirection facingDirection = Renderer::FacingDirection::BACK) noexcept;
     
     ~SceneObject() noexcept;

@@ -12,11 +12,11 @@ SceneObject::SceneObject(Renderer& renderer,
                          const std::string& shaderName,
                          const std::string& meshName,
                          const std::string& textureName,
-                         const glm::vec4& color,
+                         GLuint textureIndex,
                          const glm::vec3& position,
-                         const glm::vec3& rotation,
                          const glm::vec3& scale,
-                         const glm::vec2& textureOffset,
+                         const glm::vec4& color,
+                         const glm::vec3& rotation,
                          Renderer::FacingDirection facingDirection) noexcept
     : _renderer(renderer)
     , _shaderName(shaderName)
@@ -26,8 +26,8 @@ SceneObject::SceneObject(Renderer& renderer,
     , _position(position)
     , _rotation(rotation)
     , _scale(scale)
-    , _textureOffset(textureOffset)
     , _facingDirection(facingDirection)
+    , _textureIndex(textureIndex)
 {
 }
 
@@ -52,7 +52,7 @@ void SceneObject::update(float deltaTime) noexcept
 void SceneObject::draw() noexcept
 {
 
-    _renderer.render(_shaderName, _meshName, _textureName, _modelMatrix, _color, _textureOffset, _facingDirection, _textureIndex);
+    _renderer.render(_shaderName, _meshName, _textureName, _modelMatrix, _color, _textureIndex, _facingDirection);
 
 }
 
