@@ -59,7 +59,7 @@ private:
     // object related
     void setColorUniform(const std::string& shaderName, bool newShader, const glm::vec4& color) noexcept;
     void setModelMatrixUniform(const std::string& shaderName, bool newShader, const glm::mat4& modelMatrix) noexcept;
-    void setTextureOffsetUniform(const std::string& shaderName, bool newShader, const glm::vec2& textureOffset) noexcept;
+    void setTextureOffsetUniform(const std::string& shaderName, bool newShader, GLuint textureIndex, GLuint numberOfRows) noexcept;
     void setNormalMatrixUniform(const std::string& shaderName, bool newShader, const glm::mat4& modelMatrix) noexcept;
     void setNumberOfRows(const std::string& shaderName, bool newShader, GLuint numberOfRows) noexcept;
 

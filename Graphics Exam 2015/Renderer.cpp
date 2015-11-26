@@ -213,13 +213,23 @@ void Renderer::render(const std::string& shaderName,
     if (_shaderPrograms[shaderName] != nullptr)
     {
         static std::string lastShader;
-
         bool newShader = false;
         if (lastShader != shaderName)
         {
             newShader = true;
             _shaderPrograms[shaderName]->bind();
             lastShader = shaderName;
+        }
+
+        static GLuint numberOfRows;
+        static std::string lastTexture;
+        if (lastTexture != textureName)
+        {
+            numberOfRows = _textures[textureName]->getNumberOfRows();
+            _textures[textureName]->bind();
+            lastTexture = textureName;
+            
+            setNumberOfRows(shaderName, newShader, numberOfRows);
         }
 
 
@@ -238,17 +248,13 @@ void Renderer::render(const std::string& shaderName,
             prevFacingDirection = facing;
         }
 
-        GLuint numberOfRows = _textures[textureName]->getNumberOfRows();
-        float column = textureIndex%numberOfRows;
-        float row = textureIndex / numberOfRows;
-        glm::vec2 offset = { column / numberOfRows, row / numberOfRows };
+
 
         // Object related Uniforms
         setColorUniform(shaderName, newShader, color);
         setModelMatrixUniform(shaderName, newShader, modelMatrix);
-        setTextureOffsetUniform(shaderName, newShader, offset);
         setNormalMatrixUniform(shaderName, newShader, modelMatrix);
-        setNumberOfRows(shaderName, newShader, numberOfRows);
+        setTextureOffsetUniform(shaderName, newShader, textureIndex, numberOfRows);
 
         // Total Drawing loop Uniforms
         setViewMatrixUniform(shaderName, newShader);
@@ -256,14 +262,6 @@ void Renderer::render(const std::string& shaderName,
         setAmbientFactorUniform(shaderName, newShader);
         setLightDirectionUniform(shaderName, newShader);
         setWorldScaleUniform(shaderName, newShader);
-        
-
-        static std::string lastTexture;
-        if (lastTexture != textureName)
-        {
-            _textures[textureName]->bind();
-            lastTexture = textureName;
-        }
 
         _meshes[meshName]->draw();
     }
@@ -382,21 +380,29 @@ void Renderer::setModelMatrixUniform(const std::string& shaderName, bool newShad
     }
 }
 
-void Renderer::setTextureOffsetUniform(const std::string& shaderName, bool newShader, const glm::vec2& textureOffset) noexcept
+void Renderer::setTextureOffsetUniform(const std::string& shaderName, bool newShader, GLuint textureIndex, GLuint numberOfRows) noexcept
 {
     static ShaderProgram::UniformAddress textureOffsetId;
-    static glm::vec2 prevTextureOffset;
+    static GLuint prevTextureIndex;
     if (newShader)
     {
         textureOffsetId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::textureOffset);
-        prevTextureOffset = textureOffset;
-        glUniform2f(textureOffsetId, textureOffset.x, textureOffset.y);
+        prevTextureIndex = textureIndex;
+        float column = static_cast<float>(textureIndex % numberOfRows);
+        float row = static_cast<float>(textureIndex / numberOfRows);
+        glm::vec2 offset = { column / numberOfRows, row / numberOfRows };
+
+        glUniform2f(textureOffsetId, offset.x, offset.y);
         return;
     }
-    if (textureOffset != prevTextureOffset)
+    if (textureIndex != prevTextureIndex)
     {
-        prevTextureOffset = textureOffset;
-        glUniform2f(textureOffsetId, textureOffset.x, textureOffset.y);
+        prevTextureIndex = textureIndex;
+        float column = static_cast<float>(textureIndex % numberOfRows);
+        float row = static_cast<float>(textureIndex / numberOfRows);
+        glm::vec2 offset = { column / numberOfRows, row / numberOfRows };
+
+        glUniform2f(textureOffsetId, offset.x, offset.y);
         return;
     }
 }

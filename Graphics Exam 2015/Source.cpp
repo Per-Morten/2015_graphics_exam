@@ -90,8 +90,8 @@ std::tuple<bool, std::size_t, std::size_t> calculateCameraPositionInGrid(const s
                                                                          const Camera& camera) noexcept
 {
     // Calculate into index space,
-    std::size_t cameraPositionIndexSpaceX = (camera.getPosition().x + (SceneObject::cubeSize / 2)) / SceneObject::cubeSize;
-    std::size_t cameraPositionIndexSpaceZ = (camera.getPosition().z + (SceneObject::cubeSize / 2)) / SceneObject::cubeSize;
+    std::size_t cameraPositionIndexSpaceX = static_cast<std::size_t>((camera.getPosition().x + (SceneObject::cubeSize / 2)) / SceneObject::cubeSize);
+    std::size_t cameraPositionIndexSpaceZ = static_cast<std::size_t>((camera.getPosition().z + (SceneObject::cubeSize / 2)) / SceneObject::cubeSize);
 
     if (cameraPositionIndexSpaceX >= 0 &&
         cameraPositionIndexSpaceX < heightMap.size())

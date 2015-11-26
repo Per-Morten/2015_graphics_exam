@@ -214,8 +214,11 @@ void InputHandler::handleMouse(SDL_Event& eventHandler, std::queue<GameEvent>& e
             std::cout << "Button wheel" << std::endl;
             break;
         case SDL_MOUSEMOTION:
-            mousePosition.x = eventHandler.motion.x;
-            mousePosition.y = eventHandler.motion.y;
+                              // Not really nice to cast here
+                              // But Visual studio generates warnings for possible loss of data, which makes it hard to see other warnings
+                              // so as I am aware of what I am doing, I cast it instead.
+            mousePosition.x = static_cast<float>(eventHandler.motion.x);
+            mousePosition.y = static_cast<float>(eventHandler.motion.y);
             action = ActionEnum::MOUSEMOTION;
             break;
     }
