@@ -27,14 +27,6 @@ constexpr int SCREEN_WIDTH = 800;
 constexpr int SCREEN_HEIGHT = 600;
 std::string windowName = "Graphics Exam 2015 - Per-Morten Straume";
 
-namespace GameObject
-{
-    using SceneObjectList = std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>>;
-}
-
-// ON HOLD!
-
-
 std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
 {
 
@@ -77,72 +69,6 @@ std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
     return positions;
 }
 
-GameObject::SceneObjectList createCubes(Renderer& renderer, std::vector<std::vector<int>> heights)
-{
-    std::vector<std::vector<std::vector<gsl::owner<SceneObject*>>>> objects;
-
-    const glm::vec2 dirtOffset{ 0.0f, 0.0f };
-    const glm::vec2 grassOffset{ 0.25f, 0.0f };
-    const glm::vec2 snowOffset{ 0.50f, 0.0f };
-    const glm::vec2 waterOffset{ 0.75f, 0.0f };
-
-    objects.resize(heights.size());
-    for (std::size_t i = 0; i < heights.size(); ++i)
-    {
-        objects[i].resize(heights[i].size());
-
-        for (std::size_t j = 0; j < heights[i].size(); ++j)
-        {
-            for (int k = 0; k < heights[i][j]; ++k)
-            {
-                glm::vec2 textureOffset;
-                if (k < 2)
-                {
-                    textureOffset = waterOffset;
-                }
-                else if (k < 3)
-                {
-                    textureOffset = dirtOffset;
-                }
-                else if (k < 18)
-                {
-                    textureOffset = grassOffset;
-                }
-                else
-                {
-                    textureOffset = snowOffset;
-                }
-                SceneObject* object = new SceneObject(renderer,
-                                                      "DirectionalFullTexture",
-                                                      "Cube",
-                                                      "Bricks",
-                                                      glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-                                                      glm::vec3(i * 10, k * 10.0f, j * 10),
-                                                      glm::vec3(0.0f, 0.0f, 0.0f),
-                                                      glm::vec3(1.0f, 1.0f, 1.0f),
-                                                      textureOffset);
-                objects[i][j].push_back(object);
-
-            }
-        }
-    }
-
-    return objects;
-}
-
-void deleteCubes(GameObject::SceneObjectList& toBeDeleted)
-{
-    for (std::size_t i = 0; i < toBeDeleted.size(); ++i)
-    {
-        for (std::size_t j = 0; j < toBeDeleted[i].size(); ++j)
-        {
-            for (std::size_t k = 0; k < toBeDeleted[i][j].size(); ++k)
-            {
-                delete toBeDeleted[i][j][k];
-            }
-        }
-    }
-}
 
 void handleInput(std::queue<GameEvent>& eventQueue,
                  Renderer& renderer,
@@ -289,7 +215,6 @@ int main(int argc, char* argv[])
     glm::vec2 mousePosition;
     TerrainHandler terrainHandler(renderer, heights);
 
-    //auto cubes = createCubes(renderer, heights);
     auto skyBox = createSkyBox(renderer);
     float deltaTime = 0.1f;
 

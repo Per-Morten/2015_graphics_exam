@@ -24,8 +24,4 @@ private:
     Renderer& _renderer;
     SceneObject3DList _sceneObjects{};
     SceneObjectList _drawableSceneObjects{};
-    
-    SceneObjectList::iterator _drawableSceneObjectsEnd{};
-
-
 };

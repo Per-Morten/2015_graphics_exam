@@ -64,7 +64,7 @@ void Camera::moveDown(float deltaTime) noexcept
 
 void Camera::rotateCamera(const glm::vec2& newMousePosition) noexcept
 {
-    static glm::vec2 oldMousePosition;
+    static glm::vec2 oldMousePosition{ 4.0f, 3.0f };
     glm::vec2 mouseDelta = newMousePosition - oldMousePosition;
     _viewDirection = glm::mat3(glm::rotate(-mouseDelta.x, upDirection)) * _viewDirection;
 

@@ -27,15 +27,6 @@ TerrainHandler::~TerrainHandler() noexcept
 
 void TerrainHandler::update(float deltaTime) noexcept
 {
-    //int counter = 0;
-    //for (std::size_t i = 0; i < _drawableSceneObjects.size(); ++i)
-    //{
-    //    ++counter;
-    //    _drawableSceneObjects[i]->update(deltaTime);
-    //    _drawableSceneObjects[i]->draw();
-    //}
-    //std::cout << "Per-Morten:" << counter << std::endl;
-
     for (auto& object : _drawableSceneObjects)
     {
         object->update(deltaTime);
@@ -45,10 +36,11 @@ void TerrainHandler::update(float deltaTime) noexcept
 
 void TerrainHandler::createTerrain(const HeightMap& heightMap) noexcept
 {
-
     const glm::vec2 dirtOffset{ 0.0f, 0.0f };
     const glm::vec2 grassOffset{ 0.25f, 0.0f };
     const glm::vec2 snowOffset{ 0.50f, 0.0f };
+    const glm::vec2 deepWaterOffset{ 0.0f, 0.75f };
+
     const glm::vec2 waterOffset{ 0.75f, 0.0f };
 
     _sceneObjects.resize(heightMap.size());
@@ -61,7 +53,11 @@ void TerrainHandler::createTerrain(const HeightMap& heightMap) noexcept
             for (int k = 0; k < heightMap[i][j]; ++k)
             {
                 glm::vec2 textureOffset;
-                if (k < 2)
+                if (k < 1)
+                {
+                    textureOffset = deepWaterOffset;
+                }
+                else if (k < 2)
                 {
                     textureOffset = waterOffset;
                 }
@@ -77,6 +73,18 @@ void TerrainHandler::createTerrain(const HeightMap& heightMap) noexcept
                 {
                     textureOffset = snowOffset;
                 }
+
+                //make sure borders of the map get the dirt texture
+                if ((i == 0 || i == heightMap.size() - 1 ||
+                     j == 0 || j == heightMap[i].size() - 1) &&
+                    k < heightMap[i][j] - 1 && k > 2 && !(k > 17))
+                {
+                    textureOffset = dirtOffset;//newObject->setTextureOffset(dirtTextureOffset);
+                }
+                if (k < heightMap[i][j] - 1 && k > 2 && !(k > 17))
+                {
+                    textureOffset = dirtOffset;
+                }
                 SceneObject* object = new SceneObject(_renderer,
                                                       "DirectionalFullTexture",
                                                       "Cube",
@@ -90,6 +98,9 @@ void TerrainHandler::createTerrain(const HeightMap& heightMap) noexcept
             }
         }
     }
+
+
+    
 }
 
 void TerrainHandler::hideUndrawableTerrain() noexcept
@@ -143,17 +154,7 @@ void TerrainHandler::createDrawableSceneList() noexcept
     
     // Copy into the list of drawable elements
     std::copy(temp.begin(), tempEnd,std::back_inserter(_drawableSceneObjects));
+    // Sort it based on the texture offset so we don't have to send that uniform so often
     std::sort(_drawableSceneObjects.begin(), _drawableSceneObjects.end(), [](auto& a, auto& b) {return (a->getTextureOffset().x < b->getTextureOffset().x);});
-
-    int timesSwitched = 0;
-    for (std::size_t i = 1; i < _drawableSceneObjects.size(); ++i)
-    {
-        if (_drawableSceneObjects[i]->getTextureOffset().x != _drawableSceneObjects[i - 1]->getTextureOffset().x)
-        {
-            timesSwitched++;
-        }
-    }
-    std::cout << _drawableSceneObjects.size() << std::endl;
-    std::cout << "times switched: " << timesSwitched << std::endl;
 }
 
