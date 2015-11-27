@@ -71,7 +71,7 @@ public:
 
     void keepWindowOpen(bool isOpen) noexcept;
 
-    bool isNight() const noexcept;
+    bool isDayTime() const noexcept;
 
 private:
     // Rendering Functions

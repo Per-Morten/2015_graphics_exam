@@ -320,6 +320,7 @@ void Renderer::advanceLight(float deltaTime) noexcept
     {
         _sunAngle = 0.0f;
     }
+    std::cout << _sunAngle << std::endl;
 }
 
 void Renderer::regressLight(float deltaTime) noexcept
@@ -330,6 +331,8 @@ void Renderer::regressLight(float deltaTime) noexcept
     {
         _sunAngle = 180.0f;
     }
+    std::cout << _sunAngle << std::endl;
+
 }
 
 void Renderer::increaseWorldScale() noexcept
@@ -369,9 +372,9 @@ void Renderer::keepWindowOpen(bool isOpen) noexcept
     _windowIsOpen = isOpen;
 }
 
-bool Renderer::isNight() const noexcept
+bool Renderer::isDayTime() const noexcept
 {
-    return _sunAngle > lowerNightAngle || _sunAngle < upperNightAngle;
+    return _sunAngle > lowerNightAngle && _sunAngle < upperNightAngle;
 }
 
 // Private functions

@@ -253,13 +253,13 @@ void handleInput(std::queue<GameEvent>& eventQueue,
 
 void handleTimeOfDay(Renderer& renderer, SceneObject* skyBox)
 {
-    if(renderer.isNight())
+    if(renderer.isDayTime())
     {
 
-        skyBox->setTexture(Renderer::skyboxNightTexture);
+        skyBox->setTexture(Renderer::skyboxDayTexture);
         return;
     }
-    skyBox->setTexture(Renderer::skyboxDayTexture);
+    skyBox->setTexture(Renderer::skyboxNightTexture);
 }
 
 int main(int argc, char* argv[])
