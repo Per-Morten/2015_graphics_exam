@@ -5,9 +5,13 @@
 You will replace this text with the documentation of your progress and your solution
 Buttons mapped to features:
 ** 9 Raise Scale
+
 ** 8 Lower Scale
+
 ** 0 Reset Scale
+
 ** 1 Earlier Sun
+
 ** 2 Later Sun
 
 Extra Features:
