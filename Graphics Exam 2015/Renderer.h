@@ -13,6 +13,7 @@
 #include "Mesh.h"
 #include "ShaderProgram.h"
 #include "Texture.h"
+#include "DegToRad.h"
 
 class Renderer
 {
@@ -95,7 +96,8 @@ private:
     float _ambientFactor{ 0.1f };
     // length*cos(angle) = xDirection,
     // length*sin(angle) = yDirection,
-    glm::vec3 _lightDirection{ -1.8792f, 0.684, -0.2 };
+    // -1.8792f, 0.684, -0.2 
+    glm::vec3 _lightDirection{ 1 * cos(degToRad(20)), 1 * sin(degToRad(20)), 0.0f};
 
     glm::mat4 _worldScale{ 1.0f, 0.0f, 0.0f, 0.0f,
                            0.0f, 1.0f, 0.0f, 0.0f,
@@ -107,5 +109,7 @@ private:
     std::unordered_map<std::string, gsl::owner<Texture*>> _textures{};
 
     bool _windowIsOpen{};
+
+    float _sunAngle{ 20 };
 };
 

@@ -29,6 +29,9 @@ void main()
 	
 	gl_Position = MVPS * vertexPosition;
 
+	// Move the texture Coordinates into the numberOfRows areas aswell
+	// So if the numberOfRows is 4, then the textureCoordinates that used to be in 0-1,
+	// now turns into 0-0.25, and then we add on the textureOffset.
 	fragmentTextureCoordinate = (textureCoordinate/NumberOfRows) + TextureOffset;
 
 	fragmentColor = VertexColor;

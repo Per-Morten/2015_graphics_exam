@@ -312,12 +312,16 @@ bool Renderer::windowIsOpen() const noexcept
 
 void Renderer::advanceLight(float deltaTime) noexcept
 {
-    _lightDirection.x += deltaTime;
+    _sunAngle += deltaTime * 10;
+    _lightDirection = glm::vec3(-cos(degToRad(_sunAngle)),sin(degToRad(_sunAngle)),0.0);
+    std::cout << _sunAngle << std::endl;
 }
 
 void Renderer::regressLight(float deltaTime) noexcept
 {
-    _lightDirection.x -= deltaTime;
+    _sunAngle -= deltaTime * 10;
+    _lightDirection = glm::vec3(-cos(degToRad(_sunAngle)),sin(degToRad(_sunAngle)),0.0);
+    std::cout << _sunAngle << std::endl;
 }
 
 void Renderer::increaseWorldScale() noexcept

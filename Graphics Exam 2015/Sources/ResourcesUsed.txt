@@ -1,4 +1,4 @@
-https://www.youtube.com/watch?v=6T182r4F6J8 For Textures (Do this if time)
+https://www.youtube.com/watch?v=6T182r4F6J8 For Textures my second implementation
 http://0fps.net/2013/07/09/texture-atlases-wrapping-and-mip-mapping/ For textures in Frag.
 
 For Camera Movement:
@@ -6,40 +6,9 @@ https://www.youtube.com/watch?v=HhXzKOMkA1k for Horizontal
 https://www.youtube.com/watch?v=7oNLw9Bct1k for Vertical
 https://www.youtube.com/watch?v=v6RZRPo0O3k for Keyboard
 
-
-Performance 0.47 without "Optimized Color";
-Performance 0.41 with "Optimized Color";
-
-Performance 0.37 with "Removed MVP and Optimized modelMatrix";
-
-Performance 0.37 unoptimized Normals;
-Performance 0.37 Optimized Normals";
-
-Performance 0.37 unoptimized camera matrix
-
-
+Sky textures (only two are in use)
 http://cdni.wired.co.uk/1240x826/s_v/space_11.jpg
 http://clipartzebra.com/cat/16/blue-sky-05.html
 http://backgrounds.mysitemyway.com/background/tileable-classic-nebula-space-patterns-1/
 http://www.psu.com/wallpaper/848/Clouds-at-Dawn-From-the-Sky
 http://data.hdwallpapers.im/love_in_the_evening.jpg
-
-
-Keys in use:
-9 Raise
-8 Lower
-0 Reset
-1 Earlier
-2 Later
-w Forward
-s Back
-a Left
-d Right
-x Down
-c Up
-k Create
-i Destroy
-p EnableMovement
-m NextTexture
-n Toggle Rain
-t Toggle Snow
