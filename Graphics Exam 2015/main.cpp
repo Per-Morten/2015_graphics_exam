@@ -252,20 +252,15 @@ void handleInput(std::queue<GameEvent>& eventQueue,
 
 
 
-void handleTimeOfDay(Renderer& renderer, SceneObject* skyBox, int timeOfDay)
+void handleTimeOfDay(Renderer& renderer, SceneObject* skyBox)
 {
-    constexpr auto day = 100;
-    constexpr auto night = 200;
-    if (timeOfDay > night)
+    if(renderer.isNight())
     {
+
         skyBox->setTexture(Renderer::skyboxNightTexture);
         return;
     }
-    if (timeOfDay < day)
-    {
-        skyBox->setTexture(Renderer::skyboxDayTexture);
-        return;
-    }
+    skyBox->setTexture(Renderer::skyboxDayTexture);
 }
 
 int main(int argc, char* argv[])
@@ -310,8 +305,8 @@ int main(int argc, char* argv[])
         renderer.clear();
 
         terrainHandler.update(deltaTime);
-        //skyBox->update(deltaTime);
-        //skyBox->draw();
+        skyBox->update(deltaTime);
+        skyBox->draw();
         
         renderer.present();
         handleInput(eventQueue, renderer, camera, deltaTime, mousePosition, heights, terrainHandler, timeOfDay);
@@ -320,7 +315,7 @@ int main(int argc, char* argv[])
         deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(clockStop - clockStart).count();
 
         
-        handleTimeOfDay(renderer,skyBox,timeOfDay);
+        handleTimeOfDay(renderer,skyBox);
     }
     delete skyBox;
     return 0;

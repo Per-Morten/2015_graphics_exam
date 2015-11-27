@@ -59,7 +59,7 @@ public:
 
     void keepWindowOpen(bool isOpen) noexcept;
 
-
+    bool isNight() const noexcept;
 
     const std::string windowName{ "Graphics Exam 2015 - Per-Morten Straume" };
     const GLint width{};

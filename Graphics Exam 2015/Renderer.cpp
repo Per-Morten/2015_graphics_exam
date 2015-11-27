@@ -313,15 +313,21 @@ bool Renderer::windowIsOpen() const noexcept
 void Renderer::advanceLight(float deltaTime) noexcept
 {
     _sunAngle += deltaTime * 10;
-    _lightDirection = glm::vec3(-cos(degToRad(_sunAngle)),sin(degToRad(_sunAngle)),0.0);
-    std::cout << _sunAngle << std::endl;
+    _lightDirection = glm::vec3(cos(degToRad(_sunAngle)),sin(degToRad(_sunAngle)),0.0);
+    if (_sunAngle > 180.0f)
+    {
+        _sunAngle = 0.0f;
+    }
 }
 
 void Renderer::regressLight(float deltaTime) noexcept
 {
     _sunAngle -= deltaTime * 10;
-    _lightDirection = glm::vec3(-cos(degToRad(_sunAngle)),sin(degToRad(_sunAngle)),0.0);
-    std::cout << _sunAngle << std::endl;
+    _lightDirection = glm::vec3(cos(degToRad(_sunAngle)),sin(degToRad(_sunAngle)),0.0);
+    if (_sunAngle < 0.0f)
+    {
+        _sunAngle = 180.0f;
+    }
 }
 
 void Renderer::increaseWorldScale() noexcept
@@ -342,6 +348,11 @@ void Renderer::resetWorldScale() noexcept
 void Renderer::keepWindowOpen(bool isOpen) noexcept
 {
     _windowIsOpen = isOpen;
+}
+
+bool Renderer::isNight() const noexcept
+{
+    return _sunAngle > 145.0f || _sunAngle < 45.0f;
 }
 
 // Private functions
