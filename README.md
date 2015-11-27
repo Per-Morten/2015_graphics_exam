@@ -4,29 +4,27 @@
 
 You will replace this text with the documentation of your progress and your solution
 Buttons mapped to features:
-** 9 Raise Scale
 
-** 8 Lower Scale
-
-** 0 Reset Scale
-
-** 1 Earlier Sun
-
-** 2 Later Sun
+* 9 Raise Scale
+* 8 Lower Scale
+* 0 Reset Scale
+* 1 Earlier Sun
+* 2 Later Sun
 
 Extra Features:
-** p toggle camera movement on and off
-** w Move camera in the direction you are facing
-** s Move camera backwards from the direction you are facing
-** a Strafe camera Left
-** d Strafe Camera Right
-** x Move camera down
-** c Move camera Up
-** k create block below you (/continue building on the stack you are standing "in")
-** i destroy block below you (/destroy the block on top of the stack you are standing "in")
-** m NextTexture, scrolls through the different texture sets.
-** n toggle Rain (turns on a cloud and starts pouring down rain)
-** t toggle Snow (turns on a cloud and turns the world into a snowy landscape with icy water and powdery snow)
+
+* p toggle camera movement on and off
+* w Move camera in the direction you are facing
+* s Move camera backwards from the direction you are facing
+* a Strafe camera Left
+* d Strafe Camera Right
+* x Move camera down
+* c Move camera Up
+* k create block below you (/continue building on the stack you are standing "in")
+* i destroy block below you (/destroy the block on top of the stack you are standing "in")
+* m NextTexture, scrolls through the different texture sets.
+* n toggle Rain (turns on a cloud and starts pouring down rain)
+* t toggle Snow (turns on a cloud and turns the world into a snowy landscape with icy water and powdery snow)
 
 
 
