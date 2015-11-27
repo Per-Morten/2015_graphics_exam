@@ -31,6 +31,7 @@ InputHandler::InputHandler()
     eventRepeatRate[ActionEnum::NEXTTEXTURE] = 10;
     eventRepeatRate[ActionEnum::TOGGLERAIN] = 10;
     eventRepeatRate[ActionEnum::TOGGLESNOW] = 10;
+    eventRepeatRate[ActionEnum::TOGGLEWARPMODE] = 10;
 
     eventRepeat[ActionEnum::RAISE] = INACTIVE;
     eventRepeat[ActionEnum::LOWER] = INACTIVE; // Make sure all new events are inactive
@@ -53,6 +54,7 @@ InputHandler::InputHandler()
 
     eventRepeat[ActionEnum::TOGGLERAIN] = INACTIVE;
     eventRepeat[ActionEnum::TOGGLESNOW] = INACTIVE;
+    eventRepeat[ActionEnum::TOGGLEWARPMODE] = INACTIVE;
 }
 
 /* Handles the keyboard events.  Updates the events queue with new Game Events. quits on esc*/
@@ -128,6 +130,10 @@ bool InputHandler::handleKeys(SDL_Event &eventHandler, std::queue<GameEvent>& ev
 
                 case SDLK_t:
                     action = ActionEnum::TOGGLESNOW;
+                    break;
+
+                case SDLK_b:
+                    action = ActionEnum::TOGGLEWARPMODE;
                     break;
 
                 case SDLK_ESCAPE:
@@ -215,6 +221,9 @@ bool InputHandler::handleKeys(SDL_Event &eventHandler, std::queue<GameEvent>& ev
                     action = ActionEnum::TOGGLESNOW;
                     break;
 
+                case SDLK_b:
+                    action = ActionEnum::TOGGLEWARPMODE;
+                    break;
 
                 default:
                     break;
@@ -236,13 +245,10 @@ void InputHandler::handleMouse(SDL_Event& eventHandler, std::queue<GameEvent>& e
     switch (eventHandler.type)
     {
         case SDL_MOUSEBUTTONDOWN:
-            std::cout << "Button down" << std::endl;
             break;
         case SDL_MOUSEBUTTONUP:
-            std::cout << "Button up" << std::endl;
             break;
         case SDL_MOUSEWHEEL:
-            std::cout << "Button wheel" << std::endl;
             break;
         case SDL_MOUSEMOTION:
                               // Not really nice to cast here

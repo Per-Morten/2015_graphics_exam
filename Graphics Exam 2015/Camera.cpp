@@ -64,14 +64,18 @@ void Camera::moveDown(float deltaTime) noexcept
 
 void Camera::rotateCamera(const glm::vec2& newMousePosition) noexcept
 {
-    static glm::vec2 oldMousePosition{ 4.0f, 3.0f };
-    glm::vec2 mouseDelta = newMousePosition - oldMousePosition;
+    auto scaledNewMouse = newMousePosition / cameraSensitivity;
+    
+    // Sorry, but random magic numbers so the mouse does not fly off when mouse is turned off for the first time
+    // Don't want to force you to readjust
+    static glm::vec2 oldMousePosition{ mouseStartPos };
+    glm::vec2 mouseDelta = scaledNewMouse - oldMousePosition;
     _viewDirection = glm::mat3(glm::rotate(-mouseDelta.x, upDirection)) * _viewDirection;
 
     // Find a vector to rotate around, think of rotating around Z in 2D Space
     glm::vec3 toRotateAround = glm::cross(_viewDirection, upDirection);
     _viewDirection = glm::mat3(glm::rotate(-mouseDelta.y, toRotateAround)) * _viewDirection;
 
-    oldMousePosition = newMousePosition;
+    oldMousePosition = scaledNewMouse;
 }
 

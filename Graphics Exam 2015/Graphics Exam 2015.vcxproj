@@ -104,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Consts.h" />
     <ClInclude Include="DegToRad.h" />
     <ClInclude Include="GameEvent.h" />
     <ClInclude Include="GLTypes.h" />

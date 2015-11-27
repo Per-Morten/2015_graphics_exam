@@ -1,8 +1,9 @@
 #include "TerrainHandler.h"
 #include <algorithm>
 #include <iostream>
-
 #include <random>
+
+#include "Consts.h"
 
 TerrainHandler::TerrainHandler(Renderer& renderer, const HeightMap& heightMap) noexcept
     :_renderer(renderer)
@@ -64,7 +65,7 @@ void TerrainHandler::addCube(std::size_t xIndex, std::size_t zIndex) noexcept
                                                             Renderer::regularShader,
                                                             Renderer::cubeMesh,
                                                             Renderer::groundTexture,
-                                                            0,
+                                                            SceneObject::dirtTexture,
                                                             newPosition));
     applyCorrectTextures();
     hideUndrawableTerrain();
@@ -87,8 +88,8 @@ void TerrainHandler::deleteCube(std::size_t xIndex, std::size_t zIndex) noexcept
 
 void TerrainHandler::switchToNextTextureSet() noexcept
 {
-    _baseTexture += 4;
-    if (_baseTexture >= 16)
+    _baseTexture += Consts::NUMBEROFROWSINATLAS;
+    if (_baseTexture >= Consts::NUMBEROFROWSINATLAS * Consts::NUMBEROFROWSINATLAS)
     {
         _baseTexture = 0;
     }
@@ -138,7 +139,7 @@ void TerrainHandler::updateDownPour(float deltaTime) noexcept
             startDownPour(_downPour[i], deltaTime);
         }
         auto newPosition = _downPour[i]->getPosition();
-        newPosition.y -= 100.5f * deltaTime;
+        newPosition.y -= downPourFallSpeed * deltaTime;
         if (newPosition.y * _downPour[i]->getScale().y <= 0.0f)
         {
             _downPour[i]->setVisible(false);
@@ -171,13 +172,13 @@ void TerrainHandler::createTerrain(const HeightMap& heightMap) noexcept
                                                       Renderer::regularShader,
                                                       Renderer::cubeMesh,
                                                       Renderer::groundTexture,
-                                                      0,
+                                                      SceneObject::dirtTexture,
                                                       glm::vec3(i * SceneObject::cubeSize, k * SceneObject::cubeSize, j * SceneObject::cubeSize));
                 _sceneObjects[i][j].push_back(object);
 
                 if (heightMap[i][j] > highestValue)
                 {
-                    highestValue = heightMap[i][j];
+                    highestValue = static_cast<float>(heightMap[i][j]);
                 }
             }
         }
@@ -306,6 +307,8 @@ void TerrainHandler::applyCorrectTextures() noexcept
 
 void TerrainHandler::createDownPour() noexcept
 {
+    glm::vec3 position{ 0.0f,0.0f,0.0f };
+    glm::vec3 scale{downPourSize, downPourSize, downPourSize};
     for (std::size_t i = 0; i < _downPour.size(); ++i)
     {
         _downPour[i] = new SceneObject(_renderer,
@@ -313,8 +316,8 @@ void TerrainHandler::createDownPour() noexcept
                                        Renderer::cubeMesh,
                                        Renderer::groundTexture,
                                        SceneObject::deepWaterTexture,
-                                       { 0.0f, 0.0f, 0.0f },
-                                       { 0.5f, 0.5f, 0.5f });
+                                       position,
+                                       scale);
     }
 }
 
@@ -338,17 +341,22 @@ void TerrainHandler::startDownPour(SceneObject* drop, float deltaTime) noexcept
     static float timeToNextDrop;
     timeToNextDrop += deltaTime;
 
-    if (timeToNextDrop >= 1.0f)
+    if (timeToNextDrop >= timeBetweenDrops)
     {
         auto rainDropStartPosition = _cloud->getPosition();
 
+        int lowerXCoord = static_cast<int>(_cloud->getPosition().x - _cloud->getScale().x * SceneObject::cubeSize / 2);
+        int upperXCoord = static_cast<int>(_cloud->getPosition().x + _cloud->getScale().x * SceneObject::cubeSize / 2);
+        int lowerZCoord = static_cast<int>(_cloud->getPosition().z - _cloud->getScale().z * SceneObject::cubeSize / 2);
+        int upperZCoord = static_cast<int>(_cloud->getPosition().z + _cloud->getScale().z * SceneObject::cubeSize / 2);
+
         std::random_device randomizer;
         std::default_random_engine engine(randomizer());
-        std::uniform_int_distribution<int> distributionX(_cloud->getPosition().x - _cloud->getScale().x * SceneObject::cubeSize / 2, _cloud->getPosition().x + _cloud->getScale().x * SceneObject::cubeSize / 2);
-        std::uniform_int_distribution<int> distributionZ(_cloud->getPosition().z - _cloud->getScale().z * SceneObject::cubeSize / 2, _cloud->getPosition().z + _cloud->getScale().z * SceneObject::cubeSize / 2);
+        std::uniform_int_distribution<int> distributionX(lowerXCoord, upperXCoord);
+        std::uniform_int_distribution<int> distributionZ(lowerZCoord,upperZCoord);
 
-        rainDropStartPosition.x = distributionX(engine);
-        rainDropStartPosition.z = distributionZ(engine);
+        rainDropStartPosition.x = static_cast<float>(distributionX(engine));
+        rainDropStartPosition.z = static_cast<float>(distributionZ(engine));
 
         drop->setVisible(true);
         drop->setPosition(rainDropStartPosition);

@@ -18,12 +18,12 @@ enum class ActionEnum :int
     EARLIER,
     CREATE, // creating and removing blocks
     DESTROY,
-    MOUSEMOTION,
+    MOUSEMOTION, // Moving the mouse
     ENABLEMOVEMENT,
-    GENERATE,
-    NEXTTEXTURE,
+    NEXTTEXTURE, // Flips through the textures in the textureAtlas
     TOGGLESNOW,
     TOGGLERAIN,
+    TOGGLEWARPMODE
 };
 
 /* This struct deals with an agent creating events.  This has an agent number and the action*/

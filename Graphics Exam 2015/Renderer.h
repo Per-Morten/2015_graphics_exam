@@ -31,6 +31,17 @@ public:
     static constexpr auto regularShader = "DirectionalFullTexture";
     static constexpr auto nonScalingShader = "nonScaling";
     static constexpr auto nonScalingWLight = "nonScalingWLight";
+    static constexpr auto windowName = "Graphics Exam 2015 - Per-Morten Straume" ;
+    static constexpr float warpFov = 179.0f;
+    static constexpr float lightRotationSpeed = 10.0f;
+    static constexpr float worldUpScaleRate = 1.1f;
+    static constexpr float worldDownScaleRate = 0.9f;
+    static constexpr float lowerNightAngle = 45.0f;
+    static constexpr float upperNightAngle = 145.0f;
+    const glm::vec4 clearColor = { 0.25f, 0.25f, 0.25f, 1.0f };
+    const GLint width{};
+    const GLint height{};
+    const float fieldOfView = glm::pi<float>()/3.0f;
 
     Renderer(GLint width, GLint height, Camera& _camera) noexcept;
     ~Renderer() noexcept;
@@ -56,14 +67,12 @@ public:
     void increaseWorldScale() noexcept;
     void decreaseWorldScale() noexcept;
     void resetWorldScale() noexcept;
+    void toggleWarpMode() noexcept;
 
     void keepWindowOpen(bool isOpen) noexcept;
 
     bool isNight() const noexcept;
 
-    const std::string windowName{ "Graphics Exam 2015 - Per-Morten Straume" };
-    const GLint width{};
-    const GLint height{};
 private:
     // Rendering Functions
     // object related
@@ -99,16 +108,14 @@ private:
     // -1.8792f, 0.684, -0.2 
     glm::vec3 _lightDirection{ 1 * cos(degToRad(20)), 1 * sin(degToRad(20)), 0.0f};
 
-    glm::mat4 _worldScale{ 1.0f, 0.0f, 0.0f, 0.0f,
-                           0.0f, 1.0f, 0.0f, 0.0f,
-                           0.0f, 0.0f, 1.0f, 0.0f,
-                           0.0f, 0.0f, 0.0f, 1.0f };
+    glm::mat4 _worldScale{1 };
     glm::mat4 _projectionMatrix{};
     std::unordered_map<std::string, gsl::owner<ShaderProgram*>> _shaderPrograms{};
     std::unordered_map<std::string, gsl::owner<Mesh*>> _meshes{};
     std::unordered_map<std::string, gsl::owner<Texture*>> _textures{};
 
     bool _windowIsOpen{};
+    bool _warpMode{false};
 
     float _sunAngle{ 20 };
 };

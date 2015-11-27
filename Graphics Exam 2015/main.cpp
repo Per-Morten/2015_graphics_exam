@@ -32,6 +32,7 @@ $(SDL_HOME)\include;$(GLEW_HOME)\include;$(GLM_HOME);$(IncludePath)
 #include "Renderer.h"
 #include "SceneObject.h"
 #include "TerrainHandler.h"
+#include "Consts.h"
 
 
 // Force external GPU
@@ -41,9 +42,6 @@ $(SDL_HOME)\include;$(GLEW_HOME)\include;$(GLM_HOME);$(IncludePath)
 //    _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
 //}
 
-constexpr int SCREEN_WIDTH = 800;
-constexpr int SCREEN_HEIGHT = 600;
-std::string windowName = "Graphics Exam 2015 - Per-Morten Straume";
 
 std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
 {
@@ -88,13 +86,14 @@ std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
 
 gsl::owner<SceneObject*> createSkyBox(Renderer& renderer)
 {
+    constexpr float skyboxScale = 1000.0f;
     SceneObject* skyBox = new SceneObject(renderer,
                                           Renderer::nonScalingShader,
                                           Renderer::cubeMesh,
                                           Renderer::skyboxDayTexture,
                                           0,
                                           glm::vec3(0.0f, 0.0f, 0.0f),
-                                          glm::vec3(1000.0f, 1000.0f, 1000.0f),
+                                          glm::vec3(skyboxScale, skyboxScale, skyboxScale),
                                           glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
                                           glm::vec3(0.0f, 0.0f, 0.0f),
                                           Renderer::FacingDirection::FRONT);
@@ -129,8 +128,7 @@ void handleInput(std::queue<GameEvent>& eventQueue,
                  float deltaTime,
                  glm::vec2& mousePosition,
                  const std::vector<std::vector<int>>& heightMap,
-                 TerrainHandler& terrainHandler,
-                 int& timeOfDay) noexcept
+                 TerrainHandler& terrainHandler) noexcept
 {
     static bool enableMovement = false;
     while (!eventQueue.empty())
@@ -154,12 +152,10 @@ void handleInput(std::queue<GameEvent>& eventQueue,
 
             case ActionEnum::LATER:
                 renderer.advanceLight(deltaTime);
-                timeOfDay++;
                 break;
 
             case ActionEnum::EARLIER:
                 renderer.regressLight(deltaTime);
-                timeOfDay--;
                 break;
 
             case ActionEnum::FORWARD:
@@ -207,7 +203,7 @@ void handleInput(std::queue<GameEvent>& eventQueue,
             case ActionEnum::MOUSEMOTION:
                 if (enableMovement)
                 {
-                    camera.rotateCamera(mousePosition / 100.0f);
+                    camera.rotateCamera(mousePosition);
                 }
                 break;
 
@@ -246,6 +242,9 @@ void handleInput(std::queue<GameEvent>& eventQueue,
             case ActionEnum::TOGGLESNOW:
                 terrainHandler.toggleSnow();
                 break;
+
+            case ActionEnum::TOGGLEWARPMODE:
+                renderer.toggleWarpMode();
         }
     }
 }
@@ -266,7 +265,7 @@ void handleTimeOfDay(Renderer& renderer, SceneObject* skyBox)
 int main(int argc, char* argv[])
 {
     Camera camera;
-    Renderer renderer(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
+    Renderer renderer(Consts::SCREEN_WIDTH, Consts::SCREEN_HEIGHT, camera);
 
     if (!renderer.initialize())
     {
@@ -292,8 +291,8 @@ int main(int argc, char* argv[])
     TerrainHandler terrainHandler(renderer, heights);
     
     auto skyBox = createSkyBox(renderer);
+    // 0.1 as we don't want to multiply our scales etc with 0 on first runthrough
     float deltaTime = 0.1f;
-    int timeOfDay = 0;
     while (renderer.windowIsOpen())
     {
         bool keepWindowOpen = inputHandler.processEvents(eventHandler, eventQueue, mousePosition);
@@ -309,7 +308,7 @@ int main(int argc, char* argv[])
         skyBox->draw();
         
         renderer.present();
-        handleInput(eventQueue, renderer, camera, deltaTime, mousePosition, heights, terrainHandler, timeOfDay);
+        handleInput(eventQueue, renderer, camera, deltaTime, mousePosition, heights, terrainHandler);
 
         auto clockStop = std::chrono::high_resolution_clock::now();
         deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(clockStop - clockStart).count();

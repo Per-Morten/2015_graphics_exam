@@ -2,6 +2,9 @@
 #include <glm\glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm\gtx\rotate_vector.hpp>
+
+#include "Consts.h"
+
 class Camera
 {
 public:
@@ -22,12 +25,17 @@ public:
 
     void rotateCamera(const glm::vec2& newMousePosition) noexcept;
 
-    static constexpr float maxViewDistance = 100000.0f;
+    static constexpr float maxViewDistance = 10000.0f;
     static constexpr float minViewDistance = 0.1f;
+    static constexpr float mouseDownScale = 1.0f/100.0f;
+    static constexpr float cameraSensitivity = 100.0f;
+    const glm::vec2 mouseStartPos = { Consts::SCREEN_WIDTH/(cameraSensitivity * 2), Consts::SCREEN_HEIGHT/(cameraSensitivity * 2) };
+
     const glm::vec3 startPosition = { 0.0f, 300.0f, -500.0f };
     const glm::vec3 startFocus = { 0.0f, 0.0f, 0.0f };
     const glm::vec3 upDirection = { 0.0f, 1.0f, 0.0f };
     const float movementSpeed = { 100.0f };
+
 private:
     glm::vec3 _position{ startPosition };
     glm::vec3 _focusPoint{ startFocus };

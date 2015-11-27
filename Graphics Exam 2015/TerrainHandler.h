@@ -17,6 +17,9 @@ public:
     static constexpr int grassLevel = 3;
     static constexpr int snowLevel = 17;
     static constexpr std::size_t maxRain = 300;
+    static constexpr float downPourFallSpeed = 100.5f;
+    static constexpr float downPourSize = 0.5f;
+    static constexpr float timeBetweenDrops = 1.0f;
 
     TerrainHandler(Renderer& renderer,const HeightMap& heightMap) noexcept;
     ~TerrainHandler() noexcept;

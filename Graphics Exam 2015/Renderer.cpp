@@ -6,6 +6,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <tuple>
 
+#include "Consts.h"
+
 namespace
 {
     namespace Local
@@ -169,7 +171,7 @@ Renderer::Renderer(GLint width,
     : width(width)
     , height(height)
     , _camera(camera)
-    , _projectionMatrix(glm::perspective(glm::pi<float>() / 3.0f,
+    , _projectionMatrix(glm::perspective(fieldOfView,
                                          static_cast<float>(width) / static_cast<float>(height),
                                          camera.minViewDistance, camera.maxViewDistance))
 {
@@ -312,8 +314,8 @@ bool Renderer::windowIsOpen() const noexcept
 
 void Renderer::advanceLight(float deltaTime) noexcept
 {
-    _sunAngle += deltaTime * 10;
-    _lightDirection = glm::vec3(cos(degToRad(_sunAngle)),sin(degToRad(_sunAngle)),0.0);
+    _sunAngle += deltaTime * lightRotationSpeed;
+    _lightDirection = glm::vec3(cos(degToRad(_sunAngle)), sin(degToRad(_sunAngle)), 0.0);
     if (_sunAngle > 180.0f)
     {
         _sunAngle = 0.0f;
@@ -322,8 +324,8 @@ void Renderer::advanceLight(float deltaTime) noexcept
 
 void Renderer::regressLight(float deltaTime) noexcept
 {
-    _sunAngle -= deltaTime * 10;
-    _lightDirection = glm::vec3(cos(degToRad(_sunAngle)),sin(degToRad(_sunAngle)),0.0);
+    _sunAngle -= deltaTime * lightRotationSpeed;
+    _lightDirection = glm::vec3(cos(degToRad(_sunAngle)), sin(degToRad(_sunAngle)), 0.0);
     if (_sunAngle < 0.0f)
     {
         _sunAngle = 180.0f;
@@ -332,17 +334,34 @@ void Renderer::regressLight(float deltaTime) noexcept
 
 void Renderer::increaseWorldScale() noexcept
 {
-    _worldScale[1][1] *= 1.1f;
+    _worldScale[1][1] *= worldUpScaleRate;
 }
 
 void Renderer::decreaseWorldScale() noexcept
 {
-    _worldScale[1][1] *= 0.9f;
+    _worldScale[1][1] *= worldUpScaleRate;
 }
 
 void Renderer::resetWorldScale() noexcept
 {
     _worldScale[1][1] = 1.0f;
+}
+
+void Renderer::toggleWarpMode() noexcept
+{
+    _warpMode = !_warpMode;
+    if (_warpMode)
+    {
+        _projectionMatrix = glm::perspective(warpFov,
+                                             static_cast<float>(width) / static_cast<float>(height),
+                                             _camera.minViewDistance, _camera.maxViewDistance);
+    }
+    else
+    {
+        _projectionMatrix = glm::perspective(fieldOfView,
+                                             static_cast<float>(width) / static_cast<float>(height),
+                                             _camera.minViewDistance, _camera.maxViewDistance);
+    }
 }
 
 void Renderer::keepWindowOpen(bool isOpen) noexcept
@@ -352,7 +371,7 @@ void Renderer::keepWindowOpen(bool isOpen) noexcept
 
 bool Renderer::isNight() const noexcept
 {
-    return _sunAngle > 145.0f || _sunAngle < 45.0f;
+    return _sunAngle > lowerNightAngle || _sunAngle < upperNightAngle;
 }
 
 // Private functions
@@ -577,7 +596,7 @@ bool Renderer::initializeSDL() noexcept
 
 bool Renderer::createWindow() noexcept
 {
-    _window = SDL_CreateWindow(windowName.c_str(),
+    _window = SDL_CreateWindow(windowName,
                                SDL_WINDOWPOS_UNDEFINED,
                                SDL_WINDOWPOS_UNDEFINED,
                                width,
@@ -628,7 +647,8 @@ bool Renderer::setVsyncOn() noexcept
 
 void Renderer::initializeOpenGL() noexcept
 {
-    glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
+
+    glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -653,7 +673,7 @@ void Renderer::initializeVariables() noexcept
                                  std::get<2>(meshData),
                                  std::get<3>(meshData));
 
-    _textures[groundTexture] = new Texture("Resources/Textures/texture.png", 4);
+    _textures[groundTexture] = new Texture("Resources/Textures/texture.png", Consts::NUMBEROFROWSINATLAS);
     _textures[skyboxNightTexture] = new Texture("Resources/Textures/Night.jpg", 1);
     _textures[skyboxDayTexture] = new Texture("Resources/Textures/Sky.jpg", 1);
 }
