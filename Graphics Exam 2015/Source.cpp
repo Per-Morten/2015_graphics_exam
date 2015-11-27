@@ -302,7 +302,7 @@ int main(int argc, char* argv[])
 
         
         handleTimeOfDay(renderer,skyBox,timeOfDay);
-        //printf("%f\n", 1 / deltaTime);
+        printf("%f\n", 1 / deltaTime);
     }
 
     return 0;

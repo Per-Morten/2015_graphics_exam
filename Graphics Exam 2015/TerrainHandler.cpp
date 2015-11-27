@@ -190,8 +190,7 @@ void TerrainHandler::createTerrain(const HeightMap& heightMap) noexcept
                              Renderer::groundTexture,
                              SceneObject::cloudTexture,
                              glm::vec3((heightMap.size() * SceneObject::cubeSize) / 2, highestValue * SceneObject::cubeSize, (heightMap[0].size() * SceneObject::cubeSize) / 2),
-                             glm::vec3(heightMap.size(), SceneObject::cubeSize / 4, heightMap[0].size()),
-                             glm::vec4(1.0f, 1.0f, 1.0f,0.25f));
+                             glm::vec3(heightMap.size(), SceneObject::cubeSize / 4, heightMap[0].size()));
 }
 
 void TerrainHandler::hideUndrawableTerrain() noexcept
@@ -295,6 +294,10 @@ void TerrainHandler::applyCorrectTextures() noexcept
                 {
                     textureIndex = SceneObject::snowTexture;
                 }
+                if (_isSnowing && k < shallowWaterLevel)
+                {
+                    textureIndex = SceneObject::shallowWaterTexture;
+                }
                 _sceneObjects[i][j][k]->setTextureIndex(textureIndex + _baseTexture);
             }
         }
@@ -341,10 +344,11 @@ void TerrainHandler::startDownPour(SceneObject* drop, float deltaTime) noexcept
 
         std::random_device randomizer;
         std::default_random_engine engine(randomizer());
-        std::uniform_int_distribution<int> distribution(-SceneObject::cubeSize, SceneObject::cubeSize);
+        std::uniform_int_distribution<int> distributionX(_cloud->getPosition().x - _cloud->getScale().x * SceneObject::cubeSize / 2, _cloud->getPosition().x + _cloud->getScale().x * SceneObject::cubeSize / 2);
+        std::uniform_int_distribution<int> distributionZ(_cloud->getPosition().z - _cloud->getScale().z * SceneObject::cubeSize / 2, _cloud->getPosition().z + _cloud->getScale().z * SceneObject::cubeSize / 2);
 
-        rainDropStartPosition.x += distribution(engine) * SceneObject::cubeSize / 2;
-        rainDropStartPosition.z += distribution(engine) * SceneObject::cubeSize / 2;
+        rainDropStartPosition.x = distributionX(engine);
+        rainDropStartPosition.z = distributionZ(engine);
 
         drop->setVisible(true);
         drop->setPosition(rainDropStartPosition);
