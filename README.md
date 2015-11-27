@@ -56,20 +56,20 @@ For MipMapping Explenation
 https://developer.valvesoftware.com/wiki/MIP_Mapping
 Lecture6 Slides
 
-Also worked togheter on a lot of the task with Claus, Fredrik and Sebastian.
+Also worked together on a lot of the task with Claus, Fredrik and Sebastian.
 
 ### Most difficult part of code ###
-What part of the code caused the most problems.
-The part that coused the most problems was scaling in the vertexShader, Many different hacks were tried until I actually understood what I was trying to achieve.
+The part that caused the most problems was scaling in the vertexShader, Many different hacks were tried until I actually understood what I was trying to achieve.
 
 Fixing the performance was also quite hard, the framework we had available when we started was quite good, but not made to do 1016 drawing calls per frame. However after several performance enhancing algorithms and tricks the performance in Debug is now actually quite ok.
 
-Keeping the code "Tidy" was quite hard, especially in main, I had done a couple tgo many hacks and at one point I decided it was time to Refactor the code.
+Keeping the code "Tidy" was quite hard, especially in main, I had done a couple to many hacks and at one point I decided it was time to Refactor the code.
 
 Finding extra stuff to implement: for some reason my creativity was dead until the last day.
 
+Lighting is not my strongest side, so although we had it ready in the framework, I can say that it is still something I find challenging.
+
 ### Explanation of texture lookup and height scaling ###
-Here you must explain how you dealt with texture lookup and scaling of the vertex height.
 For texture lookup I decided to index the texture file based on how many different "textures" that were in there.
 example dirt = 0, grass = 1, snow = 2, etc etc.
 I also in my Texture class added a variable for holding the number of rows that the texture atlas represented. In this assignment that was 4.
@@ -85,12 +85,11 @@ Since order is important in matrixMultiplication I decided to send to rather cal
 Another solution could be to just make a scale matrix inside the vertex shader, and only send in a float as a uniform. But we then still need to calculate the MVP in there, however we would not need to send the whole 4x4 worldscale matrix that we do now. 
 
 ### Describe the problem in this task which Mip-mapping would be solve ###
-You need to describe the problem related to textures in this block world which mip-mapping of the texture would solve.
-Mipmapping is a "texturing" technique done mainly to avoid what is called moiré patterns.
+Mipmapping is a "texturing" technique done mainly to avoid artifacts like for examples moiré patterns.
 The technique involves taking a high resolution picture, scaling it down and filter it into several resolutions.
 In my case mipmapping would solve the aliasing I am struggling with when I look at my textures at the "right/wrong angle",
 leading to artifacts in my textures. This is especially noticable in my program if you have a larger map, and press m enough time to get the "1" texture on the ground, you will see that in the distance the black colors from the "1" texture blends into each other, if you for instance stand in one particular angle, the vertical number 1, can turn into a horizontal black line. 
-The artifacts is a result of poor sampling of a high resolution image. 
+The artifacts is a result of sampling from a high resolution image when drawing stuff far away, which leads to the colors blending into each other in an unintended fashion.  
 
 
 ## Exam Details ##
