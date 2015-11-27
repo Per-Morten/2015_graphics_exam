@@ -70,7 +70,7 @@ std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
 gsl::owner<SceneObject*> createSkyBox(Renderer& renderer)
 {
     SceneObject* skyBox = new SceneObject(renderer,
-                                          Renderer::skyboxShader,
+                                          Renderer::nonScalingShader,
                                           Renderer::cubeMesh,
                                           Renderer::skyboxDayTexture,
                                           0,
@@ -242,7 +242,7 @@ void handleTimeOfDay(Renderer& renderer, SceneObject* skyBox, int timeOfDay)
         skyBox->setTexture(Renderer::skyboxNightTexture);
         return;
     }
-    if (timeOfDay > day)
+    if (timeOfDay < day)
     {
         skyBox->setTexture(Renderer::skyboxDayTexture);
         return;
@@ -304,6 +304,6 @@ int main(int argc, char* argv[])
         handleTimeOfDay(renderer,skyBox,timeOfDay);
         printf("%f\n", 1 / deltaTime);
     }
-
+    delete skyBox;
     return 0;
 }

@@ -185,7 +185,7 @@ void TerrainHandler::createTerrain(const HeightMap& heightMap) noexcept
     highestValue += highestValue * 0.5f;
     applyCorrectTextures();
     _cloud = new SceneObject(_renderer,
-                             Renderer::regularShader,
+                             Renderer::nonScalingWLight,
                              Renderer::cubeMesh,
                              Renderer::groundTexture,
                              SceneObject::cloudTexture,
@@ -309,7 +309,7 @@ void TerrainHandler::createDownPour() noexcept
     for (std::size_t i = 0; i < _downPour.size(); ++i)
     {
         _downPour[i] = new SceneObject(_renderer,
-                                       Renderer::regularShader,
+                                       Renderer::nonScalingWLight,
                                        Renderer::cubeMesh,
                                        Renderer::groundTexture,
                                        SceneObject::deepWaterTexture,

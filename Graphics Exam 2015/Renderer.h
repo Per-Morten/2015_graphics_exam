@@ -28,7 +28,8 @@ public:
     static constexpr auto skyboxNightTexture = "SkyBoxNight";
     static constexpr auto cubeMesh = "Cube";
     static constexpr auto regularShader = "DirectionalFullTexture";
-    static constexpr auto skyboxShader = "SkyBox";
+    static constexpr auto nonScalingShader = "nonScaling";
+    static constexpr auto nonScalingWLight = "nonScalingWLight";
 
     Renderer(GLint width, GLint height, Camera& _camera) noexcept;
     ~Renderer() noexcept;
@@ -67,9 +68,9 @@ private:
     // object related
     void setColorUniform(const std::string& shaderName, bool newShader, const glm::vec4& color) noexcept;
     void setModelMatrixUniform(const std::string& shaderName, bool newShader, const glm::mat4& modelMatrix) noexcept;
-    void setTextureOffsetUniform(const std::string& shaderName, bool newShader, GLuint textureIndex, GLuint numberOfRows) noexcept;
     void setNormalMatrixUniform(const std::string& shaderName, bool newShader, const glm::mat4& modelMatrix) noexcept;
-    void setNumberOfRows(const std::string& shaderName, bool newShader, GLuint numberOfRows) noexcept;
+    void setTextureOffsetUniform(const std::string& shaderName, bool newShader, bool newTexture, GLuint textureIndex, GLuint numberOfRows) noexcept;
+    void setNumberOfRows(const std::string& shaderName, bool newShader, bool newTexture, GLuint numberOfRows) noexcept;
 
     // Static for each total draw round
     void setViewMatrixUniform(const std::string& shaderName, bool newShader) noexcept;

@@ -214,6 +214,7 @@ void Renderer::render(const std::string& shaderName,
     {
         static std::string lastShader;
         bool newShader = false;
+        bool newTexture = false;
         if (lastShader != shaderName)
         {
             newShader = true;
@@ -228,12 +229,11 @@ void Renderer::render(const std::string& shaderName,
             numberOfRows = _textures[textureName]->getNumberOfRows();
             _textures[textureName]->bind();
             lastTexture = textureName;
-            
-            setNumberOfRows(shaderName, newShader, numberOfRows);
+            newTexture = true;
         }
 
 
-        static FacingDirection prevFacingDirection;
+        static FacingDirection prevFacingDirection = FacingDirection::BACK;
         // Feels very like a hack!
         if (prevFacingDirection != facing)
         {
@@ -254,7 +254,8 @@ void Renderer::render(const std::string& shaderName,
         setColorUniform(shaderName, newShader, color);
         setModelMatrixUniform(shaderName, newShader, modelMatrix);
         setNormalMatrixUniform(shaderName, newShader, modelMatrix);
-        setTextureOffsetUniform(shaderName, newShader, textureIndex, numberOfRows);
+        setTextureOffsetUniform(shaderName, newShader, newTexture, textureIndex, numberOfRows);
+        setNumberOfRows(shaderName, newShader, newTexture, numberOfRows);
 
         // Total Drawing loop Uniforms
         setViewMatrixUniform(shaderName, newShader);
@@ -380,11 +381,11 @@ void Renderer::setModelMatrixUniform(const std::string& shaderName, bool newShad
     }
 }
 
-void Renderer::setTextureOffsetUniform(const std::string& shaderName, bool newShader, GLuint textureIndex, GLuint numberOfRows) noexcept
+void Renderer::setTextureOffsetUniform(const std::string& shaderName, bool newShader, bool newTexture, GLuint textureIndex, GLuint numberOfRows) noexcept
 {
     static ShaderProgram::UniformAddress textureOffsetId;
     static GLuint prevTextureIndex;
-    if (newShader)
+    if (newShader || newTexture)
     {
         textureOffsetId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::textureOffset);
         prevTextureIndex = textureIndex;
@@ -428,11 +429,11 @@ void Renderer::setNormalMatrixUniform(const std::string& shaderName, bool newSha
     }
 }
 
-void Renderer::setNumberOfRows(const std::string & shaderName, bool newShader, GLuint numberOfRows) noexcept
+void Renderer::setNumberOfRows(const std::string& shaderName, bool newShader, bool newTexture, GLuint numberOfRows) noexcept
 {
     static ShaderProgram::UniformAddress numberOfRowsId;
     static GLuint prevNumberOfRows;
-    if (newShader)
+    if (newShader || newTexture)
     {
         numberOfRowsId = _shaderPrograms[shaderName]->getUniformAddress(ShaderProgram::numberOfRows);
         prevNumberOfRows = numberOfRows;
@@ -624,18 +625,21 @@ void Renderer::initializeOpenGL() noexcept
 void Renderer::initializeVariables() noexcept
 {
     std::string regular = "Resources/Shaders/directionalFullTexturev3Indexed";
-    std::string skybox = "Resources/Shaders/SkyboxShader";
+    std::string skybox = "Resources/Shaders/NonScaling";
+    std::string nonScalingWLightsShader = "Resources/Shaders/NonScalingWLight";
     _shaderPrograms[regularShader] = new ShaderProgram(regular + ".vert", regular + ".frag");
-    _shaderPrograms[skyboxShader] = new ShaderProgram(skybox + ".vert", skybox + ".frag");
+    _shaderPrograms[nonScalingShader] = new ShaderProgram(skybox + ".vert", skybox + ".frag");
+    _shaderPrograms[nonScalingWLight] = new ShaderProgram(nonScalingWLightsShader + ".vert", nonScalingWLightsShader + ".frag");
+
 
     auto meshData = Local::createCube();
     _meshes[cubeMesh] = new Mesh(std::get<0>(meshData),
-                               std::get<1>(meshData),
-                               std::get<2>(meshData),
-                               std::get<3>(meshData));
+                                 std::get<1>(meshData),
+                                 std::get<2>(meshData),
+                                 std::get<3>(meshData));
 
-    _textures[groundTexture] = new Texture("Resources/Textures/texture.png",4);
-    _textures[skyboxNightTexture] = new Texture("Resources/Textures/Night.jpg",1);
-    _textures[skyboxDayTexture] = new Texture("Resources/Textures/Sky.jpg",1);
+    _textures[groundTexture] = new Texture("Resources/Textures/texture.png", 4);
+    _textures[skyboxNightTexture] = new Texture("Resources/Textures/Night.jpg", 1);
+    _textures[skyboxDayTexture] = new Texture("Resources/Textures/Sky.jpg", 1);
 }
 
