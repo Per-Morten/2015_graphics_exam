@@ -1,6 +1,6 @@
 # IMT2531 Graphics Programming - Exam 2015 #
 
-## <Your name here> ##
+## Per-Morten Straume ##
 
 You will replace this text with the documentation of your progress and your solution
 
