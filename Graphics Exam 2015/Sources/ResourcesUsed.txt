@@ -23,3 +23,23 @@ http://clipartzebra.com/cat/16/blue-sky-05.html
 http://backgrounds.mysitemyway.com/background/tileable-classic-nebula-space-patterns-1/
 http://www.psu.com/wallpaper/848/Clouds-at-Dawn-From-the-Sky
 http://data.hdwallpapers.im/love_in_the_evening.jpg
+
+
+Keys in use:
+9 Raise
+8 Lower
+0 Reset
+1 Earlier
+2 Later
+w Forward
+s Back
+a Left
+d Right
+x Down
+c Up
+k Create
+i Destroy
+p EnableMovement
+m NextTexture
+n Toggle Rain
+t Toggle Snow

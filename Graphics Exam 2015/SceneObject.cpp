@@ -49,8 +49,7 @@ void SceneObject::update(float deltaTime) noexcept
 
 void SceneObject::draw() noexcept
 {
-
-    _renderer.render(_shaderName, _meshName, _textureName, _modelMatrix, _color, _textureIndex, _facingDirection);
+        _renderer.render(_shaderName, _meshName, _textureName, _modelMatrix, _color, _textureIndex, _facingDirection);
 
 }
 

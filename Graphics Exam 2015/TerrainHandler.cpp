@@ -2,15 +2,16 @@
 #include <algorithm>
 #include <iostream>
 
+#include <random>
 
 TerrainHandler::TerrainHandler(Renderer& renderer, const HeightMap& heightMap) noexcept
     :_renderer(renderer)
-    , _rainPool(maxRain)
+    , _downPour(maxRain)
 {
     createTerrain(heightMap);
     hideUndrawableTerrain();
     createDrawableSceneList();
-    createRain();
+    createDownPour();
 }
 
 TerrainHandler::~TerrainHandler() noexcept
@@ -25,9 +26,9 @@ TerrainHandler::~TerrainHandler() noexcept
             }
         }
     }
-    for (std::size_t i = 0; i < _rainPool.size(); ++i)
+    for (std::size_t i = 0; i < _downPour.size(); ++i)
     {
-        delete _rainPool[i];
+        delete _downPour[i];
     }
     delete _cloud;
 }
@@ -38,6 +39,10 @@ void TerrainHandler::update(float deltaTime) noexcept
     {
         object->update(deltaTime);
         object->draw();
+    }
+    if (_isRaining || _isSnowing)
+    {
+        updateDownPour(deltaTime);
     }
 
 }
@@ -92,21 +97,61 @@ void TerrainHandler::switchToNextTextureSet() noexcept
 
 void TerrainHandler::toggleRain() noexcept
 {
+    if (_isSnowing)
+    {
+        _isSnowing = false;
+    }
     _isRaining = !_isRaining;
-    _cloud->setVisible(true);
+    _cloud->setVisible(_isRaining);
+    applyCorrectTextures();
+    makeRain();
 }
 
-void TerrainHandler::updateRain(float deltaTime) noexcept
+void TerrainHandler::toggleSnow() noexcept
+{
+    if (_isRaining)
+    {
+        _isRaining = false;
+    }
+    _isSnowing = !_isSnowing;
+    _cloud->setVisible(_isSnowing);
+    applyCorrectTextures();
+    makeSnow();
+}
+
+void TerrainHandler::updateDownPour(float deltaTime) noexcept
 {
     if (_cloud)
     {
         _cloud->update(deltaTime);
         _cloud->draw();
     }
-    for (std::size_t i = 0; i < _rainPool.size(); ++i)
+
+    for (std::size_t i = 0; i < _downPour.size(); ++i)
     {
-        _rainPool[i]->update(deltaTime);
-        _rainPool[i]->draw();
+        if (_downPour[i]->getPosition().y <= 0.0f)
+        {
+            _downPour[i]->setVisible(false);
+        }
+        if (!_downPour[i]->isVisible())
+        {
+            startDownPour(_downPour[i], deltaTime);
+        }
+        auto newPosition = _downPour[i]->getPosition();
+        newPosition.y -= 100.5f * deltaTime;
+        if (newPosition.y * _downPour[i]->getScale().y <= 0.0f)
+        {
+            _downPour[i]->setVisible(false);
+        }
+        _downPour[i]->setPosition(newPosition);
+        _downPour[i]->setUpdated();
+
+        if (_downPour[i]->isVisible())
+        {
+            _downPour[i]->update(deltaTime);
+            _downPour[i]->draw();
+        }
+
     }
 
 }
@@ -145,7 +190,8 @@ void TerrainHandler::createTerrain(const HeightMap& heightMap) noexcept
                              Renderer::groundTexture,
                              SceneObject::cloudTexture,
                              glm::vec3((heightMap.size() * SceneObject::cubeSize) / 2, highestValue * SceneObject::cubeSize, (heightMap[0].size() * SceneObject::cubeSize) / 2),
-                             glm::vec3(heightMap.size(), SceneObject::cubeSize / 4, heightMap[0].size()));
+                             glm::vec3(heightMap.size(), SceneObject::cubeSize / 4, heightMap[0].size()),
+                             glm::vec4(1.0f, 1.0f, 1.0f,0.25f));
 }
 
 void TerrainHandler::hideUndrawableTerrain() noexcept
@@ -245,23 +291,65 @@ void TerrainHandler::applyCorrectTextures() noexcept
                     textureIndex = SceneObject::dirtTexture;
                 }
 
+                if (_isSnowing)
+                {
+                    textureIndex = SceneObject::snowTexture;
+                }
                 _sceneObjects[i][j][k]->setTextureIndex(textureIndex + _baseTexture);
             }
         }
     }
 }
 
-void TerrainHandler::createRain() noexcept
+void TerrainHandler::createDownPour() noexcept
 {
-    for (std::size_t i = 0; i < _rainPool.size(); ++i)
+    for (std::size_t i = 0; i < _downPour.size(); ++i)
     {
-        _rainPool[i] = new SceneObject(_renderer,
+        _downPour[i] = new SceneObject(_renderer,
                                        Renderer::regularShader,
                                        Renderer::cubeMesh,
                                        Renderer::groundTexture,
                                        SceneObject::deepWaterTexture,
                                        { 0.0f, 0.0f, 0.0f },
                                        { 0.5f, 0.5f, 0.5f });
+    }
+}
+
+void TerrainHandler::makeRain() noexcept
+{
+    for (std::size_t i = 0; i < _downPour.size(); ++i)
+    {
+        _downPour[i]->setTextureIndex(SceneObject::deepWaterTexture);
+    }
+}
+void TerrainHandler::makeSnow() noexcept
+{
+    for (std::size_t i = 0; i < _downPour.size(); ++i)
+    {
+        _downPour[i]->setTextureIndex(SceneObject::snowTexture);
+    }
+}
+
+void TerrainHandler::startDownPour(SceneObject* drop, float deltaTime) noexcept
+{
+    static float timeToNextDrop;
+    timeToNextDrop += deltaTime;
+
+    if (timeToNextDrop >= 1.0f)
+    {
+        auto rainDropStartPosition = _cloud->getPosition();
+
+        std::random_device randomizer;
+        std::default_random_engine engine(randomizer());
+        std::uniform_int_distribution<int> distribution(-SceneObject::cubeSize, SceneObject::cubeSize);
+
+        rainDropStartPosition.x += distribution(engine) * SceneObject::cubeSize / 2;
+        rainDropStartPosition.z += distribution(engine) * SceneObject::cubeSize / 2;
+
+        drop->setVisible(true);
+        drop->setPosition(rainDropStartPosition);
+
+        timeToNextDrop = 0.0f;
     }
 }
 

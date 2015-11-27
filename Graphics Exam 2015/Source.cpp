@@ -72,7 +72,7 @@ gsl::owner<SceneObject*> createSkyBox(Renderer& renderer)
     SceneObject* skyBox = new SceneObject(renderer,
                                           Renderer::skyboxShader,
                                           Renderer::cubeMesh,
-                                          Renderer::skyboxDawnTexture,
+                                          Renderer::skyboxDayTexture,
                                           0,
                                           glm::vec3(0.0f, 0.0f, 0.0f),
                                           glm::vec3(1000.0f, 1000.0f, 1000.0f),
@@ -219,6 +219,14 @@ void handleInput(std::queue<GameEvent>& eventQueue,
             case ActionEnum::NEXTTEXTURE:
                 terrainHandler.switchToNextTextureSet();
                 break;
+
+            case ActionEnum::TOGGLERAIN:
+                terrainHandler.toggleRain();
+                break;
+
+            case ActionEnum::TOGGLESNOW:
+                terrainHandler.toggleSnow();
+                break;
         }
     }
 }
@@ -227,28 +235,16 @@ void handleInput(std::queue<GameEvent>& eventQueue,
 
 void handleTimeOfDay(Renderer& renderer, SceneObject* skyBox, int timeOfDay)
 {
-    constexpr auto evening = 150;
     constexpr auto day = 100;
-    constexpr auto dawn = 50;
     constexpr auto night = 200;
     if (timeOfDay > night)
     {
         skyBox->setTexture(Renderer::skyboxNightTexture);
         return;
     }
-    if (timeOfDay > evening)
-    {
-        skyBox->setTexture(Renderer::skyboxEveningTexture);
-        return;
-    }
     if (timeOfDay > day)
     {
         skyBox->setTexture(Renderer::skyboxDayTexture);
-        return;
-    }
-    if (timeOfDay > dawn)
-    {
-        skyBox->setTexture(Renderer::skyboxDawnTexture);
         return;
     }
 }
@@ -280,7 +276,7 @@ int main(int argc, char* argv[])
     std::queue<GameEvent> eventQueue;
     glm::vec2 mousePosition;
     TerrainHandler terrainHandler(renderer, heights);
-    terrainHandler.toggleRain();
+    
     auto skyBox = createSkyBox(renderer);
     float deltaTime = 0.1f;
     int timeOfDay = 0;
@@ -295,7 +291,6 @@ int main(int argc, char* argv[])
         renderer.clear();
 
         terrainHandler.update(deltaTime);
-        terrainHandler.updateRain(deltaTime);
         skyBox->update(deltaTime);
         skyBox->draw();
         

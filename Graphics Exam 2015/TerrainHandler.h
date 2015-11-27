@@ -16,7 +16,7 @@ public:
     static constexpr int dirtLevel = 2;
     static constexpr int grassLevel = 3;
     static constexpr int snowLevel = 17;
-    static constexpr std::size_t maxRain = 100;
+    static constexpr std::size_t maxRain = 200;
 
     TerrainHandler(Renderer& renderer,const HeightMap& heightMap) noexcept;
     ~TerrainHandler() noexcept;
@@ -28,7 +28,7 @@ public:
     void switchToNextTextureSet() noexcept;
     
     void toggleRain() noexcept;
-    void updateRain(float deltaTime) noexcept;
+    void toggleSnow() noexcept;
 
 
 private:
@@ -36,7 +36,13 @@ private:
     void hideUndrawableTerrain() noexcept;
     void createDrawableSceneList() noexcept;
     void applyCorrectTextures() noexcept;
-    void createRain() noexcept;
+    
+    void updateDownPour(float deltaTime) noexcept;
+    void createDownPour() noexcept;
+    void makeRain() noexcept;
+    void makeSnow() noexcept;
+    void startDownPour(SceneObject* rainDrop, float deltaTime) noexcept;
+
 
     Renderer& _renderer;
     SceneObject3DList _sceneObjects{};
@@ -45,6 +51,7 @@ private:
     GLuint _baseTexture{};
 
     gsl::owner<SceneObject*> _cloud{};
-    std::vector<gsl::owner<SceneObject*>> _rainPool{};
+    std::vector<gsl::owner<SceneObject*>> _downPour{};
     bool _isRaining{};
+    bool _isSnowing{};
 };

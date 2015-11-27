@@ -637,7 +637,5 @@ void Renderer::initializeVariables() noexcept
     _textures[groundTexture] = new Texture("Resources/Textures/texture.png",4);
     _textures[skyboxNightTexture] = new Texture("Resources/Textures/Night.jpg",1);
     _textures[skyboxDayTexture] = new Texture("Resources/Textures/Sky.jpg",1);
-    _textures[skyboxDawnTexture] = new Texture("Resources/Textures/Dawn.jpg",1);
-    _textures[skyboxEveningTexture] = new Texture("Resources/Textures/Evening.jpg",1);
 }
 

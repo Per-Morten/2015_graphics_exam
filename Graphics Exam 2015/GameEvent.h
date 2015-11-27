@@ -22,6 +22,8 @@ enum class ActionEnum :int
     ENABLEMOVEMENT,
     GENERATE,
     NEXTTEXTURE,
+    TOGGLESNOW,
+    TOGGLERAIN,
 };
 
 /* This struct deals with an agent creating events.  This has an agent number and the action*/
