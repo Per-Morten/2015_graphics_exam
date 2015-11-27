@@ -1,3 +1,9 @@
+//===========================================================
+// File: TerrainHandler.cpp	
+// StudentName: Per-Morten Straume                          
+//                                                          
+// Exam 2015: IMT-2531 Graphics Programming Exam.                                
+//===========================================================
 #include "TerrainHandler.h"
 #include <algorithm>
 #include <iostream>

@@ -1,3 +1,9 @@
+//===========================================================
+// File: Renderer.cpp	
+// StudentName: Per-Morten Straume                          
+//                                                          
+// Exam 2015: IMT-2531 Graphics Programming Exam.                                
+//===========================================================
 #include "Renderer.h"
 
 #include <iostream>
@@ -12,6 +18,7 @@ namespace
 {
     namespace Local
     {
+        // Stolen from the graphicsProgramming labs
         decltype(auto) createCube()
         {
             using MeshInfo = std::tuple < std::vector<glm::vec3>
@@ -231,6 +238,7 @@ void Renderer::render(const std::string& shaderName,
             numberOfRows = _textures[textureName]->getNumberOfRows();
             _textures[textureName]->bind();
             lastTexture = textureName;
+
             newTexture = true;
         }
 
@@ -279,11 +287,6 @@ void Renderer::present() noexcept
     SDL_GL_SwapWindow(_window);
 }
 
-void Renderer::handleInput() noexcept
-{
-
-}
-
 bool Renderer::initialize() noexcept
 {
     if (!initializeSDL())
@@ -320,7 +323,6 @@ void Renderer::advanceLight(float deltaTime) noexcept
     {
         _sunAngle = 0.0f;
     }
-    std::cout << _sunAngle << std::endl;
 }
 
 void Renderer::regressLight(float deltaTime) noexcept
@@ -331,8 +333,6 @@ void Renderer::regressLight(float deltaTime) noexcept
     {
         _sunAngle = 180.0f;
     }
-    std::cout << _sunAngle << std::endl;
-
 }
 
 void Renderer::increaseWorldScale() noexcept
@@ -342,7 +342,7 @@ void Renderer::increaseWorldScale() noexcept
 
 void Renderer::decreaseWorldScale() noexcept
 {
-    _worldScale[1][1] *= worldUpScaleRate;
+    _worldScale[1][1] *= worldDownScaleRate;
 }
 
 void Renderer::resetWorldScale() noexcept
@@ -671,10 +671,15 @@ void Renderer::initializeVariables() noexcept
 
 
     auto meshData = Local::createCube();
-    _meshes[cubeMesh] = new Mesh(std::get<0>(meshData),
-                                 std::get<1>(meshData),
-                                 std::get<2>(meshData),
-                                 std::get<3>(meshData));
+
+    constexpr std::size_t positions = 0;
+    constexpr std::size_t normals = 1;
+    constexpr std::size_t textureCoordinates = 2;
+    constexpr std::size_t ibo = 3;
+    _meshes[cubeMesh] = new Mesh(std::get<positions>(meshData),
+                                 std::get<normals>(meshData),
+                                 std::get<textureCoordinates>(meshData),
+                                 std::get<ibo>(meshData));
 
     _textures[groundTexture] = new Texture("Resources/Textures/texture.png", Consts::NUMBEROFROWSINATLAS);
     _textures[skyboxNightTexture] = new Texture("Resources/Textures/Night.jpg", 1);

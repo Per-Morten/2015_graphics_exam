@@ -1,3 +1,9 @@
+//===========================================================
+// File: DegToRad.h	
+// StudentName: Per-Morten Straume                          
+//                                                          
+// Exam 2015: IMT-2531 Graphics Programming Exam.                                
+//===========================================================
 #pragma once
 #include <glm/gtc/matrix_transform.hpp>
 

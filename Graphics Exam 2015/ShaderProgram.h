@@ -1,3 +1,9 @@
+//===========================================================
+// File: ShaderProgram.h	
+// StudentName: Per-Morten Straume                          
+//                                                          
+// Exam 2015: IMT-2531 Graphics Programming Exam.                                
+//===========================================================
 #pragma once
 #include <string>
 #include <unordered_map>

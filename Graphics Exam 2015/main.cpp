@@ -1,3 +1,10 @@
+//===========================================================
+// File: main.cpp	
+// StudentName: Per-Morten Straume                          
+//                                                          
+// Exam 2015: IMT-2531 Graphics Programming Exam.                                
+//===========================================================
+
 /* Template Author:Simon McCallum
 Notes:
 Created for the IMT2531 Graphics Exam 2015
@@ -251,15 +258,15 @@ void handleInput(std::queue<GameEvent>& eventQueue,
 
 
 
-void handleTimeOfDay(Renderer& renderer, SceneObject* skyBox)
+void handleTimeOfDay(Renderer& renderer, SceneObject& skyBox)
 {
     if(renderer.isDayTime())
     {
 
-        skyBox->setTexture(Renderer::skyboxDayTexture);
+        skyBox.setTexture(Renderer::skyboxDayTexture);
         return;
     }
-    skyBox->setTexture(Renderer::skyboxNightTexture);
+    skyBox.setTexture(Renderer::skyboxNightTexture);
 }
 
 int main(int argc, char* argv[])
@@ -314,7 +321,7 @@ int main(int argc, char* argv[])
         deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(clockStop - clockStart).count();
 
         
-        handleTimeOfDay(renderer,skyBox);
+        handleTimeOfDay(renderer,*skyBox);
     }
     delete skyBox;
     return 0;

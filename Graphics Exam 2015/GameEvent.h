@@ -1,3 +1,9 @@
+//===========================================================
+// File: GameEvent.h	
+// StudentName: Per-Morten Straume                          
+//                                                          
+// Exam 2015: IMT-2531 Graphics Programming Exam.                                
+//===========================================================
 #pragma once
 
 //An emun for all the possible actions in the game

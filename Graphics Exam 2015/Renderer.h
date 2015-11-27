@@ -1,3 +1,9 @@
+//===========================================================
+// File: Renderer.h	
+// StudentName: Per-Morten Straume                          
+//                                                          
+// Exam 2015: IMT-2531 Graphics Programming Exam.                                
+//===========================================================
 #pragma once
 #include <string>
 #include <unordered_map>
@@ -56,8 +62,6 @@ public:
                 FacingDirection facing = FacingDirection::BACK) noexcept;
     void present() noexcept;
 
-    void handleInput() noexcept;
-
     bool initialize() noexcept;
     bool windowIsOpen() const noexcept;
 
@@ -68,6 +72,7 @@ public:
     void decreaseWorldScale() noexcept;
     void resetWorldScale() noexcept;
     void toggleWarpMode() noexcept;
+
 
     void keepWindowOpen(bool isOpen) noexcept;
 
@@ -103,10 +108,7 @@ private:
     gsl::owner<SDL_Window*> _window{};
     gsl::owner<SDL_GLContext> _context{};
     float _ambientFactor{ 0.1f };
-    // length*cos(angle) = xDirection,
-    // length*sin(angle) = yDirection,
-    // -1.8792f, 0.684, -0.2 
-    glm::vec3 _lightDirection{ 1 * cos(degToRad(20)), 1 * sin(degToRad(20)), 0.0f};
+    glm::vec3 _lightDirection{cos(degToRad(20)), sin(degToRad(20)), 0.0f};
 
     glm::mat4 _worldScale{1 };
     glm::mat4 _projectionMatrix{};

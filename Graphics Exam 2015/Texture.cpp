@@ -1,3 +1,9 @@
+//===========================================================
+// File: Texture.cpp	
+// StudentName: Per-Morten Straume                          
+//                                                          
+// Exam 2015: IMT-2531 Graphics Programming Exam.                                
+//===========================================================
 #include "Texture.h"
 
 #include "stb_image.h"

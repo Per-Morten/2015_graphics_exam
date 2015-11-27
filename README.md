@@ -16,6 +16,7 @@ I also added functionality for rain and snow, where I just create a bunch of cub
 After Talking with Simon I fixed my sun moving direction, where I kinda cheated the sun angle. 
 Then the last part of the time were used for cleaning up the code.
 
+Also, there are some artifacts in my textures, I do believe it is a result of floating point errors when calculating the texturecoordinates.
 Buttons mapped to features:
 
 * 9 Raise Scale
@@ -38,6 +39,7 @@ Extra Features:
 * m NextTexture, scrolls through the different texture sets.
 * n toggle Rain (turns on a cloud and starts pouring down rain)
 * t toggle Snow (turns on a cloud and turns the world into a snowy landscape with icy water and powdery snow)
+* b to enter warp speed (small hacky feature, just randomly bumped over it, and thought it was fun)
 
 
 

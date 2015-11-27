@@ -1,3 +1,9 @@
+//===========================================================
+// File: SceneObject.cpp	
+// StudentName: Per-Morten Straume                          
+//                                                          
+// Exam 2015: IMT-2531 Graphics Programming Exam.                                
+//===========================================================
 #include "SceneObject.h"
 
 #include <glm\gtx\transform.hpp>

@@ -1,3 +1,9 @@
+//===========================================================
+// File: Mesh.cpp	
+// StudentName: Per-Morten Straume                          
+//                                                          
+// Exam 2015: IMT-2531 Graphics Programming Exam.                                
+//===========================================================
 #include "Mesh.h"
 #include "GLTypes.h"
 

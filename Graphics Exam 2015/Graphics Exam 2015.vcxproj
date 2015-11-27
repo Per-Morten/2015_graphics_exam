@@ -122,6 +122,9 @@
     <ClInclude Include="TerrainHandler.h" />
     <ClInclude Include="Texture.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Exam2015.licenseheader" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

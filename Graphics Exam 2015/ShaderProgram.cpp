@@ -1,3 +1,9 @@
+//===========================================================
+// File: ShaderProgram.cpp	
+// StudentName: Per-Morten Straume                          
+//                                                          
+// Exam 2015: IMT-2531 Graphics Programming Exam.                                
+//===========================================================
 #include "ShaderProgram.h"
 #include "shader.hpp"
 

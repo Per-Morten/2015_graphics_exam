@@ -1,8 +1,14 @@
+//===========================================================
+// File: Camera.cpp	
+// StudentName: Per-Morten Straume                          
+//                                                          
+// Exam 2015: IMT-2531 Graphics Programming Exam.                                
+//===========================================================
 #include "Camera.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 Camera::Camera() noexcept
-    : _viewMatrix(glm::lookAt(_position, _focusPoint, upDirection))
+    : _viewMatrix(glm::lookAt(_position, startFocusPoint, upDirection))
 {
 }
 
@@ -66,8 +72,6 @@ void Camera::rotateCamera(const glm::vec2& newMousePosition) noexcept
 {
     auto scaledNewMouse = newMousePosition / cameraSensitivity;
     
-    // Sorry, but random magic numbers so the mouse does not fly off when mouse is turned off for the first time
-    // Don't want to force you to readjust
     static glm::vec2 oldMousePosition{ mouseStartPos };
     glm::vec2 mouseDelta = scaledNewMouse - oldMousePosition;
     _viewDirection = glm::mat3(glm::rotate(-mouseDelta.x, upDirection)) * _viewDirection;
