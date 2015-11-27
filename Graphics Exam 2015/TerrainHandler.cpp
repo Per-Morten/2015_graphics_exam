@@ -48,9 +48,9 @@ void TerrainHandler::addCube(std::size_t xIndex, std::size_t zIndex) noexcept
         newPosition = { xIndex * SceneObject::cubeSize, 0.0f, zIndex * SceneObject::cubeSize };
     }
     _sceneObjects[xIndex][zIndex].push_back(new SceneObject(_renderer,
-                                                            "DirectionalFullTexture",
-                                                            "Cube",
-                                                            "Bricks",
+                                                            Renderer::regularShader,
+                                                            Renderer::cubeMesh,
+                                                            Renderer::groundTexture,
                                                             0,
                                                             newPosition));
     applyCorrectTextures();
@@ -72,6 +72,16 @@ void TerrainHandler::deleteCube(std::size_t xIndex, std::size_t zIndex) noexcept
     }
 }
 
+void TerrainHandler::switchToNextTextureSet() noexcept
+{
+    _baseTexture += 4;
+    if (_baseTexture >= 16)
+    {
+        _baseTexture = 0;
+    }
+    applyCorrectTextures();
+}
+
 void TerrainHandler::createTerrain(const HeightMap& heightMap) noexcept
 {
     _sceneObjects.resize(heightMap.size());
@@ -83,9 +93,9 @@ void TerrainHandler::createTerrain(const HeightMap& heightMap) noexcept
             for (int k = 0; k < heightMap[i][j]; ++k)
             {
                 SceneObject* object = new SceneObject(_renderer,
-                                                      "DirectionalFullTexture",
-                                                      "Cube",
-                                                      "Bricks",
+                                                      Renderer::regularShader,
+                                                      Renderer::cubeMesh,
+                                                      Renderer::groundTexture,
                                                       0,
                                                       glm::vec3(i * SceneObject::cubeSize, k * SceneObject::cubeSize, j * SceneObject::cubeSize));
                 _sceneObjects[i][j].push_back(object);
@@ -192,7 +202,7 @@ void TerrainHandler::applyCorrectTextures() noexcept
                     textureIndex = SceneObject::dirtTexture;
                 }
 
-                _sceneObjects[i][j][k]->setTextureIndex(textureIndex);
+                _sceneObjects[i][j][k]->setTextureIndex(textureIndex + _baseTexture);
             }
         }
     }

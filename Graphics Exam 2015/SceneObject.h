@@ -50,6 +50,7 @@ public:
     void setRotation(const glm::vec3& rotation) noexcept;
     void setScale(const glm::vec3& scale) noexcept;
     void setVisible(bool isVisible) noexcept;
+    void setTexture(const std::string& textureName) noexcept;
     void setUpdated() noexcept;
 
     const glm::vec4& getColor() const noexcept;
@@ -63,16 +64,17 @@ private:
     std::string _shaderName{};
     std::string _meshName{};
     std::string _textureName{};
+    GLuint _textureIndex{ 0 };
 
-    glm::vec4 _color{};
     glm::vec3 _position{};
-    glm::vec3 _rotation{};
     glm::vec3 _scale{};
-    glm::mat4 _modelMatrix{ 1 };
+    glm::vec4 _color{};
+    glm::vec3 _rotation{};
     Renderer::FacingDirection _facingDirection{};
+    
+    glm::mat4 _modelMatrix{ 1 };
     bool _isVisible{ false };
     bool _hasBeenUpdated{ true };
 
     // For indexed texture
-    GLuint _textureIndex{ 0 };
 };

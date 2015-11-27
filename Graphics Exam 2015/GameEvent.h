@@ -20,7 +20,8 @@ enum class ActionEnum :int
     DESTROY,
     MOUSEMOTION,
     ENABLEMOVEMENT,
-    GENERATE
+    GENERATE,
+    NEXTTEXTURE,
 };
 
 /* This struct deals with an agent creating events.  This has an agent number and the action*/

@@ -25,62 +25,59 @@
 constexpr int SCREEN_WIDTH = 800;
 constexpr int SCREEN_HEIGHT = 600;
 std::string windowName = "Graphics Exam 2015 - Per-Morten Straume";
-namespace
+std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
 {
-    std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
+    std::ifstream inputFile(terrainFilename);
+    std::stringstream lineStream;
+    std::string inputLine;
+
+    std::getline(inputFile, inputLine);
+
+    if (inputLine.compare("P2") != 0)
     {
-        std::ifstream inputFile(terrainFilename);
-        std::stringstream lineStream;
-        std::string inputLine;
-
-        std::getline(inputFile, inputLine);
-
-        if (inputLine.compare("P2") != 0)
-        {
-            std::cerr << "Version error" << std::endl;
-        }
-        else
-        {
-            std::cout << "Version : " << inputLine << std::endl;
-        }
-
-        std::vector<std::vector<int>> positions;
-        int xSize = 0;
-        int ySize = 0;
-        int maxValue = 0;
-        inputFile >> xSize >> ySize >> maxValue;
-
-        positions.resize(xSize);
-        for (std::size_t i = 0; i < xSize; ++i)
-        {
-            positions[i].resize(ySize);
-        }
-
-        for (std::size_t i = 0; i < positions.size(); ++i)
-        {
-            for (std::size_t j = 0; j < positions[i].size(); ++j)
-            {
-                inputFile >> positions[i][j];
-                positions[i][j] += 1;
-            }
-        }
-
-        return positions;
+        std::cerr << "Version error" << std::endl;
     }
-    gsl::owner<SceneObject*> createSkyBox(Renderer& renderer)
+    else
     {
-        SceneObject* skyBox = new SceneObject(renderer,
-                                              "DirectionalFullTexture",
-                                              "Cube",
-                                              "Bricks",
-                                              0,
-                                              glm::vec3(0.0f, 0.0f, 0.0f),
-                                              glm::vec3(100.0f, 100.0f, 100.0f),
-                                              glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
-                                              glm::vec3(0.0f, 0.0f, 0.0f),
-                                              Renderer::FacingDirection::FRONT);
-        return skyBox;
+        std::cout << "Version : " << inputLine << std::endl;
     }
+
+    std::vector<std::vector<int>> positions;
+    int xSize = 0;
+    int ySize = 0;
+    int maxValue = 0;
+    inputFile >> xSize >> ySize >> maxValue;
+
+    positions.resize(xSize);
+    for (std::size_t i = 0; i < xSize; ++i)
+    {
+        positions[i].resize(ySize);
+    }
+
+    for (std::size_t i = 0; i < positions.size(); ++i)
+    {
+        for (std::size_t j = 0; j < positions[i].size(); ++j)
+        {
+            inputFile >> positions[i][j];
+            positions[i][j] += 1;
+        }
+    }
+
+    return positions;
+}
+gsl::owner<SceneObject*> createSkyBox(Renderer& renderer)
+{
+    SceneObject* skyBox = new SceneObject(renderer,
+                                          Renderer::skyboxShader,
+                                          Renderer::cubeMesh,
+                                          Renderer::skyboxDayTexture,
+                                          0,
+                                          glm::vec3(0.0f, 0.0f, 0.0f),
+                                          glm::vec3(1000.0f, 1000.0f, 1000.0f),
+                                          glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+                                          glm::vec3(0.0f, 0.0f, 0.0f),
+                                          Renderer::FacingDirection::FRONT);
+    return skyBox;
 }
 
 
@@ -113,7 +110,8 @@ void handleInput(std::queue<GameEvent>& eventQueue,
                  float deltaTime,
                  glm::vec2& mousePosition,
                  const std::vector<std::vector<int>>& heightMap,
-                 TerrainHandler& terrainHandler) noexcept
+                 TerrainHandler& terrainHandler,
+                 int& timeOfDay) noexcept
 {
     static bool enableMovement = false;
     while (!eventQueue.empty())
@@ -137,10 +135,12 @@ void handleInput(std::queue<GameEvent>& eventQueue,
 
             case ActionEnum::LATER:
                 renderer.advanceLight(deltaTime);
+                timeOfDay++;
                 break;
 
             case ActionEnum::EARLIER:
                 renderer.regressLight(deltaTime);
+                timeOfDay--;
                 break;
 
             case ActionEnum::FORWARD:
@@ -214,6 +214,10 @@ void handleInput(std::queue<GameEvent>& eventQueue,
                     terrainHandler.deleteCube(std::get<1>(calculationResult), std::get<2>(calculationResult));
                 }
             }
+            break;
+
+            case ActionEnum::NEXTTEXTURE:
+                terrainHandler.switchToNextTextureSet();
                 break;
         }
     }
@@ -223,6 +227,12 @@ int main(int argc, char* argv[])
 {
     Camera camera;
     Renderer renderer(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
+
+    if (!renderer.initialize())
+    {
+        std::cout << "Could not initialize openGL" << std::endl;
+        std::exit(-1);
+    }
 
     std::vector<std::vector<int>> heights;
     if (argc > 1)
@@ -235,12 +245,6 @@ int main(int argc, char* argv[])
         std::exit(-1);
     }
 
-    if (!renderer.initialize())
-    {
-        std::cout << "Could not initialize openGL" << std::endl;
-        std::exit(-1);
-    }
-
     SDL_Event eventHandler;
     InputHandler inputHandler;
     std::queue<GameEvent> eventQueue;
@@ -249,7 +253,7 @@ int main(int argc, char* argv[])
 
     auto skyBox = createSkyBox(renderer);
     float deltaTime = 0.1f;
-
+    int timeOfDay = 0;
     while (renderer.windowIsOpen())
     {
         bool keepWindowOpen = inputHandler.processEvents(eventHandler, eventQueue, mousePosition);
@@ -264,12 +268,29 @@ int main(int argc, char* argv[])
         skyBox->update(deltaTime);
         skyBox->draw();
         renderer.present();
-        handleInput(eventQueue, renderer, camera, deltaTime, mousePosition, heights, terrainHandler);
+        handleInput(eventQueue, renderer, camera, deltaTime, mousePosition, heights, terrainHandler, timeOfDay);
 
         auto clockStop = std::chrono::high_resolution_clock::now();
         deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(clockStop - clockStart).count();
 
-        printf("%f\n", 1 / deltaTime);
+        if (timeOfDay > 150)
+        {
+            skyBox->setTexture(Renderer::skyboxEveningTexture);
+        }
+        if (timeOfDay > 200)
+        {
+            skyBox->setTexture(Renderer::skyboxNightTexture);
+        }
+        if (timeOfDay < 100)
+        {
+            skyBox->setTexture(Renderer::skyboxDayTexture);
+        }
+        if (timeOfDay < 50)
+        {
+            skyBox->setTexture(Renderer::skyboxDawnTexture);
+        }
+
+        //printf("%f\n", 1 / deltaTime);
     }
 
     return 0;

@@ -22,7 +22,7 @@ public:
 
     void rotateCamera(const glm::vec2& newMousePosition) noexcept;
 
-    static constexpr float maxViewDistance = 1000.0f;
+    static constexpr float maxViewDistance = 100000.0f;
     static constexpr float minViewDistance = 0.1f;
     const glm::vec3 startPosition = { 0.0f, 300.0f, -500.0f };
     const glm::vec3 startFocus = { 0.0f, 0.0f, 0.0f };

@@ -16,12 +16,12 @@ SceneObject::SceneObject(Renderer& renderer,
     , _shaderName(shaderName)
     , _meshName(meshName)
     , _textureName(textureName)
-    , _color(color)
-    , _position(position)
-    , _rotation(rotation)
-    , _scale(scale)
-    , _facingDirection(facingDirection)
     , _textureIndex(textureIndex)
+    , _position(position)
+    , _scale(scale)
+    , _color(color)
+    , _rotation(rotation)
+    , _facingDirection(facingDirection)
 {
 }
 
@@ -34,17 +34,17 @@ void SceneObject::update(float deltaTime) noexcept
     if (_hasBeenUpdated)
     {
 
-    glm::mat4 positionMatrix = glm::translate(_position);
+        glm::mat4 positionMatrix = glm::translate(_position);
 
-    glm::mat4 rotMatrixX = glm::rotate(_rotation.x, glm::vec3(1, 0, 0));
-    glm::mat4 rotMatrixY = glm::rotate(_rotation.y, glm::vec3(0, 1, 0));
-    glm::mat4 rotMatrixZ = glm::rotate(_rotation.z, glm::vec3(0, 0, 1));
-    glm::mat4 rotationMatrix = rotMatrixZ * rotMatrixY * rotMatrixX;
+        glm::mat4 rotMatrixX = glm::rotate(_rotation.x, glm::vec3(1, 0, 0));
+        glm::mat4 rotMatrixY = glm::rotate(_rotation.y, glm::vec3(0, 1, 0));
+        glm::mat4 rotMatrixZ = glm::rotate(_rotation.z, glm::vec3(0, 0, 1));
+        glm::mat4 rotationMatrix = rotMatrixZ * rotMatrixY * rotMatrixX;
 
-    glm::mat4 scaleMatrix = glm::scale(_scale);
+        glm::mat4 scaleMatrix = glm::scale(_scale);
 
-    _modelMatrix = positionMatrix * rotationMatrix * scaleMatrix;
-    _hasBeenUpdated = false;
+        _modelMatrix = positionMatrix * rotationMatrix * scaleMatrix;
+        _hasBeenUpdated = false;
     }
 }
 
@@ -84,6 +84,11 @@ void SceneObject::setScale(const glm::vec3& scale) noexcept
 void SceneObject::setVisible(bool isVisible) noexcept
 {
     _isVisible = isVisible;
+}
+
+void SceneObject::setTexture(const std::string& textureName) noexcept
+{
+    _textureName = textureName;
 }
 
 void SceneObject::setUpdated() noexcept

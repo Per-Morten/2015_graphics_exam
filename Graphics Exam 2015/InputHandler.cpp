@@ -28,6 +28,7 @@ InputHandler::InputHandler()
     eventRepeatRate[ActionEnum::MOUSEMOTION] = 0;
     eventRepeatRate[ActionEnum::CREATE] = 0;
     eventRepeatRate[ActionEnum::ENABLEMOVEMENT] = 10;
+    eventRepeatRate[ActionEnum::NEXTTEXTURE] = 10;
 
     eventRepeat[ActionEnum::RAISE] = INACTIVE;
     eventRepeat[ActionEnum::LOWER] = INACTIVE; // Make sure all new events are inactive
@@ -46,6 +47,7 @@ InputHandler::InputHandler()
     eventRepeat[ActionEnum::MOUSEMOTION] = INACTIVE;
     eventRepeat[ActionEnum::CREATE] = INACTIVE;
     eventRepeat[ActionEnum::ENABLEMOVEMENT] = INACTIVE;
+    eventRepeat[ActionEnum::NEXTTEXTURE] = INACTIVE;
 }
 
 /* Handles the keyboard events.  Updates the events queue with new Game Events. quits on esc*/
@@ -109,6 +111,10 @@ bool InputHandler::handleKeys(SDL_Event &eventHandler, std::queue<GameEvent>& ev
 
                 case SDLK_p:
                     action = ActionEnum::ENABLEMOVEMENT;
+                    break;
+
+                case SDLK_m:
+                    action = ActionEnum::NEXTTEXTURE;
                     break;
 
                 case SDLK_ESCAPE:
@@ -182,6 +188,10 @@ bool InputHandler::handleKeys(SDL_Event &eventHandler, std::queue<GameEvent>& ev
 
                 case SDLK_p:
                     action = ActionEnum::ENABLEMOVEMENT;
+                    break;
+
+                case SDLK_m:
+                    action = ActionEnum::NEXTTEXTURE;
                     break;
 
 

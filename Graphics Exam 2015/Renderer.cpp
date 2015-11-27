@@ -623,15 +623,21 @@ void Renderer::initializeOpenGL() noexcept
 
 void Renderer::initializeVariables() noexcept
 {
-    std::string shaderName = "Resources/Shaders/directionalFullTexturev3Indexed";
-    _shaderPrograms["DirectionalFullTexture"] = new ShaderProgram(shaderName + ".vert", shaderName + ".frag");
+    std::string regular = "Resources/Shaders/directionalFullTexturev3Indexed";
+    std::string skybox = "Resources/Shaders/SkyboxShader";
+    _shaderPrograms[regularShader] = new ShaderProgram(regular + ".vert", regular + ".frag");
+    _shaderPrograms[skyboxShader] = new ShaderProgram(skybox + ".vert", skybox + ".frag");
 
     auto meshData = Local::createCube();
-    _meshes["Cube"] = new Mesh(std::get<0>(meshData),
+    _meshes[cubeMesh] = new Mesh(std::get<0>(meshData),
                                std::get<1>(meshData),
                                std::get<2>(meshData),
                                std::get<3>(meshData));
 
-    _textures["Bricks"] = new Texture("Resources/Textures/texture.png");
+    _textures[groundTexture] = new Texture("Resources/Textures/texture.png",4);
+    _textures[skyboxNightTexture] = new Texture("Resources/Textures/Night.jpg",1);
+    _textures[skyboxDayTexture] = new Texture("Resources/Textures/Sky.jpg",1);
+    _textures[skyboxDawnTexture] = new Texture("Resources/Textures/Dawn.jpg",1);
+    _textures[skyboxEveningTexture] = new Texture("Resources/Textures/Evening.jpg",1);
 }
 

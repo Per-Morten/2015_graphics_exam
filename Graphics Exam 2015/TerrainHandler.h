@@ -24,6 +24,7 @@ public:
     void addCube(std::size_t xIndex, std::size_t zIndex) noexcept;
     void deleteCube(std::size_t xIndex, std::size_t zIndex) noexcept;
 
+    void switchToNextTextureSet() noexcept;
 private:
     void createTerrain(const HeightMap& heightMap) noexcept;
     void hideUndrawableTerrain() noexcept;
@@ -33,4 +34,6 @@ private:
     Renderer& _renderer;
     SceneObject3DList _sceneObjects{};
     SceneObjectList _drawableSceneObjects{};
+
+    GLuint _baseTexture{};
 };

@@ -22,6 +22,16 @@ public:
         FRONT,
         BACK,
     };
+
+    static constexpr auto groundTexture = "Ground";
+    static constexpr auto skyboxDawnTexture = "SkyBoxDawn";
+    static constexpr auto skyboxDayTexture = "SkyBoxDay";
+    static constexpr auto skyboxNightTexture = "SkyBoxNight";
+    static constexpr auto skyboxEveningTexture = "SkyBoxEvening";
+    static constexpr auto cubeMesh = "Cube";
+    static constexpr auto regularShader = "DirectionalFullTexture";
+    static constexpr auto skyboxShader = "SkyBox";
+
     Renderer(GLint width, GLint height, Camera& _camera) noexcept;
     ~Renderer() noexcept;
 
