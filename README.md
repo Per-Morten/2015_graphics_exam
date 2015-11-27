@@ -2,7 +2,6 @@
 
 ## Per-Morten Straume ##
 
-You will replace this text with the documentation of your progress and your solution
 Before the Exam we already had a framework ready, with a rotating Cube with full Phong lighting and textures. This framework was just so we could have the most basic stuff ready and get stuff on the screen from the get go. However we were quite lucky with the assignment, as our framework supplied us with almost all the building blocks we needed.
 The first part of the process was the to integrate our framework into the exam. Following that we started reading in the positions we needed from file and started working with our "beautiful" 3d vector of SceneObjects. The performance were terrible, seeing as we were sending of identical uniforms to our graphics card around 1016 times pr frame etc. We used some time setting up different tricks to optimize the performance. After the worst performance issues were dealt with we started adding the correct textures to our cubes. First in a hardcoded fashion with the texture offsets, I however moved over to an index based solution later, as I found that more readable.
 After the textures we fixed the directional lights, and mapped it to user input, through the inputhandler we were given.
