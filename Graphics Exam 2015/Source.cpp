@@ -25,6 +25,7 @@
 constexpr int SCREEN_WIDTH = 800;
 constexpr int SCREEN_HEIGHT = 600;
 std::string windowName = "Graphics Exam 2015 - Per-Morten Straume";
+
 std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
 {
     std::ifstream inputFile(terrainFilename);
@@ -65,12 +66,13 @@ std::vector<std::vector<int>> LoadTerrain(const std::string& terrainFilename)
 
     return positions;
 }
+
 gsl::owner<SceneObject*> createSkyBox(Renderer& renderer)
 {
     SceneObject* skyBox = new SceneObject(renderer,
                                           Renderer::skyboxShader,
                                           Renderer::cubeMesh,
-                                          Renderer::skyboxDayTexture,
+                                          Renderer::skyboxDawnTexture,
                                           0,
                                           glm::vec3(0.0f, 0.0f, 0.0f),
                                           glm::vec3(1000.0f, 1000.0f, 1000.0f),
@@ -79,9 +81,6 @@ gsl::owner<SceneObject*> createSkyBox(Renderer& renderer)
                                           Renderer::FacingDirection::FRONT);
     return skyBox;
 }
-
-
-
 
 std::tuple<bool, std::size_t, std::size_t> calculateCameraPositionInGrid(const std::vector<std::vector<int>>& heightMap,
                                                                          const Camera& camera) noexcept
@@ -104,6 +103,7 @@ std::tuple<bool, std::size_t, std::size_t> calculateCameraPositionInGrid(const s
     return indexCoordinates;
 }
 
+// Not nice function call, I know :/
 void handleInput(std::queue<GameEvent>& eventQueue,
                  Renderer& renderer,
                  Camera& camera,
@@ -223,6 +223,36 @@ void handleInput(std::queue<GameEvent>& eventQueue,
     }
 }
 
+
+
+void handleTimeOfDay(Renderer& renderer, SceneObject* skyBox, int timeOfDay)
+{
+    constexpr auto evening = 150;
+    constexpr auto day = 100;
+    constexpr auto dawn = 50;
+    constexpr auto night = 200;
+    if (timeOfDay > night)
+    {
+        skyBox->setTexture(Renderer::skyboxNightTexture);
+        return;
+    }
+    if (timeOfDay > evening)
+    {
+        skyBox->setTexture(Renderer::skyboxEveningTexture);
+        return;
+    }
+    if (timeOfDay > day)
+    {
+        skyBox->setTexture(Renderer::skyboxDayTexture);
+        return;
+    }
+    if (timeOfDay > dawn)
+    {
+        skyBox->setTexture(Renderer::skyboxDawnTexture);
+        return;
+    }
+}
+
 int main(int argc, char* argv[])
 {
     Camera camera;
@@ -273,23 +303,8 @@ int main(int argc, char* argv[])
         auto clockStop = std::chrono::high_resolution_clock::now();
         deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(clockStop - clockStart).count();
 
-        if (timeOfDay > 150)
-        {
-            skyBox->setTexture(Renderer::skyboxEveningTexture);
-        }
-        if (timeOfDay > 200)
-        {
-            skyBox->setTexture(Renderer::skyboxNightTexture);
-        }
-        if (timeOfDay < 100)
-        {
-            skyBox->setTexture(Renderer::skyboxDayTexture);
-        }
-        if (timeOfDay < 50)
-        {
-            skyBox->setTexture(Renderer::skyboxDawnTexture);
-        }
-
+        
+        handleTimeOfDay(renderer,skyBox,timeOfDay);
         //printf("%f\n", 1 / deltaTime);
     }
 
