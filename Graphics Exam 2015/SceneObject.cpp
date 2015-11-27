@@ -33,7 +33,6 @@ void SceneObject::update(float deltaTime) noexcept
 {
     if (_hasBeenUpdated)
     {
-
         glm::mat4 positionMatrix = glm::translate(_position);
 
         glm::mat4 rotMatrixX = glm::rotate(_rotation.x, glm::vec3(1, 0, 0));

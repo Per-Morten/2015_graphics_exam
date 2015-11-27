@@ -280,7 +280,7 @@ int main(int argc, char* argv[])
     std::queue<GameEvent> eventQueue;
     glm::vec2 mousePosition;
     TerrainHandler terrainHandler(renderer, heights);
-
+    terrainHandler.toggleRain();
     auto skyBox = createSkyBox(renderer);
     float deltaTime = 0.1f;
     int timeOfDay = 0;
@@ -295,8 +295,10 @@ int main(int argc, char* argv[])
         renderer.clear();
 
         terrainHandler.update(deltaTime);
+        terrainHandler.updateRain(deltaTime);
         skyBox->update(deltaTime);
         skyBox->draw();
+        
         renderer.present();
         handleInput(eventQueue, renderer, camera, deltaTime, mousePosition, heights, terrainHandler, timeOfDay);
 

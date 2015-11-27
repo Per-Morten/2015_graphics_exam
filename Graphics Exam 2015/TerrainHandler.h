@@ -16,6 +16,7 @@ public:
     static constexpr int dirtLevel = 2;
     static constexpr int grassLevel = 3;
     static constexpr int snowLevel = 17;
+    static constexpr std::size_t maxRain = 100;
 
     TerrainHandler(Renderer& renderer,const HeightMap& heightMap) noexcept;
     ~TerrainHandler() noexcept;
@@ -25,15 +26,25 @@ public:
     void deleteCube(std::size_t xIndex, std::size_t zIndex) noexcept;
 
     void switchToNextTextureSet() noexcept;
+    
+    void toggleRain() noexcept;
+    void updateRain(float deltaTime) noexcept;
+
+
 private:
     void createTerrain(const HeightMap& heightMap) noexcept;
     void hideUndrawableTerrain() noexcept;
     void createDrawableSceneList() noexcept;
     void applyCorrectTextures() noexcept;
+    void createRain() noexcept;
 
     Renderer& _renderer;
     SceneObject3DList _sceneObjects{};
     SceneObjectList _drawableSceneObjects{};
 
     GLuint _baseTexture{};
+
+    gsl::owner<SceneObject*> _cloud{};
+    std::vector<gsl::owner<SceneObject*>> _rainPool{};
+    bool _isRaining{};
 };

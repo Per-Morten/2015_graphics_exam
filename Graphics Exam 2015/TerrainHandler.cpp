@@ -5,10 +5,12 @@
 
 TerrainHandler::TerrainHandler(Renderer& renderer, const HeightMap& heightMap) noexcept
     :_renderer(renderer)
+    , _rainPool(maxRain)
 {
     createTerrain(heightMap);
     hideUndrawableTerrain();
     createDrawableSceneList();
+    createRain();
 }
 
 TerrainHandler::~TerrainHandler() noexcept
@@ -23,6 +25,11 @@ TerrainHandler::~TerrainHandler() noexcept
             }
         }
     }
+    for (std::size_t i = 0; i < _rainPool.size(); ++i)
+    {
+        delete _rainPool[i];
+    }
+    delete _cloud;
 }
 
 void TerrainHandler::update(float deltaTime) noexcept
@@ -32,6 +39,7 @@ void TerrainHandler::update(float deltaTime) noexcept
         object->update(deltaTime);
         object->draw();
     }
+
 }
 
 void TerrainHandler::addCube(std::size_t xIndex, std::size_t zIndex) noexcept
@@ -82,8 +90,30 @@ void TerrainHandler::switchToNextTextureSet() noexcept
     applyCorrectTextures();
 }
 
+void TerrainHandler::toggleRain() noexcept
+{
+    _isRaining = !_isRaining;
+    _cloud->setVisible(true);
+}
+
+void TerrainHandler::updateRain(float deltaTime) noexcept
+{
+    if (_cloud)
+    {
+        _cloud->update(deltaTime);
+        _cloud->draw();
+    }
+    for (std::size_t i = 0; i < _rainPool.size(); ++i)
+    {
+        _rainPool[i]->update(deltaTime);
+        _rainPool[i]->draw();
+    }
+
+}
+
 void TerrainHandler::createTerrain(const HeightMap& heightMap) noexcept
 {
+    float highestValue = 0;
     _sceneObjects.resize(heightMap.size());
     for (std::size_t i = 0; i < heightMap.size(); ++i)
     {
@@ -99,10 +129,23 @@ void TerrainHandler::createTerrain(const HeightMap& heightMap) noexcept
                                                       0,
                                                       glm::vec3(i * SceneObject::cubeSize, k * SceneObject::cubeSize, j * SceneObject::cubeSize));
                 _sceneObjects[i][j].push_back(object);
+
+                if (heightMap[i][j] > highestValue)
+                {
+                    highestValue = heightMap[i][j];
+                }
             }
         }
     }
+    highestValue += highestValue * 0.5f;
     applyCorrectTextures();
+    _cloud = new SceneObject(_renderer,
+                             Renderer::regularShader,
+                             Renderer::cubeMesh,
+                             Renderer::groundTexture,
+                             SceneObject::cloudTexture,
+                             glm::vec3((heightMap.size() * SceneObject::cubeSize) / 2, highestValue * SceneObject::cubeSize, (heightMap[0].size() * SceneObject::cubeSize) / 2),
+                             glm::vec3(heightMap.size(), SceneObject::cubeSize / 4, heightMap[0].size()));
 }
 
 void TerrainHandler::hideUndrawableTerrain() noexcept
@@ -205,6 +248,20 @@ void TerrainHandler::applyCorrectTextures() noexcept
                 _sceneObjects[i][j][k]->setTextureIndex(textureIndex + _baseTexture);
             }
         }
+    }
+}
+
+void TerrainHandler::createRain() noexcept
+{
+    for (std::size_t i = 0; i < _rainPool.size(); ++i)
+    {
+        _rainPool[i] = new SceneObject(_renderer,
+                                       Renderer::regularShader,
+                                       Renderer::cubeMesh,
+                                       Renderer::groundTexture,
+                                       SceneObject::deepWaterTexture,
+                                       { 0.0f, 0.0f, 0.0f },
+                                       { 0.5f, 0.5f, 0.5f });
     }
 }
 

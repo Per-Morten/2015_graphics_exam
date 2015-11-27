@@ -20,7 +20,7 @@ public:
     static constexpr GLuint fiveNumberTexture = 8;
     static constexpr GLuint sixNumberTexture = 9;
     static constexpr GLuint grass2Texture = 10;
-    static constexpr GLuint snow2Texture = 11;
+    static constexpr GLuint cloudTexture = 11; //Probably really snow, but works for my usage
     static constexpr GLuint deepWaterTexture = 12;
     static constexpr GLuint desertTexture = 13;
     static constexpr GLuint dirt2Texture = 14;
@@ -42,6 +42,7 @@ public:
     ~SceneObject() noexcept;
 
     void update(float deltaTime) noexcept;
+    
     void draw() noexcept;
 
     void setTextureIndex(GLuint textureIndex) noexcept;
