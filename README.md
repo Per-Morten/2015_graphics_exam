@@ -1,3 +1,6 @@
+# Update:
+This was my solution to our three day take home exam in our third semester graphics course. (2015)
+
 # IMT2531 Graphics Programming - Exam 2015 #
 
 ## Per-Morten Straume ##
