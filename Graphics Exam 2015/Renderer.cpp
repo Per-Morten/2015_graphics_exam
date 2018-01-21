@@ -1,8 +1,8 @@
 //===========================================================
-// File: Renderer.cpp	
-// StudentName: Per-Morten Straume                          
-//                                                          
-// Exam 2015: IMT-2531 Graphics Programming Exam.                                
+// File: Renderer.cpp
+// StudentName: Per-Morten Straume
+//
+// Exam 2015: IMT-2531 Graphics Programming Exam.
 //===========================================================
 #include "Renderer.h"
 
@@ -662,9 +662,9 @@ void Renderer::initializeOpenGL() noexcept
 
 void Renderer::initializeVariables() noexcept
 {
-    std::string regular = "Resources/Shaders/directionalFullTexturev3Indexed";
-    std::string skybox = "Resources/Shaders/NonScaling";
-    std::string nonScalingWLightsShader = "Resources/Shaders/NonScalingWLight";
+    std::string regular = "../Resources/Shaders/directionalFullTexturev3Indexed";
+    std::string skybox = "../Resources/Shaders/NonScaling";
+    std::string nonScalingWLightsShader = "../Resources/Shaders/NonScalingWLight";
     _shaderPrograms[regularShader] = new ShaderProgram(regular + ".vert", regular + ".frag");
     _shaderPrograms[nonScalingShader] = new ShaderProgram(skybox + ".vert", skybox + ".frag");
     _shaderPrograms[nonScalingWLight] = new ShaderProgram(nonScalingWLightsShader + ".vert", nonScalingWLightsShader + ".frag");
@@ -681,8 +681,8 @@ void Renderer::initializeVariables() noexcept
                                  std::get<textureCoordinates>(meshData),
                                  std::get<ibo>(meshData));
 
-    _textures[groundTexture] = new Texture("Resources/Textures/texture.png", Consts::NUMBEROFROWSINATLAS);
-    _textures[skyboxNightTexture] = new Texture("Resources/Textures/Night.jpg", 1);
-    _textures[skyboxDayTexture] = new Texture("Resources/Textures/Sky.jpg", 1);
+    _textures[groundTexture] = new Texture("../Resources/Textures/texture.png", Consts::NUMBEROFROWSINATLAS);
+    _textures[skyboxNightTexture] = new Texture("../Resources/Textures/Night.jpg", 1);
+    _textures[skyboxDayTexture] = new Texture("../Resources/Textures/Sky.jpg", 1);
 }
 
