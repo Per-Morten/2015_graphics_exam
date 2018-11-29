@@ -1,5 +1,8 @@
 # 2017 Edit:
-This was my solution to our three day take home exam in our third semester graphics course. (2015)
+This was my solution to our three-day take-home exam in our third semester graphics course. (2015)  
+
+## Demo image
+![](demo_pic.png)
 
 # IMT2531 Graphics Programming - Exam 2015 #
 
